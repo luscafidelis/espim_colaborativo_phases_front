@@ -1,0 +1,47 @@
+<h4 class="py-3 px-xl-2 mx-4">Adicionar eventos</h4>
+<!--Eventos ativos-->
+<div class="container-fluid">
+  <!--Instancia Evento-->
+  <div class="mt-4" *ngFor="let event of events; index as i">
+    <esm-active-event [event]="event" *ngIf="event.getType() === 'active'"></esm-active-event>
+  </div>
+  <!-------------------->
+</div>
+<!------------------>
+<!--Adicionar evento ativo-->
+<div class="container-fluid">
+  <div class="mt-4">
+    <esm-active-event></esm-active-event>
+  </div>
+</div>
+<!-------------------------->
+<h4 class="py-3 px-2 mx-1 mx-xl-4">Adicionar coleta por sensores</h4>
+<!--Evento passivo-->
+<div class="container-fluid">
+  <!--Instancia coleta por sensor-->
+  <div class="mt-4" *ngFor="let event of events; index as i">
+    <esm-event [event]="event" *ngIf="event.getType() === 'passive'"></esm-event>
+  </div>
+  <!------------------------------->
+</div>
+<!------------------>
+<!--Adicionar evento passivo-->
+<div class="container-fluid">
+  <div class="mt-4">
+    <esm-event></esm-event>
+  </div>
+</div>
+<!---------------------------->
+<!--Finalizar programa-->
+<hr>
+<div class="container-fluid mb-3">
+  <div class="row justify-content-around mx-4">
+    <div class="col-12 col-xl-3">
+      <button type="button" [routerLink]="['../third/']" class="btn btn-success btn-block py-2">VOLTAR</button>
+    </div>
+    <div class="col-12 col-xl-3">
+      <div class="btn btn btn-primary btn-block py-2" (click)="submit()">FINALIZAR</div>
+    </div>
+  </div>
+</div>
+<!---------------------->

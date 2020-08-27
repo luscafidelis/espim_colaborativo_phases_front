@@ -1,0 +1,17 @@
+<span class="font-weight-bold text-primary mb-2">Alternativas</span>
+<div class="mb-3" *ngFor="let alternative of alternatives; index as i">
+    <div class="d-flex justify-content-between">
+        <label class="pl-1 pr-3" style="font-size: 1.2em" [for]="graphIndex + 'alternative' + i">{{ i + 1 }}</label>
+        <div class="d-flex flex-column w-100">
+            <textarea class="w-100" cols="1" placeholder="Digite o texto" [ngModel]="alternative" (ngModelChange)="onTextChange(i, alternative, $event)" [id]="graphIndex + 'alternative' + i"></textarea>
+            <select class="w-100 mt-2" [ngModel]="conditions[alternative]" (ngModelChange)="onNextChange(alternative, $event)" (change)="setNextTo()">
+                <option disabled>Próxima intervenção</option>
+                <option *ngFor="let intervention of nextInterventions.slice(1); index as i" [value]="i + 1" [disabled]="i + 1 === graphIndex">{{ intervention.orderPosition < 0 ? toChar(intervention.orderPosition * -1) : intervention.orderPosition }} - {{ intervention.typeDescription }}</option>
+                <option [value]="0">Finalizar</option>
+            </select>
+        </div>
+        <i class="fas fa-minus-circle text-primary pr-1 pl-3" (click)="removeChoice(i)" style="font-size: 1.3em"></i>
+    </div>
+</div>
+
+<button class="btn btn-success" (click)="addChoice()">Adicionar alternativa</button>

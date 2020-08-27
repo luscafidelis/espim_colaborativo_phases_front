@@ -1,0 +1,160 @@
+<main class="card mx-auto mt-4 w-main">
+  <!-- Forms -->
+  <form class="d-flex flex-wrap p-3 pt-4 p-md-5" [formGroup]="observerForm">
+    <!-- Imagem, Nome e Sobre você -->
+    <div class="container-fluid mb-2 mb-md-5">
+      <div class="row">
+        <!-- Imagem -->
+        <div class="col-12 col-md-6 d-flex justify-content-center align-items-center mb-4 mb-md-0">
+          <img class="rounded-circle" src="{{user.profileImg}}" alt="Imagem do perfil" width="150px" height="150px">
+        </div>
+        <!------------->
+        <!-- Nome e Sobre você -->
+        <div class="col-12 col-md-6 w-50">
+          <!-- Nome -->
+          <div class="mb-3">
+            <label class="font-weight-bold h3 w-100" for="name" translate>private.observers.name</label>
+            <input class="form-control" name="name" formControlName="name" id="name" type="text">
+          </div>
+          <!---------->
+          <!-- Sobre você -->
+          <div>
+            <label class="font-weight-bold h3 w-100" for="about" translate>private.observers.about</label>
+            <textarea class="w-100" id="about" formControlName="about"
+              placeholder="{{'private.observers.aboutPlaceholder' | translate}}" rows="5" maxlength="300"></textarea>
+          </div>
+          <!---------------->
+        </div>
+        <!----------------------->
+      </div>
+    </div>
+    <!-- Todos os outros campos -->
+    <div class="container-fluid mb-4">
+      <div class="row">
+        <!-- Primeira coluna -->
+        <div class="col-12 col-md-6 d-flex flex-column">
+          <!-- E-mail -->
+          <div class="w-100 mb-4">
+            <label class="font-weight-bold w-100 mb-0" for="email" translate>private.observers.email</label>
+            <input class="form-control" name="email" formControlName="email" id="email" type="text">
+          </div>
+          <!------------>
+          <!-- Dia de nascimento -->
+          <div class="w-100 mb-4">
+            <label class="font-weight-bold w-100 mb-0" for="birthDate" translate>private.observers.birthDate</label>
+            <div class="input-group align-items-center">
+              <input class="form-control" name="birthDate" id="birthDate" formControlName="birthDate" ngbDatepicker #d="ngbDatepicker" type="text" readonly="true">
+              <i class="far fa-calendar-alt fa-2x px-3" (click)="d.toggle()"></i>
+            </div>
+          </div>
+          <!----------------------->
+          <!-- Escolaridade -->
+          <div class="w-100 mb-4">
+            <label class="font-weight-bold w-100 mb-0" for="schooling"
+              translate>private.observers.schooling.schooling</label>
+            <select class="form-control p-0" name="schooling" id="schooling" formControlName="schooling">
+              <option value="noschool" translate>private.observers.schooling.noschool</option>
+              <option value="elementaryincompleted" translate>private.observers.schooling.elementaryincompleted</option>
+              <option value="elementarycompleted" translate>private.observers.schooling.elementarycompleted</option>
+              <option value="highschoolincompleted" translate>private.observers.schooling.highschoolincompleted</option>
+              <option value="highschoolcompleted" translate>private.observers.schooling.highschoolcompleted</option>
+              <option value="collegeincompleted" translate>private.observers.schooling.collegeincompleted</option>
+              <option value="collegecompleted" translate>private.observers.schooling.collegecompleted</option>
+              <option value="masterscompleted" translate>private.observers.schooling.masterscompleted</option>
+              <option value="phdcompleted" translate>private.observers.schooling.phdcompleted</option>
+            </select>
+          </div>
+          <!------------------>
+          <!-- Profissão -->
+          <div class="w-100 mb-4">
+            <label class="font-weight-bold w-100 mb-0" for="role" translate>private.observers.role</label>
+            <input class="form-control" name="role" id="role" type="text" formControlName="role" required>
+          </div>
+          <!--------------->
+          <!-- Empresa ou instituição -->
+          <div class="w-100 mb-4">
+            <label class="font-weight-bold w-100 mb-0" for="institution" translate>private.observers.institution</label>
+            <input class="form-control" name="institution" id="institution" formControlName="institution" type="text"
+              placeholder="Universidade de São Paulo" required>
+          </div>
+          <!---------------------------->
+          <!-- Número de telefone -->
+          <div class="w-100 mb-4">
+            <label class="font-weight-bold w-100 mb-0" for="phoneNumber" translate>private.observers.phoneNumber</label>
+            <input class="form-control" name="phoneNumber" formControlName="phoneNumber" id="phoneNumber" type="text"
+              placeholder="Número de telefone" required>
+          </div>
+          <!------------------------>
+        </div>
+        <!--------------------->
+        <!-- Segunda coluna -->
+        <div class="col-12 col-md-6 d-flex flex-column" formGroupName="address">
+          <input type="hidden" id="id" name="id" formControlName="id">
+          <!-- Endereço -->
+          <div class="w-100 mb-4">
+            <label class="font-weight-bold w-100 mb-0" for="address" translate>private.observers.address.address</label>
+            <input class="form-control" name="address" formControlName="address" id="address" type="text" required>
+          </div>
+          <!-------------->
+          <!-- Número -->
+          <div class="w-100 mb-4">
+            <label class="font-weight-bold w-100 mb-0" for="addressNumber"
+              translate>private.observers.address.addressNumber</label>
+            <input class="form-control" name="addressNumber" formControlName="addressNumber" id="addressNumber"
+              type="text" placeholder="0" required>
+          </div>
+          <!------------>
+          <!-- Complemento -->
+          <div class="w-100 mb-4">
+            <label class="font-weight-bold w-100 mb-0" for="addressComplement"
+              translate>private.observers.address.addressComplement</label>
+            <input class="form-control" name="addressComplement" formControlName="addressComplement"
+              id="addressComplement" type="text" required>
+          </div>
+          <!----------------->
+          <!-- Cep -->
+          <div class="w-100 mb-4">
+            <label class="font-weight-bold w-100 mb-0" for="cep" translate>private.observers.address.cep</label>
+            <input class="form-control" name="cep" id="cep" formControlName="cep" type="text"  required>
+          </div>
+          <!--------->
+          <!-- Cidade -->
+          <div class="w-100 mb-4">
+            <label class="font-weight-bold w-100 mb-0" for="city" translate>private.observers.address.city</label>
+            <input class="form-control" name="city" formControlName="city" id="city" type="text" required>
+          </div>
+          <!------------>
+          <!-- Estado -->
+          <div class="w-100 mb-4">
+            <label class="font-weight-bold w-100 mb-0" for="state" translate>private.observers.address.state</label>
+            <input type="text" class="form-control p-0" formControlName="state" id="state" name="state">
+          </div>
+          <!-- País -->
+          <div class="w-100 mb-4">
+            <label class="font-weight-bold w-100 mb-0" for="country" translate>private.observers.address.country</label>
+            <input type="text" class="form-control p-0" formControlName="country" id="country" name="country">
+          </div>
+          <!------------>
+        </div>
+        <!-------------------->
+      </div>
+    </div>
+    <!-- Submit -->
+    <div class="d-flex justify-content-center w-100">
+      <button name="saveButton" class="btn btn-primary w-100 w-md-25" [swal]="swalSaveButton"
+        translate>private.participants.add.saveButton</button>
+    </div>
+    <!------------>
+    <!-- Sweet alert messages-->
+    <span>
+      <swal #swalSaveButton title="{{'private.observers.messageTitle'|translate}}"
+        text="{{'private.observers.addMessage'|translate}}" type="question" [showCancelButton]="true"
+        [focusCancel]="true" (confirm)="save($event)">
+      </swal>
+      <swal #swalSaveSuccess title="{{'private.observers.saveTitle'|translate}}"
+        text="{{'private.observers.saveMessage'|translate}}" type="success" [focusCancel]="true">
+      </swal>
+    </span>
+  </form>
+  <!----------->
+</main>

@@ -1,0 +1,32 @@
+<div #interventionDiv class="card position-absolute" style="top: 0; width: 300px" cdkDrag [cdkDragFreeDragPosition]="offset" (cdkDragStarted)="onDragStart()" (cdkDragMoved)="moving()" cdkDragBoundary=".interventionBoundary">
+    <div class="d-flex align-items-center justify-content-between bg-primary text-white w-100 p-2" cdkDragHandle>
+        <span class="font-weight-bold">{{ interventionCoordinate.orderPosition < 0 ? toChar(interventionCoordinate.orderPosition * -1) : interventionCoordinate.orderPosition }} - {{ interventionCoordinate.typeDescription }}</span>
+        <i class="fas fa-times pointer" (click)="remove()"></i>
+    </div>
+    <div class="w-100 p-3">
+        <div class="w-100 mb-3">
+            <input type="radio" [checked]="interventionCoordinate.first" name="first" [id]="graphIndex + '-first'" (click)="setFirst()">
+            <label [for]="graphIndex + '-first'">1ª Intervenção</label>
+        </div>
+        <div class="w-100 mb-3">
+            <input type="checkbox" [(ngModel)]="interventionCoordinate.obligatory" [id]="graphIndex + '-obligatory'">
+            <label [for]="graphIndex + '-obligatory'">Obrigatória</label>
+        </div>
+        <div class="d-flex flex-column">
+            <label [for]="graphIndex + '-statement'">Digite a mensagem</label>
+            <textarea [id]="graphIndex + '-statement'" [(ngModel)]="interventionCoordinate.statement"></textarea>
+        </div>
+        <div class="d-flex w-100">
+            <button class="btn btn-outline-primary my-4 mx-auto">Anexar mídia <i class="fas fa-paperclip"></i></button>
+        </div>
+        <esm-question *ngIf="interventionCoordinate.type === 'question'" [graphIndex]="graphIndex" [nextInterventions]="nextInterventions"></esm-question>
+        <div *ngIf="interventionCoordinate.type !== 'question' || interventionCoordinate.questionType !== 1">
+            <hr style="border-top: 2px dashed #E8E8E8"/>
+            <select class="w-100" [(ngModel)]="nextInterventionSelect" (change)="setNextTo()">
+                <option disabled>Próxima intervenção</option>
+                <option *ngFor="let intervention of nextInterventions.slice(1); index as i" [value]="i + 1" [disabled]="i + 1 === graphIndex">{{ intervention.orderPosition < 0 ? toChar(intervention.orderPosition * -1) : intervention.orderPosition }} - {{ intervention.typeDescription }}</option>
+                <option [value]="0">Finalizar</option>
+            </select>
+        </div>
+    </div>
+</div>

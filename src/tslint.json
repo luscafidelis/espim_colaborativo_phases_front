@@ -1,0 +1,24 @@
+{
+  "extends": "../tslint.json",
+  "rules": {
+    "no-inferrable-types": false,
+    "variable-name": false,
+    "one-variable-per-declaration": false,
+    "directive-selector": [
+      true,
+      "attribute",
+      "esm",
+      "camelCase"
+    ],
+    "component-selector": [
+      true,
+      "element",
+      "esm",
+      "kebab-case"
+    ],
+    "no-trailing-whitespace": false,
+    "curly": false,
+    "max-line-length": false,
+    "one-line": false
+  }
+}

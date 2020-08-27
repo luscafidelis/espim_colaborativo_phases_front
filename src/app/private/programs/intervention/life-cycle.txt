@@ -1,0 +1,6 @@
+This file describes how the intervention section works
+
+- Add intervention
+    navbar.component - addIntervention(type: string, subtype?: number) - line 26;
+    intervention.service - addIntervention(intervention: HTMLInterventionElement) - line 13;
+    interventions.component - This component is subscribed to newInterventions$, so - createIntervention(intervention: HTMLInterventionElement) - line 41

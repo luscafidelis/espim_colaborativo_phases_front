@@ -1,0 +1,114 @@
+<!--Adicionar observador menu popup-->
+<form class="bg-white shadow-lg popup p-5 collapse" style="z-index: 3; top: 10%" id="addObserver" [formGroup]="addObserverForm">
+  <h3 class="mb-5">Adicionar participante</h3>
+  <div class="mb-3">
+    <label class="mb-0" for="email">E-mail <span class="text-danger">*</span>:</label>
+    <input class="w-100" type=email id="email" formControlName="email">
+  </div>
+  <div class="mb-3">
+    <label class="mb-0" for="name">Nome <span class="text-danger">*</span>:</label>
+    <input class="w-100" type=text id="name" formControlName="name">
+  </div>
+  <div class="mb-3">
+    <label class="mb-0" for="role">Papel:</label>
+    <input class="w-100" type=text id="role" formControlName="role">
+  </div>
+  <div class="d-flex justify-content-between mt-5">
+    <button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#addObserver" aria-expanded="false" aria-controls="addObserverCollapseCancel" (click)="this.addObserverForm.reset()">Cancelar</button>
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#addObserver" aria-expanded="false" aria-controls="addObserverCollapseAdd" (click)="addObserver()">Adicionar</button>
+  </div>
+</form>
+<!----------------------------------->
+<!--Forms-->
+<div class="container-fluid px-xl-5">
+  <h4>Adicionar observadores</h4>
+  <!--Pesquisar observadores-->
+  <div class="form-row form-group input-group">
+    <div class="col-12 col-xl-9 d-flex justify-content-between align-items-center">
+      <label for="search-pesquisador" class="input-group-prepend d-inline-block">
+        <i class="fas fa-search input-group-text"></i>
+      </label>
+      <input class="w-100 ml-2" id="search-pesquisador" type="text" placeholder="Pesquisar observadores pelo nome" (keyup)="search_by($event)">
+    </div>
+    <div class="col-12 col-xl-3">
+      <button type="button" class="btn btn-outline-primary btn-block mt-3 mt-xl-0">PESQUISAR</button>
+    </div>
+  </div>
+  <!-------------------------->
+  <!--Alfabeto-->
+  <div class="container-flex" aria-label="alphabet">
+    <div class="row justify-content-center">
+      <button type="button" class="btn btn-default btn-default-active text-primary font-weight-bold px-3" #alphabetAll (click)="filter_by('*', $event)">*</button>
+    </div>
+    <div class="row justify-content-center" >
+      <div class="col-12 col-md-6 d-flex justify-content-between pr-md-2" #alphabet1>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('a', $event)">A</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('b', $event)">B</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('c', $event)">C</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('d', $event)">D</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('e', $event)">E</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('f', $event)">F</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('g', $event)">G</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('h', $event)">H</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('i', $event)">I</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('j', $event)">J</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('k', $event)">K</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('l', $event)">L</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('m', $event)">M</button>
+      </div>
+      <div class="col-12 col-md-6 d-flex justify-content-between pl-md-2" #alphabet2>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('n', $event)">N</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('o', $event)">O</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('p', $event)">P</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('q', $event)">Q</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('r', $event)">R</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('s', $event)">S</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('t', $event)">T</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('u', $event)">U</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('v', $event)">V</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('w', $event)">W</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('x', $event)">X</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('y', $event)">Y</button>
+        <button type="button" class="btn btn-default text-primary font-weight-bold p-1" (click)="filter_by('z', $event)">Z</button>
+      </div>
+    </div>
+  </div>
+  <!------------>
+  <!--Observadores adicionados-->
+  <form class="card container-fluid">
+    <div class="row">
+      <div class="col-12 col-md-2 d-flex align-items-center text-center">
+        <span>Você adicionou:</span>
+      </div>
+      <div class="col-12 col-md-10 d-flex flex-wrap flex-row justify-content-center align-items-center py-3">
+          <div *ngIf="!programObservers?.length" class="text-center text-primary font-weight-bold w-100">No participant selected</div>
+          <div class="bg-primary rounded-pill text-white my-1 mx-2 px-3 py-1" *ngFor="let selectedObserver of programObservers">{{ selectedObserver.getName() }}</div>
+      </div>
+    </div>
+  </form>
+  <!---------------------------->
+  <!--Selecionar Observadores-->
+  <h5 class="mt-4">Selecionar observadores</h5>
+  <form class="container border p-3">
+    <div class="row">
+      <div *ngIf="!observers?.length" class="text-primary text-center font-weight-bold w-100">O filtro selecionado resultou em nada, tente troca-lo.</div>
+      <div class="col-3 d-flex align-items-center overflow-hidden text-nowrap" *ngFor="let observer of observers;"><esm-user-checkbox [user]="observer" [checked]="isChecked(observer)" [disabled]="isDisabled(observer)" (addUser)="addProgramObserver($event)" (removeUser)="removeProgramObserver($event)"></esm-user-checkbox></div>
+    </div>
+  </form>
+  <!--------------------------->
+  <hr>
+  <div class="container-fluid p-0 mb-3">
+    <div class="row">
+      <div class="col-12 col-xl-5">
+        <button type="button" class="btn btn-outline-primary btn-block py-2" data-toggle="collapse" data-target="#addObserver" aria-expanded="false" aria-controls="addObserverCollapse">ADICIONAR OBSERVADORES</button>
+      </div>
+      <div class="col-12 col-xl-3 offset-xl-1">
+        <button type="button" [routerLink]="['../first/']" class="btn btn-success btn-block py-2" (click)="submit()">VOLTAR</button>
+      </div>
+      <div class="col-12 col-xl-3">
+        <button type="button" [routerLink]="['../third/']" class="btn btn-primary btn-block py-2" (click)="submit()">PROSSEGUIR</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--------->

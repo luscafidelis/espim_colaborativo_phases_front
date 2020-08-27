@@ -1,0 +1,4 @@
+<esm-unique-choice class="d-flex flex-column justify-content-center" *ngIf="intervention.questionType === 1" [graphIndex]="graphIndex" [nextInterventions]="nextInterventions"></esm-unique-choice>
+<esm-multiple-choice class="d-flex flex-column justify-content-center" *ngIf="intervention.questionType === 2" [graphIndex]="graphIndex" [nextInterventions]="nextInterventions"></esm-multiple-choice>
+<esm-likert class="d-flex flex-column justify-content-center" *ngIf="intervention.questionType === 3" [graphIndex]="graphIndex" [nextInterventions]="nextInterventions"></esm-likert>
+<esm-likert-custom class="d-flex flex-column justify-content-center" *ngIf="intervention.questionType === 31" [graphIndex]="graphIndex" [nextInterventions]="nextInterventions"></esm-likert-custom>

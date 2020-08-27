@@ -1,0 +1,103 @@
+<nav class="d-flex align-items-stretch justify-content-around bg-primary w-100 position-fixed px-2 text-white" [style]="'height: ' + navbar_height + 'px; z-index: 10;'">
+    <div class="d-flex align-items-center justify-content-center" (click)="debug()">
+        <img class="pr-1" src="assets/images/logo-espim-web.svg" alt="Logo do Espim">
+        <span class="text-large">ESPIM</span>
+    </div>
+    <div class="d-flex align-items-center text-center btn btn-primary" (click)="addInterventionPopUp = !addInterventionPopUp">
+        <i class="fas fa-plus-circle pr-1"></i>
+        <span>Adicionar</span>
+        <ul *ngIf="addInterventionPopUp" class="position-fixed list-unstyled card" [style]="'top: ' + navbar_height + 'px;'">
+            <li class="btn btn-light text-left" (click)="addIntervention('empty')"><i class="fa fa-comment pr-1"></i><span>Mensagem</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('question', 0)"><i class="fa fa-align-left pr-1"></i><span>Questão aberta</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('question', 1)"><i class="fas fa-dot-circle pr-1"></i><span>Escolha Única</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('question', 2)"><i class="fas fa-check-square pr-1"></i><span>Escolha Múltipla</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('question', 3)"><i class="fa fa-ruler-combined pr-1"></i><span>Likert</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('question', 31)"><i class="fa fa-pencil-ruler pr-1"></i><span>Likert Personalizada</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('question', 4)"><i class="fas fa-balance-scale pr-1"></i><span>Diferencial Semântico</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('media')"><i class="fas fa-video pr-1"></i><span>Solicitar Mídia</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('task')"><i class="fas fa-mobile pr-1"></i><span>Aplicação externa</span></li>
+        </ul>
+    </div>
+    <div class="d-flex align-items-center text-center btn btn-primary">
+        <i class="fas fa-undo-alt pr-1"></i>
+        <span>Desfazer</span>
+    </div>
+    <div class="d-flex align-items-center text-center btn btn-primary">
+        <i class="fas fa-redo-alt pr-1"></i>
+        <span>Refazer</span>
+    </div>
+    <div class="d-flex align-items-center text-center btn btn-primary" (click)="zoomPopUp()">
+        <i class="fas fa-search-plus pr-1"></i>
+        <span>Zoom</span>
+    </div>
+    <div class="d-flex align-items-center text-center btn btn-primary">
+        <i class="fas fa-download pr-1"></i>
+        <span>Importar</span>
+    </div>
+    <div class="d-flex align-items-center text-center btn btn-primary">
+        <i class="fas fa-upload pr-1"></i>
+        <span>Exportar</span>
+    </div>
+    <div class="d-flex align-items-center text-center btn btn-primary" (click)="finish()">
+        <i class="fas fa-check-circle pr-1"></i>
+        <span>Concluir</span>
+    </div>
+</nav>
+<!--<div *ngIf="!over1200px" class="bg-primary text-white w-100 position-fixed" style="z-index: 10;">-->
+<!--    <div class="d-flex align-items-center justify-content-between p-2">-->
+<!--        <div class="d-flex align-items-center">-->
+<!--            <img class="pr-1" src="assets/images/logo-espim-web.svg" alt="Logo do Espim">-->
+<!--            <span class="text-large">ESPIM</span>-->
+<!--        </div>-->
+<!--        <i class="fas fa-bars fa-2x pointer" (click)="mobileToggleActivated = !mobileToggleActivated"></i>-->
+<!--    </div>-->
+<!--    <nav *ngIf="mobileToggleActivated" class="d-flex flex-column align-items-center justify-content-center bg-primary w-100 position-fixed px-2 text-white">-->
+<!--        <div class="text-center btn btn-primary" (click)="addInterventionPopUp = !addInterventionPopUp">-->
+<!--            <i class="fas fa-plus-circle pr-1"></i>-->
+<!--            <span>Adicionar</span>-->
+<!--        </div>-->
+<!--        <ul *ngIf="addInterventionPopUp" class="d-flex flex-column bg-light list-unstyled w-100">-->
+<!--            <li class="btn btn-light" (click)="addIntervention('question', 0)"><i class="fa fa-align-left pr-1"></i><span>Questão aberta</span></li>-->
+<!--            <li class="btn btn-light"><i class="fa fa-comment pr-1"></i><span>Mensagem</span></li>-->
+<!--            <li class="btn btn-light"><i class="fas fa-dot-circle pr-1"></i><span>Escolha Única</span></li>-->
+<!--            <li class="btn btn-light"><i class="fas fa-check-square pr-1"></i><span>Escolha Múltipla</span></li>-->
+<!--            <li class="btn btn-light"><i class="fa fa-ruler-combined pr-1"></i><span>Likert</span></li>-->
+<!--            <li class="btn btn-light"><i class="fa fa-pencil-ruler pr-1"></i><span>Likert Personalizada</span></li>-->
+<!--            <li class="btn btn-light"><i class="fas fa-balance-scale pr-1"></i><span>Diferencial Semântico</span></li>-->
+<!--            <li class="btn btn-light"><i class="fas fa-video pr-1"></i><span>Solicitar Mídia</span></li>-->
+<!--            <li class="btn btn-light"><i class="fas fa-mobile pr-1"></i><span>Aplicação externa</span></li>-->
+<!--        </ul>-->
+<!--        <div class="text-center btn btn-primary">-->
+<!--            <i class="fas fa-undo-alt pr-1"></i>-->
+<!--            <span>Desfazer</span>-->
+<!--        </div>-->
+<!--        <div class="text-center btn btn-primary">-->
+<!--            <i class="fas fa-redo-alt pr-1"></i>-->
+<!--            <span>Desfazer</span>-->
+<!--        </div>-->
+<!--        <div class="text-center btn btn-primary">-->
+<!--            <i class="fas fa-search-minus pr-1"></i>-->
+<!--            <span>Menos zoom</span>-->
+<!--        </div>-->
+<!--        <div class="text-center btn btn-primary">-->
+<!--            <i class="fas fa-search-plus pr-1"></i>-->
+<!--            <span>Mais zoom</span>-->
+<!--        </div>-->
+<!--        <div class="text-center btn btn-primary">-->
+<!--            <i class="fas fa-search-plus pr-1"></i>-->
+<!--            <span>Importar</span>-->
+<!--        </div>-->
+<!--        <div class="text-center btn btn-primary">-->
+<!--            <i class="fas fa-download pr-1"></i>-->
+<!--            <span>Importar</span>-->
+<!--        </div>-->
+<!--        <div class="text-center btn btn-primary">-->
+<!--            <i class="fas fa-upload pr-1"></i>-->
+<!--            <span>Exportar</span>-->
+<!--        </div>-->
+<!--        <div class="text-center btn btn-primary">-->
+<!--            <i class="fas fa-check-circle pr-1"></i>-->
+<!--            <span>Concluir</span>-->
+<!--        </div>-->
+<!--    </nav>-->
+<!--</div>-->

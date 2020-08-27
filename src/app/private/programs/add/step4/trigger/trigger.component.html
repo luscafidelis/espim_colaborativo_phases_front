@@ -1,0 +1,75 @@
+<div class="mt-2">
+  <li *ngIf="!isAddTriggerComponent" class="d-flex justify-content-between align-items-center text-center bg-primary-10 rounded-pill mx-2 px-3 py-1 font-weight-bold">
+    <button (click)="isOpen = !isOpen" class="btn btn-block text-color-inherit font-weight-bold text-left" type="button">{{ trigger.getDescription() }}</button>
+    <i class="fas fa-times pointer"></i>
+  </li>
+  <li class="row collapse mx-5" [ngbCollapse]="!isOpen && !isAddTriggerComponent">
+    <div class="col-12 d-flex justify-content-around">
+      <div class="d-flex flex-column p-3">
+        <span class="font-weight-bold my-2">Dias da semana</span>
+        <div>
+          <input type="checkbox" id="select-all" [checked]="trigger.isDayActive()" (click)="trigger.actOrDeactivateDay()" [disabled]="trigger.getTriggerType() === 'manual'">
+          <label for="select-all">Selecionar todos</label>
+        </div>
+        <div>
+          <input type="checkbox" id="sunday" [checked]="trigger.isDayActive('1')" (click)="trigger.actOrDeactivateDay('1')" [disabled]="trigger.getTriggerType() === 'manual'">
+          <label>Domingo</label>
+        </div>
+        <div>
+          <input type="checkbox" id="monday" [checked]="trigger.isDayActive('2')" (click)="trigger.actOrDeactivateDay('2')" [disabled]="trigger.getTriggerType() === 'manual'">
+          <label for="monday">Segunda</label>
+        </div>
+        <div>
+          <input type="checkbox" id="tuesday" [checked]="trigger.isDayActive('3')" (click)="trigger.actOrDeactivateDay('3')" [disabled]="trigger.getTriggerType() === 'manual'">
+          <label for="tuesday">Terça</label>
+        </div>
+        <div>
+          <input type="checkbox" id="wednesday" [checked]="trigger.isDayActive('4')" (click)="trigger.actOrDeactivateDay('4')" [disabled]="trigger.getTriggerType() === 'manual'">
+          <label for="wednesday">Quarta</label>
+        </div>
+        <div>
+          <input type="checkbox" id="thursday" [checked]="trigger.isDayActive('5')" (click)="trigger.actOrDeactivateDay('5')" [disabled]="trigger.getTriggerType() === 'manual'">
+          <label for="thursday">Quinta</label>
+        </div>
+        <div>
+          <input type="checkbox" id="friday" [checked]="trigger.isDayActive('6')" (click)="trigger.actOrDeactivateDay('6')" [disabled]="trigger.getTriggerType() === 'manual'">
+          <label for="friday">Sexta</label>
+        </div>
+        <div>
+          <input type="checkbox" id="saturday" [checked]="trigger.isDayActive('7')" (click)="trigger.actOrDeactivateDay('7')" [disabled]="trigger.getTriggerType() === 'manual'">
+          <label for="saturday">Sábado</label>
+        </div>
+      </div>
+      <div class="d-flex flex-column justify-content-around w-25">
+        <div class="d-flex flex-column text-center">
+          <label class="font-weight-bold">Horário</label>
+          <ngb-timepicker [formControl]="time" (change)="updateTriggerTime()" [minuteStep]="30" [readonlyInputs]="trigger.getTriggerType() === 'manual'"></ngb-timepicker>
+        </div>
+        <div class="d-flex justify-content-center flex-wrap text-center">
+          <span class="font-weight-bold w-100">Tipo de notificação</span>
+          <div class="input-group-prepend w-100">
+            <i class="input-group-text fas fa-bell"></i>
+            <select class="w-100" #priority (change)="trigger.setPriority(priority.value)" [disabled]="trigger.getTriggerType() === 'manual'">
+              <option value="" disabled [selected]="trigger.getPriority() !== 'NC' && trigger.getPriority() !== 'NL' && trigger.getPriority() !== 'AL'">Selecione</option>
+              <option value="NC" [selected]="trigger.getPriority() === 'NC'">Notificação curta</option>
+              <option value="NL" [selected]="trigger.getPriority() === 'NL'">Notificação longa</option>
+              <option value="AL" [selected]="trigger.getPriority() === 'AL'">Alarme</option>
+            </select>
+          </div>
+        </div>
+        <div class="d-flex flex-column text-center">
+          <label class="font-weight-bold" for="duration">Duração do disparo</label>
+          <input type="number" placeholder="Duração do disparo" id="duration" #duration [value]="trigger.getTimeOutInMinutes()" (change)="trigger.setTimeOutInMinutes(duration.value)" [disabled]="trigger.getTriggerType() === 'manual'">
+        </div>
+      </div>
+    </div>
+    <div class="col-12 text-center">
+      <button class="btn btn-primary mb-3" *ngIf="!isAddTriggerComponent" (click)="modifyTrigger()">Modificar disparo</button>
+      <button class="btn btn-primary mb-3" *ngIf="isAddTriggerComponent" (click)="addTrigger()">Adicionar disparo</button>
+      <div>
+        <input type="checkbox" id="manual" [checked]="trigger.getTriggerType() === 'manual'" (click)="trigger.changeType(); updateTriggerTime()">
+        <label for="manual">Programa deve ser auto-iniciado?</label>
+      </div>
+    </div>
+  </li>
+</div>

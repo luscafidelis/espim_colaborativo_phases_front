@@ -1,0 +1,8 @@
+<span class="font-weight-bold text-primary mb-2">Valores da escala</span>
+<div class="mb-2 d-flex justify-content-between align-items-center" *ngFor="let scale of scales; index as i">
+    <label class="pl-1 pr-3" style="font-size: 1.2em" [for]="graphIndex + 'alternative' + i">{{ i + 1 }}</label>
+    <textarea class="w-100" cols="1" placeholder="Valor" [(ngModel)]="scales[i]" [id]="graphIndex + 'alternative' + i"></textarea>
+    <i class="fas fa-minus-circle text-primary pr-1 pl-3" (click)="removeChoice(i)" style="font-size: 1.3em"></i>
+</div>
+
+<button class="btn btn-success mt-2" (click)="addChoice()">Aumentar a escala</button>

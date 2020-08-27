@@ -1,0 +1,8 @@
+<div class="col-12 p-3 text-right">
+    <span *ngIf="pagination?.previous"><a class="h4 mr-4 text-success font-weight-bold links"
+      (click)="getByPaginationURL(pagination.previous)">
+      <<</a> </span> <span><a
+          class="h4 mr-4 text-success font-weight-bold links">{{pagination?.actualPage}}</a></span>
+  <span *ngIf="pagination?.next"><a class="h4 mr-4 text-success font-weight-bold links"
+      (click)="getByPaginationURL(pagination.next)">>></a></span>
+</div>

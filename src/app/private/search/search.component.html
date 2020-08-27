@@ -1,0 +1,13 @@
+<form class="d-flex justify-content-around align-items-center flex-wrap px-0 my-3">
+    <div class="form-group w-100 w-md-75 pr-4">
+        <div class="input-with-icon-l">
+            <i class="fa fa-search"></i>
+            <input class="form-control" type="text" placeholder="{{ 'private.search.searchPlaceholder' | translate}}" name="searchTerm" [(ngModel)] = "searchTerm">
+        </div>
+    </div>
+    <div class="form-group w-px-200 w-md-25">
+        <button type="submit" class="btn btn-success btn-block py-3" (click)="search()">
+            <span class="font-weight-bold" translate>private.search.searchButton</span>
+        </button>
+    </div>
+</form>

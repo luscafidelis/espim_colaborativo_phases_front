@@ -1,0 +1,70 @@
+<main class="card mx-auto mt-4 w-main row">
+  <section class="col-12 mx-auto bg-white rounded">
+    <div class="row pt-xl-5 pl-xl-5 pr-xl-5 pb-3 pt-4 pl-4 pr-4">
+      <!--Título-->
+      <div class="col-12 mt-4 mt-xl-0 p-0">
+        <h1 class="h4 font-weight-bold">Resultados - Pesquisa</h1>
+        <p class="mt-4">On the other hand, we denounce with righteous indignation and. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.</p>
+      </div>
+      <!---->
+
+      <!--Formulario-->
+      <form class="col-12 m-0 mt-3 p-0 row" action="#">
+        <div class="form-group col-12 col-xl-4 pl-0 mt-3">
+          <label for="busca" class="sr-only">Filtrar</label>
+          <div class="input-with-icon-l">
+            <i class="fa fa-search"></i>
+            <input class="form-control border-top-0 border-left-0 border-right-0 rounded-0" type="text" auto-focus="" placeholder="Buscar programas" id="busca">
+          </div>
+        </div>
+
+        <div class="form-group col-12 col-xl-3 mt-3 pl-0 pl-xl-3">
+          <label for="por" class="sr-only">Tipo de busca</label>
+          <div class="input-with-icon-r">
+            <select class="custom-select border-top-0 border-right-0 border-left-0 rounded-0 select p-1" auto-focus="" id="por">
+              <option>Buscar por: nome</option>
+              <option>Buscar por: descrição</option>
+            </select>
+            <i class="fas fa-chevron-down names"></i>
+          </div>
+        </div>
+
+        <div class="col-xl-3 form-check mt-3 p-0 pl-xl-4">
+          <input type="checkbox" class="form-check-input mx-auto" id="Check">
+          <label class="form-check-label font-weight-bold ml-2" for="Check">Somente ativos</label>
+        </div>
+
+        <div class="form-group col-6 col-xl-2 row p-0 pl-xl-4 pl-0 ml-0 mt-xl-0 mt-3 mx-auto">
+          <button type="submit" class="btn btn-success col-12 p-3 px-xl-0">
+            <span class="font-weight-bold">PESQUISAR</span>
+          </button>
+        </div>
+
+      </form>
+      <!---->
+    </div>
+    <!--Lista-->
+    <!--Como se esta trabalhando com uma outra box, é interessante dividi-la em outro container fluid-->
+    <div class="container-fluid pl-xl-5 pr-xl-5 pt-3 pl-0 pr-0 mb-xl-5">
+      <div class="row navbar p-3 text-white">
+        <div class="col-6 p-0">
+          <h2 class="h6 m-0 d-inline ml-1 font-weight-bold">Programas</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 p-0">
+          <ul class="list-group">
+            <li class="list-group-item p-4 hover-itens" *ngIf="programs?.length == 0">
+              <span class="names" translate>private.programs.list.noObjects</span><br>
+            </li>
+            <li class="list-group-item p-4 hover-itens" *ngFor="let program of programs; let i = index">
+              <a [routerLink]="[program.getId()]" class="links"><span class="font-weight-bold">{{i + 1}}. {{program.getTitle()}}</span></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <esm-pagination [pagination]="pagination" (next)="onNext($event)"></esm-pagination>
+    <!---->
+  </section>
+</main>

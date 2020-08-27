@@ -1,0 +1,49 @@
+<footer class="bg-primary container-fluid pt-5">
+  <div class="row">
+    <div class="offset-1"></div>
+    <div class="col-12 col-lg-4 d-flex align-items-center text-white flex-wrap">
+      <ul class="list-unstyled d-flex justify-content-around flex-wrap my-0">
+        <li class="mx-5 my-3">
+          <span translate>index.footer.works</span>
+        </li>
+        <li class="mx-5 my-3">
+          <span translate>index.footer.download</span>
+        </li>
+        <li class="mx-5 my-3">
+          <span translate>index.footer.timeline</span>
+        </li>
+        <li class="mx-5 my-3">
+          <span translate>index.footer.team</span>
+        </li>
+        <li class="mx-5 my-3">
+          <span translate>index.footer.documentation</span>
+        </li>
+      </ul>
+    </div>
+    <div class="offset-1"></div>
+    <div class="col-12 col-lg-6 d-flex justify-content-center align-items-center text-white flex-wrap mt-4 mb-5">
+      <span class="mx-3" translate>index.footer.subscribe</span>
+      <div class="input-group justify-content-center w-75">
+        <input class="rounded-left-lg w-75" type="text"
+          placeholder="{{'index.footer.subscribePlaceholder' | translate}}" aria-describedby="send-subscription">
+        <div class="input-group-append w-25">
+          <button class="btn btn-success box-shadow-0 rounded-right-lg w-100" id="send-subscription"
+            translate>index.footer.send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center pb-3">
+      <img width="73" height="30" src="assets/images/logo-usp-semfundo.png">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center pb-2">
+      <img width="73" height="30" (click)="chooseLanguage('pt')"
+        src="assets/images/landing-page/outros/Flag_of_Brazil.svg">
+      <img width="73" height="30" (click)="chooseLanguage('en')"
+        src="assets/images/landing-page/outros/Flag_of_the_United_Kingdom_(3-5).svg">
+    </div>
+  </div>
+</footer>

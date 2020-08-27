@@ -1,0 +1,6 @@
+<esm-navbar></esm-navbar>
+<div #main_div class="position-absolute" [style]="'top: 60px; width: 100vw; height: calc(100vh - ' + navbar_height + 'px);'">
+    <div class="tiled-background w-100 h-100" (mousedown)="onMiddleClickDown($event)" (mouseup)="onMiddleClickUp($event)" (mousemove)="MiddleClickScroll($event)">
+        <esm-canvas #container></esm-canvas>
+    </div>
+</div>

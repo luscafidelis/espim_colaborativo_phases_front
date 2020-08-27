@@ -1,0 +1,93 @@
+<div>
+  <!--Header-->
+  <div>
+    <!--Cabecalho-->
+    <div class="row bg-primary py-2 px-2 mx-1 mx-xl-4" [ngbCollapse]="isAddEvent && !isOpen" [ngStyle]="{'background-color': event.getColor()}">
+      <div class="col-12 d-flex justify-content-between align-items-center text-white">
+        <button class="btn btn-link text-white" data-toggle="collapse" (click)="getEventDetails(); isOpen = !isOpen">{{ event.getTitle() }}</button>
+        <div>
+          <i class="fas fa-edit text-white"></i>
+          <i class="fas fa-trash-alt text-white" (click)="delete_event()"></i>
+        </div>
+      </div>
+    </div>
+    <!------------->
+    <!--Corpo-->
+    <div class="row border shadow-sm mx-1 mx-xl-4 py-4" [ngbCollapse]="isOpen" *ngIf="!isAddEvent">
+      <div class="col-12 d-flex justify-content-between flex-wrap flex-sm-nowrap">
+        <span><strong>Disparo cadastrados:</strong> {{ event.getTriggersId().length || 'Nenhum disparo cadastrado' }}</span>
+        <span><strong>Sensores cadastradas:</strong> {{ event.getSensorsId().length || 'Nenhum sensor cadastrado' }}</span>
+      </div>
+    </div>
+    <!--------->
+  </div>
+  <!---------->
+  <!--Conteudo-->
+  <div class="collapse multi-collapse-sensor" [ngbCollapse]="!isOpen">
+    <!--Corpo-->
+    <div class="row border shadow-sm mx-1 mx-xl-4 py-2">
+      <!--Nome e descrição do programa-->
+      <div class="col-12 mt-4">
+        <label [for]="event_title">Nome do programa</label>
+        <input (change)="updateEvent({ title: event_title.value })" class="d-block w-100 w-xl-75 py-2" type="text" placeholder="Nome do programa" #event_title (keyup)="event.setTitle(event_title.value)" [value]="event.getTitle() || ''">
+        <textarea (change)="updateEvent({ description: event_title.value })" class="d-block w-100 py-2 mt-3" rows="1" placeholder="Descrição do programa" (keyup)="event.setDescription($event.target.value)">{{ event.getDescription() }}</textarea>
+      </div>
+      <!-------------------------------->
+      <!--Dispostivo e sensores-->
+      <h5 class="ml-3 mt-3 font-weight-bold">Coletar:</h5>
+      <div class="col-12 d-flex justify-content-around my-3">
+        <div class="input-group justify-content-center align-items-center mb-3">
+          <span class="font-weight-bold">Atividades:</span>
+          <div class="input-group-prepend justify-content-center mr-2 w-100">
+            <button class="input-group-text" (click)="updateSensor('activity', 'smartphone')" [ngClass]="{'bg-primary': getActivitySensorCollector() === 'smartphone', 'text-white': getActivitySensorCollector() === 'smartphone'}" type="button"><i class="fas fa-mobile-alt"></i></button>
+            <span class="input-group-text bg-white" [ngbCollapse]="getActivitySensorCollector() !== 'smartphone'">Smartphone</span>
+            <span class="input-group-text bg-white" [ngbCollapse]="getActivitySensorCollector() !== 'smartwatch'">Smartwatch</span>
+            <button class="input-group-text" (click)="updateSensor('activity', 'smartwatch')" [ngClass]="{'bg-primary': getActivitySensorCollector() === 'smartwatch', 'text-white': getActivitySensorCollector() === 'smartwatch'}" type="button"><i class="fas fa-clock"></i></button>
+          </div>
+        </div>
+        <div class="input-group justify-content-center align-items-center mb-3">
+          <span class="font-weight-bold">Localização:</span>
+          <div class="input-group-prepend justify-content-center mr-2 w-100">
+            <button class="input-group-text" (click)="updateSensor('location', 'smartphone')" [ngClass]="{'bg-primary': getLocationSensorCollector() === 'smartphone', 'text-white': getLocationSensorCollector() === 'smartphone'}" type="button"><i class="fas fa-mobile-alt"></i></button>
+            <span class="input-group-text bg-white" [ngbCollapse]="getLocationSensorCollector() !== 'smartphone'">Smartphone</span>
+            <span class="input-group-text bg-white" [ngbCollapse]="getLocationSensorCollector() !== 'smartwatch'">Smartwatch</span>
+            <button class="input-group-text" (click)="updateSensor('location', 'smartwatch')" [ngClass]="{'bg-primary': getLocationSensorCollector() === 'smartwatch', 'text-white': getLocationSensorCollector() === 'smartwatch'}" type="button"><i class="fas fa-clock"></i></button>
+          </div>
+        </div>
+        <div class="input-group justify-content-center align-items-center mb-3">
+          <span class="font-weight-bold">Uso:</span>
+          <div class="input-group-prepend justify-content-center mr-2 w-100">
+            <button class="input-group-text" (click)="updateSensor('measure_use', 'smartphone')" [ngClass]="{'bg-primary': getMeasureUseSensorCollector() === 'smartphone', 'text-white': getMeasureUseSensorCollector() === 'smartphone'}" type="button"><i class="fas fa-mobile-alt"></i></button>
+            <span class="input-group-text bg-white" [ngbCollapse]="getMeasureUseSensorCollector() !== 'smartphone'">Smartphone</span>
+            <span class="input-group-text bg-white" [ngbCollapse]="getMeasureUseSensorCollector() !== 'smartwatch'">Smartwatch</span>
+            <button class="input-group-text" (click)="updateSensor('measure_use', 'smartwatch')" [ngClass]="{'bg-primary': getMeasureUseSensorCollector() === 'smartwatch', 'text-white': getMeasureUseSensorCollector() === 'smartwatch'}" type="button"><i class="fas fa-clock"></i></button>
+          </div>
+        </div>
+      </div>
+      <!------------------------->
+      <!--Frequencia do disparo-->
+      <div class="col-12">
+        <h4 class="font-weight-bold">Disparos cadastrados</h4>
+        <div class="row mt-3">
+          <ul class="col-12 list-unstyled px-4 d-flex flex-column">
+            <!--Disparo 1-->
+            <esm-trigger [trigger]="trigger" *ngFor="let trigger of event.getTriggersInstances();"></esm-trigger>
+            <!------------->
+            <h5 class="mt-3">Adicionar disparo</h5>
+            <!--Adicionar disparo-->
+            <esm-trigger (triggerOutput)="addTrigger($event)"></esm-trigger>
+          </ul>
+        </div>
+      </div>
+      <!------------------------->
+    </div>
+    <!---------->
+  </div>
+  <!------------>
+</div>
+
+<!--Botão adicionar coleta-->
+<div class="d-flex justify-content-around flex-wrap px-3 mx-4 my-3" *ngIf="isAddEvent">
+  <button class="btn btn-outline-primary w-100 w-xl-25 py-3" (click)="addEvent()" data-toggle="collapse" data-target="#add-sensor">ADICIONAR COLETA</button>
+</div>
+<!-------------------------->

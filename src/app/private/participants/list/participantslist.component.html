@@ -1,0 +1,56 @@
+<main class="card mx-auto mt-4 w-main px-5 mb-5">
+    <!--Título & busca-->
+    <h1 class="h4 font-weight-bold mt-5" translate>private.participants.list.pageTitle</h1>
+    <esm-search (searchResults)="onNextSearch($event)" [urlObject]="urlParticipants"></esm-search>
+    <!---->
+    <section class="container-fluid mx-auto">
+        <!-- Cabeçalho -->
+        <div class="row">
+            <div class="col-12 bg-primary d-flex justify-content-between align-items-center p-3 text-white">
+                <h2 class="h6 m-0 d-inline ml-1 font-weight-bold" translate>private.participants.list.listTitle</h2>
+                <small class="font-weight-bold"><span translate>private.participants.list.totalNumber</span>:{{totalParticipants? totalParticipants : 0}}</small> 
+            </div>
+        </div>
+        <!--Lista-->
+        <ul class="row pl-0 mb-0" *ngFor="let participant of participants; let i = index">
+            <!-- Item 1 -->
+            <li class="col-12 d-flex justify-content-between align-content-center p-4 border">
+                <!-- Nome & e-mail -->
+                <div>
+                    <a [routerLink]="['/private/participants/add', participant.id]"><span class="names">{{i + 1}}. {{participant?.name}} • {{participant?.alias}}</span></a>
+                    <br>
+                    <a class="underline small" [routerLink]="['/private/participants/add', participant.id]">{{participant?.name}} - {{participant?.email}}</a>
+                </div>
+                <!------------------>
+                <!-- Ícones -->
+                <div class="d-flex align-items-center mx-3">
+                    <a [routerLink]="['/private/participants/add', participant.id]">
+                        <i class="fas fa-edit fa-lg mr-3 text-primary"></i>
+                    </a>
+                    <i class="fas fa-trash-alt fa-lg text-primary" (click)="deleteParticipant(participant)"></i>
+                </div>
+                <!------------>
+            </li>
+            <!------------>
+        </ul>
+        <div class="row" *ngIf="participants?.length == 0">
+          <ul class="list-group w-100">
+            <li class="list-group-item p-4 hover-itens">
+              <span class="names" translate>private.participants.list.noObjects</span><br>
+            </li>
+          </ul>
+        </div>
+        <span>
+            <swal #swalDeleteParticipant title="{{'private.participants.list.deleteMessageTitle'|translate}}"
+              text="{{'private.participants.list.deleteMessage'|translate}}" type="question" [showCancelButton]="true"
+              [focusCancel]="true" (confirm)="onConfirmDeleteParticipant($event)">
+            </swal>
+            <swal #swalAfterDelete title="{{'private.participants.list.afterDeleteTitle'|translate}}"
+              text="{{'private.participants.list.afterDelete'|translate}}" type="success"
+              [focusCancel]="true">
+            </swal>
+          </span>
+        <esm-pagination [pagination]="pagination" (next)="onNext($event)"></esm-pagination>
+    </section>
+  </main>
+  

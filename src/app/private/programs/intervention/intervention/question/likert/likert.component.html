@@ -1,0 +1,17 @@
+<label class="font-weight-bold text-primary mb-2" [for]="graphIndex + 'scale'">Escola o tipo de escala Likert</label>
+<select class="mb-2" [(ngModel)]="scale" [id]="graphIndex + 'scale'">
+    <option value="5 AGREEMENT">Concordância (5 pontos)</option>
+    <option value="7 AGREEMENT">Concordância (7 pontos)</option>
+    <option value="5 FREQUENCY">Frequência (5 pontos)</option>
+    <option value="7 FREQUENCY">Frequência (7 pontos)</option>
+    <option value="5 SATISFACTION">Satisfação (5 pontos)</option>
+    <option value="7 SATISFACTION">Satisfação (7 pontos)</option>
+</select>
+<span class="font-weight-bold text-primary mb-2">Afirmativas</span>
+<div class="mb-2 d-flex justify-content-between align-items-center" *ngFor="let affirmative of affirmatives; index as i">
+    <label class="pl-1 pr-3" style="font-size: 1.2em" [for]="graphIndex + 'alternative' + i">{{ i + 1 }}</label>
+    <textarea class="w-100" cols="1" placeholder="Afirmativa" [(ngModel)]="affirmatives[i]" [id]="graphIndex + 'alternative' + i"></textarea>
+    <i class="fas fa-minus-circle text-primary pr-1 pl-3" (click)="removeChoice(i)" style="font-size: 1.3em"></i>
+</div>
+
+<button class="btn btn-success mt-2" (click)="addChoice()">Adicionar alternativa</button>

@@ -1,0 +1,78 @@
+<div class="card mx-auto mt-4 w-main container-fluid">
+    <div class="row">
+        <section class="col-12 mx-auto bg-white rounded p-xl-2 p-0">
+            <div class="container-fluid">
+                <div class="row p-xl-5 p-4">
+                    <div class="col-12 mt-4 mt-xl-0 p-0">
+                        <h1 class="h4 font-weight-bold" translate>private.participants.add.title</h1>
+                    </div>
+                    <form class="col-12 pl-0 pb-3 pr-0" [formGroup]="participantForm">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-12 mt-4 mb-4 p-0">
+                                    <div class="form-group">
+                                        <input id="id" name="id" type="hidden" formControlName="id">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="text" class="sr-only"
+                                            translate>private.participants.add.name</label>
+                                        <input id="name" name="name" type="text"
+                                            placeholder="{{'private.participants.add.name' | translate}}"
+                                            class="form-control-plaintext border-bottom" formControlName="name" [readonly]="editing">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email" class="sr-only"
+                                            translate>private.participants.add.email</label>
+                                        <input id="email" name="email" type="email"
+                                            placeholder="{{'private.participants.add.email' | translate}}"
+                                            class="form-control-plaintext border-bottom" formControlName="email" [readonly]="editing">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="pwd" class="sr-only"
+                                            translate>private.participants.add.title</label>
+                                        <input id="alias" name="alias" type="text"
+                                            placeholder="{{'private.participants.add.alias' | translate}}"
+                                            class="form-control-plaintext border-bottom" formControlName="alias">
+                                    </div>
+                                </div>
+                                <button class="btn btn-secondary text-center font-weight-bold"
+                                    [swal]="swalSaveAndAddAnother" name="saveAndAddAnother"
+                                    *ngIf="(participantForm.valid && !participantForm.get('id').value)" translate>
+                                    private.participants.add.saveAndAddAnother
+                                </button>
+                                <button type="submit" name="saveButton"
+                                    class="btn btn-success mx-auto col-7 col-xl-4 p-3 px-xl-0 mt-4 mt-xl-0 font-weight-bold"
+                                    [disabled]="participantForm.invalid" *ngIf="participantForm.valid"
+                                    [swal]="swalSaveButton" translate>
+                                    private.participants.add.saveButton
+                                </button>
+                                <!-- Sweet alert messages-->
+                                <span>
+                                    <swal #swalSaveAndAddAnother
+                                        title="{{'private.participants.add.messageTitle'|translate}}"
+                                        text="{{'private.participants.add.addMessage'|translate}}" type="question"
+                                        [showCancelButton]="true" [focusCancel]="true"
+                                        (confirm)="saveAndAddAnother($event)">
+                                    </swal>
+                                    <swal #swalSaveButton title="{{'private.participants.add.messageTitle'|translate}}"
+                                        text="{{'private.participants.add.addMessage'|translate}}" type="question"
+                                        [showCancelButton]="true" [focusCancel]="true" (confirm)="save($event)">
+                                    </swal>
+                                    <swal #swalSaveSuccess title="{{'private.participants.add.saveTitle'|translate}}"
+                                        text="{{'private.participants.add.saveMessage'|translate}}" type="success"
+                                        [focusCancel]="true" (confirm)="onSaveSuccess($event)">
+                                    </swal>
+                                    <swal #swalSaveAndAddAnotherSuccess
+                                        title="{{'private.participants.add.saveTitle'|translate}}"
+                                        text="{{'private.participants.add.saveMessage'|translate}}" type="success"
+                                        [focusCancel]="true" (confirm)="onSaveAndAddAnotherSuccess($event)">
+                                    </swal>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

@@ -1,0 +1,84 @@
+<main class="card mx-auto mt-4 w-main px-5 mb-5">
+  <!--Título & busca-->
+  <h1 class="h4 font-weight-bold mt-5" translate>private.programs.list.pageTitle</h1>
+  <esm-search (searchResults)="onNextSearch($event)" [urlObject]="urlPrograms"></esm-search>
+  <!---->
+  <section class="container-fluid mx-auto">
+    <!-- Cabeçalho -->
+    <div class="row">
+      <div class="col-12 bg-primary d-flex justify-content-between align-items-center p-3 text-white">
+        <h2 class="h6 m-0 d-inline ml-1 font-weight-bold" translate>private.programs.list.listTitle</h2>
+        <small class="font-weight-bold"><span translate>private.programs.list.totalNumber</span>:
+          {{totalPrograms?totalPrograms:0}}</small>
+      </div>
+    </div>
+    <!--Lista-->
+    <ul class="row pl-0 mb-0" *ngFor="let program of programs; let i = index">
+      <!-- Item 1 -->
+      <li class="col-12 d-flex justify-content-between align-content-center p-4 border">
+        <!-- Titulo do programa -->
+        <span class="font-weight-bold w-100" [class.pointer]="!program.getBeingDuplicated()" (click)="goToProgram(program)">{{i + 1}}. {{program.getTitle()}}</span>
+        <!------------------>
+        <!-- Ícones -->
+        <div class="d-flex align-items-center mx-3">
+          <i class="fas fa-lock m-2 fa-lg"
+             [ngClass]="{
+              'text-warning': !program.getBeingDuplicated(),
+              'pointer': !program.getBeingDuplicated()
+             }"
+             *ngIf="program.getBeingEdited()"></i>
+          <i class="fas fa-users m-2 fa-lg"
+             [ngClass]="{
+              'text-primary': !program.getBeingDuplicated(),
+              'pointer': !program.getBeingDuplicated()
+             }"
+             *ngIf="!program.getIsPublic()"></i>
+          <i class="fas m-2 fa-lg"
+             [ngClass]="{
+              'fa-clone': !program.getBeingDuplicated(),
+              'text-primary': !program.getBeingDuplicated(),
+              'pointer': !program.getBeingDuplicated(),
+              'fa-spinner': program.getBeingDuplicated(),
+              'fa-spin': program.getBeingDuplicated()
+             }"
+             (click)="duplicateProgram(program)"></i>
+          <i class="fas fa-edit m-2 fa-lg"
+             [ngClass]="{
+              'text-primary': !program.getBeingDuplicated(),
+              'pointer': !program.getBeingDuplicated()
+             }"
+             (click)="this.goToProgram(program)"></i>
+          <i class="fas fa-trash-alt m-2 fa-lg"
+             [ngClass]="{
+              'text-danger': !program.getBeingDuplicated(),
+              'pointer': !program.getBeingDuplicated()
+             }"
+             (click)="deleteProgram(program)"></i>
+        </div>
+        <!------------>
+      </li>
+      <!------------>
+    </ul>
+    <div class="row" *ngIf="programs?.length == 0">
+      <ul class="list-group w-100">
+        <li class="list-group-item p-4 hover-itens">
+          <span class="names" translate>private.programs.list.noObjects</span><br>
+        </li>
+      </ul>
+    </div>
+    <span>
+      <swal #swalDeleteProgram title="{{'private.programs.list.deleteMessageTitle'|translate}}"
+        text="{{'private.programs.list.deleteMessage'|translate}}" type="question" [showCancelButton]="true"
+        [focusCancel]="true" (confirm)="onConfirmDeleteProgram($event)">
+      </swal>
+      <swal #swalAfterDelete title="{{'private.programs.list.afterDeleteTitle'|translate}}"
+        text="{{'private.programs.list.afterDelete'|translate}}" type="success"
+        [focusCancel]="true">
+      </swal>
+    </span>
+    <esm-pagination [pagination]="pagination" (next)="onNext($event)"></esm-pagination>
+  </section>
+</main>
+
+<!-- Loading screen -->
+<div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="position: absolute; top:0; z-index: 1; height: 100%; width: 100%; background-color: rgba(255, 255, 255, 0.5)"><i class="fa fa-spinner fa-spin fa-3x"></i></div>
