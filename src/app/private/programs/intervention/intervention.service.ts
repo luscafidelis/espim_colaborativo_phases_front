@@ -3,10 +3,9 @@ import {Subject} from 'rxjs';
 import {Intervention, QuestionIntervention} from '../../models/intervention.model';
 import {SwalComponent} from '@sweetalert2/ngx-sweetalert2';
 import {HttpClient} from '@angular/common/http';
-import {ESPIM_REST_Interventions} from '../../../app.api';
-import {ProgramsAddService} from '../add/programsadd.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ActiveEvent} from '../../models/event.model';
+import { ESPIM_REST_Interventions } from 'src/app/app.api';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +52,8 @@ export class InterventionService {
       intervention.onChange$.subscribe(_ => this.redrawGraph$.next());
       return intervention;
     }));
+
+    
     this.firstIntervention = this.graphElements.findIndex(value => value.first === true);
     // Not needed since lastInteractedIntervention gets update on the BFS of the canvas
     // this.lastInteractedIntervention = interventions.length;
@@ -80,17 +81,19 @@ export class InterventionService {
 
       // if the intervention is of unique choice, it is already up to date (it gets updated in unique-choice.component.ts)
       // else we must updated intervention.next to the first and only intervention it points
-      if (intervention.type !== 'question' && (intervention as QuestionIntervention).questionType !== 1)
+      if (intervention.type !== 'question' && (intervention as QuestionIntervention).questionType !== 1){
         this.graphElements[i].intervention.next = this.interventionElementsGraph[i][0];
-
-      /* Connection to server
-      if (intervention.id)
-        this.http.patch(`${ESPIM_REST_Interventions}${intervention.id}/`, intervention).subscribe(_ => {}, _ => console.log(`Failed to patch intervention of id ${intervention.id}, orderPosition ${intervention.orderPosition}`));
-      else
-        this.http.post(ESPIM_REST_Interventions, intervention).subscribe((data: any) => intervention.id = data.id, _ => console.log(`Failed to post intervention of orderPosition ${intervention.orderPosition}`));
-      */
-
-
+      }
+      console.log(intervention);
+      if (intervention.id){
+        this.http.patch(`${ESPIM_REST_Interventions}${intervention.id}/`, intervention).subscribe(
+          _ => {}, 
+          _ => console.log(`Failed to patch intervention of id ${intervention.id}, orderPosition ${intervention.orderPosition}`));
+      } else{
+        this.http.post(ESPIM_REST_Interventions, {intervention : intervention, event : this.event.id}).subscribe(
+          (data: any) => intervention.id = data.id, 
+          _ => console.log(`Failed to post intervention of orderPosition ${intervention.orderPosition}`));
+      }
     }
 
     // it is not necessary to update orderPosition since it gets updated together with the canvas (arrows)

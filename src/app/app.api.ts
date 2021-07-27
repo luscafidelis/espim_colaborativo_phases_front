@@ -1,6 +1,6 @@
 // configure default backend location
-export const ESPIM_API = 'https://espim-novo-backend.herokuapp.com/';
-//export const ESPIM_API = 'http://localhost:8000/';
+//export const ESPIM_API = 'https://espim-novo-backend.herokuapp.com/';
+export const ESPIM_API = 'http://localhost:8000/';
 
 // configure participants module url
 export const ESPIM_REST_Participants: string = ESPIM_API + 'participants/';

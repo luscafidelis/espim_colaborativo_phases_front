@@ -1,0 +1,232 @@
+{
+    "index": {
+        "footer": {
+            "works": "How it works",
+            "download": "Download",
+            "timeline": "Timeline",
+            "team": "Team",
+            "documentation": "Documentation",
+            "subscribe": "Subscribe to receive news from ESPIM",
+            "subscribePlaceholder": "Let us know your e-mail address",
+            "send": "Send"
+        },
+        "header": {
+            "works": "How it works",
+            "download": "Download",
+            "timeline": "Timeline",
+            "team": "Team",
+            "documentation": "Documentation",
+            "signin": "Sign in"
+        },
+        "home": {
+            "greetings": "Welcome to ESPIM",
+            "invite": "ESPIM is a tool for programmed intervention process",
+            "watch": "Watch introduction",
+            "system": "The system",
+            "systemDescription": "Here you should type system description",
+            "espimFeatures": "Here you should present some features of ESPIM",
+            "espimAdvantages": "Here you should present advantages of ESPIM. Espim has many advantages and lots of users from most diverse research areas have been using it",
+            "espimInformations": "Here you should write some extra information about the system. ESPIM  is awesome, you should use it"
+        },
+        "works": {
+            "title": "How it Works",
+            "description": "Next video shows how ESPIM works"
+        },
+        "download": {
+            "welcome": "Welcome to SEMSEM download page",
+            "message": "Click next figure to go to playstore and install SEMSEM"
+        },
+        "timeline": {
+            "title": "TIMELINE",
+            "text": "Text sample"
+        },
+        "team": {
+            "title": "TEAM",
+            "developer": {
+                "name": "Name developer",
+                "position": "Software developer"
+            }
+        },
+        "documentation": {
+            "title": "To do..."
+        },
+        "signin": {
+            "welcomeMessage": "Welcome to ESPIM! Not yet registered? please register! Fill all fields to enable registering.",
+            "saveButton" : "SIGN IN",
+            "observers": {
+                "name": "Name",
+                "namePlaceholder": "What is your name?",
+                "email": "E-mail",
+                "emailPlaceholder": "What is your e-mail?",
+                "role": "Role",
+                "about": "About you",
+                "aboutPlaceholder": "Tell us a few about you!",
+                "birthDate": "Birth date",
+                "schooling": {
+                    "schooling": "Schooling",
+                    "noschool": "No School",
+                    "elementaryincompleted": "Elementary Incompleted",
+                    "elementarycompleted": "Elementary Completed",
+                    "highschoolincompleted": "High School Incompleted",
+                    "highschoolcompleted": "High School Completed",
+                    "collegeincompleted": "College Incompleted",
+                    "collegecompleted": "College Completed",
+                    "masterscompleted": "Marster's Degree Completed",
+                    "phdcompleted": "Ph.d Completed"
+                },
+                "institution": "Institution",
+                "phoneNumber": "Phone Number",
+                "address": {
+                    "address": "Address",
+                    "addressNumber": "Number",
+                    "addressComplement": "Complement",
+                    "cep": "Postal Code",
+                    "state": "State",
+                    "city": "City",
+                    "country": "Country"
+                },
+                "messageTitle": "Saving observer",
+                "addMessage": "If you are trying to register an already existing observer, his/hers original will be kept.",
+                "saveTitle": "Observer registered!",
+                "saveMessage": "Observer was registered with success!"
+            }
+        }
+    },
+    "security": {
+        "login": {
+            "button": "Log In"
+        }
+    },
+    "private": {
+        "header": {
+            "participants": {
+                "participants": "Participants",
+                "add": "Add",
+                "list": "List"
+            },
+            "programs": {
+                "programs": "Programs",
+                "add": "Add",
+                "list": "List"
+            },
+            "results": {
+                "results": "Results",
+                "list": "List"
+            },
+            "profile": {
+                "settings": "Settings",
+                "externalApplication": "External Apps",
+                "exit": "Sign Out"
+            }
+        },
+        "dashboard": {
+            "welcomeText": "Welcome to Experience Sampling and Programmed Intervention Method (ESPIM). ESPIM combines selected procedures from programmed teachingtechnologies, Experience Sampling Method (ESM) techniques and ubiquitous computing to plan, create and implement intervention programs. The method was modeled based on the usage of theories associated to ESM and programmed instruction to define better planning of intervention programs and ubiquitous computing techniques, such as contextual information and mobile devices to fully or partially implement the programmed intervention. The definition and evolution of the method was iteratively built, partnering with researchers, creating versions of the software solution that allows its application. Case studies in the areas of health and education were conducted to evaluate the method."
+        },
+        "participants": {
+            "add": {
+                "title": "Participant Information",
+                "name": "Name",
+                "email": "E-mail",
+                "alias": "Alias",
+                "addNew": "Add new participant",
+                "saveButton": "SAVE",
+                "saveAndAddAnother": "SAVE AND ADD ANOTHER",
+                "messageTitle": "Adding participant",
+                "addMessage": "If a participant with informed e-mail had already been cadastred in ESPIM, the system will keep his/her original data.",
+                "saveTitle": "Saved with success!",
+                "saveMessage": "Participant saved!"
+            },
+            "list": {
+                "pageTitle": "Participants List",
+                "listTitle": "Participants List",
+                "totalNumber": "Total Participants",
+                "noObjects": "There are no registered participants.",
+                "deleteMessageTitle": "Deleting participant.",
+                "deleteMessage": "Are you sure about deleting this participant?",
+                "afterDeleteTitle": "Participant deleted!",
+                "afterDelete": "Participant deleted with success!"
+            }
+        },
+        "search": {
+            "searchPlaceholder": "Search string",
+            "searchButton": "SEARCH"
+        },
+        "programs": {
+            "add": {},
+            "list": {
+                "pageTitle": "Programs List",
+                "listTitle": "Programs List",
+                "totalNumber": "Total Programs",
+                "onlyActives": "Only active programs",
+                "noObjects": "There are no registered programs.",
+                "deleteMessageTitle": "Deleting program.",
+                "deleteMessage": "Are you sure about deleting this program?",
+                "afterDeleteTitle": "Program deleted!",
+                "afterDelete": "Program deleted with success!"
+            }
+        },
+        "observers": {
+            "name": "Name",
+            "namePlaceholder": "What is your name?",
+            "email": "E-mail",
+            "emailPlaceholder": "What is your e-mail?",
+            "role": "Role",
+            "about": "About me",
+            "aboutPlaceholder": "Tell us a few about you!",
+            "birthDate": "Birth date",
+            "schooling": {
+                "schooling": "Schooling",
+                "noschool": "No School",
+                "elementaryincompleted": "Elementary Incompleted",
+                "elementarycompleted": "Elementary Completed",
+                "highschoolincompleted": "High School Incompleted",
+                "highschoolcompleted": "High School Completed",
+                "collegeincompleted": "College Incompleted",
+                "collegecompleted": "College Completed",
+                "masterscompleted": "Marster's Degree Completed",
+                "phdcompleted": "Ph.d Completed"
+            },
+            "institution": "Institution",
+            "phoneNumber": "Phone Number",
+            "address": {
+                "address": "Address",
+                "addressNumber": "Number",
+                "addressComplement": "Complement",
+                "cep": "Postal Code",
+                "state": "State",
+                "city": "City",
+                "country": "Country"
+            },
+            "messageTitle": "Saving observer",
+            "addMessage": "All observer's information will be updated. However, his/her name will be changed for that one informed in his/her e-mail. Are you sure about saving?",
+            "saveTitle": "Observer saved!",
+            "saveMessage": "Observer's data was saved with success"
+        }
+    },
+    "errors": {
+        "Unknown Error": {
+            "title": "Unknown Error",
+            "text": "An Unkown Error has occured. (status=0)"
+        },
+        "Bad Request": {
+            "title": "Bad Request",
+            "text": "The request is not valid. (status=400)"
+        },
+        "Unauthorized": {
+            "title": "User not authenticated",
+            "text": "You must log in to access this content. (status=401)"
+        },
+        "Forbidden": {
+            "title": "You do not have permission",
+            "text": "Your access was denied. (status=403)"
+        },
+        "Not Found": {
+            "title": "The request returned nothing",
+            "text": "You are trying to access something that does not exist. (status=404)"
+        },
+        "Method Not Allowed": {
+            "title": "Method not allowed",
+            "text": "Your are accessing with a wrong method. (status=405)"
+        }
+    }
+}

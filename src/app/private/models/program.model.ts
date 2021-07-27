@@ -57,6 +57,7 @@ export class  Program {
     this.observers = program.observers || this.observers;
     this.participants = program.participants || this.participants;
     this.events = program.events || this.events;
+    
   }
 
   public getId(): number { return this.id; }

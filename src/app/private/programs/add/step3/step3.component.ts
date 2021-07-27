@@ -5,7 +5,6 @@ import { ProgramsAddService } from '../programsadd.service';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import {DAOService} from '../../../dao/dao.service';
 import {Program} from '../../../models/program.model';
-import {Observer} from '../../../models/observer.model';
 import {ESPIM_REST_Participants} from '../../../../app.api';
 
 @Component({

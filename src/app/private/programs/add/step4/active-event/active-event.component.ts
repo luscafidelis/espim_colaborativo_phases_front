@@ -24,40 +24,44 @@ export class ActiveEventComponent implements OnInit {
   ngOnInit() {
     if (!this.event) {
       this.resetEvent();
-      this.isAddEvent = true;
     }
   }
 
   resetEvent() {
     this.event = new ActiveEvent();
     this.event.setType('active');
+    this.event.setTitle('Sem Título');
     this.isAddEvent = true;
   }
 
   addEvent() {
-    if (this.isOpen && !this.event.getTitle()) {
-      new SwalComponent({
-        type: 'warning',
-        title: 'Adicione um título'
-      }).show();
-      return;
-    }
+    //if (this.isOpen && !this.event.getTitle()) {
+    //  new SwalComponent({
+    //    type: 'warning',
+    //    title: 'Adicione um título'
+    //  }).show();
+    //  return;
+    //}
 
-    if (this.isOpen) this.dao.postObject(ESPIM_REST_Events, this.event).subscribe(data => {
-      const event = new ActiveEvent(data);
-
-      this.programsAddService.getEventsId().push(event.getId());
-      this.programsAddService.getEventsInstance().push(event);
-
-      this.dao.patchObject(ESPIM_REST_Programs, {
-        id: this.programsAddService.program.getId(),
-        events: this.programsAddService.getEventsId()
-      }).subscribe(_ => {
-        this.resetEvent();
-        this.isOpen = !this.isOpen;
+    //Grava o evento
+    //if (this.isOpen){ 
+      this.dao.postObject(ESPIM_REST_Events, this.event).subscribe(data => {
+        const event = new ActiveEvent(data);
+        this.programsAddService.getEventsId().push(event.getId());
+        this.programsAddService.getEventsInstance().push(event);
+        // Atualiza o programa no backend
+        this.dao.patchObject(ESPIM_REST_Programs, {
+          id: this.programsAddService.program.getId(),
+          events: this.programsAddService.getEventsId()
+        }).subscribe(_ => {
+          this.resetEvent();
+          this.isOpen = !this.isOpen;
+        });
       });
-    });
-    else this.isOpen = !this.isOpen;
+    //} else { 
+    //  this.isOpen = !this.isOpen;
+    //  this.isAddEvent = false;
+    //}
   }
   getEventDetails() {
     this.requestInterventions();

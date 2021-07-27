@@ -40,7 +40,9 @@ export class InterventionsComponent implements OnInit, AfterViewInit {
         this.createIntervention(this.interventionService.graphElements[i], i);
       this.interventionService.redrawGraph$.next();
     }, 0);
+    //Se inscreve para ser informada de novas intervenções 
     this.interventionService.newInterventions$.subscribe((add) => this.createIntervention(add.intervention, add.graphIndex));
+    //Se inscreve para ser informada quando intervenções foram apagadas
     this.interventionService.removeIntervention$.subscribe(index => {
       this.interventionComponents[index - 1].destroy();
       this.interventionComponents.splice(index - 1, 1);

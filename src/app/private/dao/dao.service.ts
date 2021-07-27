@@ -16,6 +16,7 @@ export class DAOService {
 
     postObject(urlObject: string, object: any) {
         console.log('posted', object);
+        console.log('url', urlObject);
         return this.http.post(urlObject, object);
     }
 
@@ -24,7 +25,6 @@ export class DAOService {
     }
 
     patchObject(urlObject: string, object: any) {
-        console.log('patched', object);
         const objectId = object.id;
         delete object.id;
         return this.http.patch(urlObject + `${objectId}/`,  object);
