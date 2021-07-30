@@ -35,7 +35,7 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
     NgxSocialLoginModule.init(
       {
         google: {
-          client_id: '164416639233-1h26ajia8qontaalsev3v8cgblbdmvm4.apps.googleusercontent.com'
+          client_id: '1095391825940-m3o93cu487vhti2a20140aqocaer9dpj.apps.googleusercontent.com'
         }
       }
     )
