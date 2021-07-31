@@ -32,17 +32,10 @@ export class ActiveEventComponent implements OnInit {
     this.event.setType('active');
     this.event.setTitle('Sem Título');
     this.isAddEvent = true;
+    this.isOpen = false;
   }
 
   addEvent() {
-    //if (this.isOpen && !this.event.getTitle()) {
-    //  new SwalComponent({
-    //    type: 'warning',
-    //    title: 'Adicione um título'
-    //  }).show();
-    //  return;
-    //}
-
     //Grava o evento
     //if (this.isOpen){ 
       this.dao.postObject(ESPIM_REST_Events, this.event).subscribe(data => {
@@ -54,8 +47,8 @@ export class ActiveEventComponent implements OnInit {
           id: this.programsAddService.program.getId(),
           events: this.programsAddService.getEventsId()
         }).subscribe(_ => {
-          this.resetEvent();
-          this.isOpen = !this.isOpen;
+          //this.resetEvent();
+          //this.isOpen = !this.isOpen;
         });
       });
     //} else { 
