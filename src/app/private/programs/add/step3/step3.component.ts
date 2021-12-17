@@ -35,7 +35,7 @@ export class Step3Component implements OnInit {
    * Checks if @participant is also in programParticipant
    * @param participant
    */
-  isChecked(participant: Participant) { return !!(this.programParticipants ? this.programParticipants.find(value => value.getId() === participant.getId()) : undefined); }
+  isChecked(participant: Participant) { return !!(this.programParticipants ? this.programParticipants.find(value => value.id === participant.id) : undefined); }
 
   ngOnInit() {
     this.participants = this.programAddService.getParticipants();
@@ -57,8 +57,8 @@ export class Step3Component implements OnInit {
     this.dao.postObject(ESPIM_REST_Participants, new Participant(this.addParticipantForm.getRawValue())).subscribe(data => {
       const participant = new Participant(data);
 
-      this.participants.push(participant);
-      this.participants.sort((a: Participant, b: Participant) => a.getName().localeCompare(b.getName()));
+      //this.participants.push(participant);
+      //this.participants.sort((a: Participant, b: Participant) => a.name.localeCompare(b.name));
 
       this.addProgramParticipant(participant);
 
@@ -77,21 +77,25 @@ export class Step3Component implements OnInit {
    * Adds an participant to the programParticipants
    */
   addProgramParticipant(participant: Participant | number) {
-    if (!(participant instanceof Participant)) participant = this.participants.find((value: Participant) => value.getId() === participant);
+    //Caso seja passado um número ao invés de um objeto..
+    if (!(participant instanceof Participant)) {
+      participant = this.participants.find((value: Participant) => value.id === participant);
+    }
 
-    this.programParticipants.push(participant);
-    this.programParticipants.sort((a: Participant, b: Participant) => a.getName().localeCompare(b.getName()));
+    //this.programParticipants.push(participant);
+    //this.programParticipants.sort((a: Participant, b: Participant) => a.name.localeCompare(b.name));
+    //this.hasChanged = true;
 
-    this.hasChanged = true;
+    this.programAddService.saveStep({addParticipant : participant});
   }
 
   /**
    * Removes an participant from the programParticipants
    */
   removeProgramObserver(participantId: number) {
-    this.programParticipants.splice(this.programParticipants.findIndex((value: Participant) => value.getId() === participantId), 1);
-
-    this.hasChanged = true;
+    //this.programParticipants.splice(this.programParticipants.findIndex((value: Participant) => value.id === participantId), 1);
+    //this.hasChanged = true;
+    this.programAddService.saveStep({delParticipant : participantId});
   }
 
   /**
@@ -114,11 +118,11 @@ export class Step3Component implements OnInit {
     }
     if (event.target.classList.contains('btn-default-active')) {
       event.target.classList.remove('btn-default-active');
-      this.participants = this.participants.filter((value: Participant) => !value.getName().startsWith(letter.toLowerCase()) && !value.getName().startsWith(letter.toUpperCase()));
+      this.participants = this.participants.filter((value: Participant) => !value.name.startsWith(letter.toLowerCase()) && !value.name.startsWith(letter.toUpperCase()));
     } else {
       event.target.classList.add('btn-default-active');
-      this.participants = this.participants.concat(this.programAddService.getParticipants().filter((value: Participant) => value.getName().startsWith(letter.toLowerCase()) || value.getName().startsWith(letter.toUpperCase())));
-      this.participants.sort((first: Participant, second: Participant) => first.getName().localeCompare(second.getName()));
+      this.participants = this.participants.concat(this.programAddService.getParticipants().filter((value: Participant) => value.name.startsWith(letter.toLowerCase()) || value.name.startsWith(letter.toUpperCase())));
+      this.participants.sort((first: Participant, second: Participant) => first.name.localeCompare(second.name));
     }
   }
 
@@ -127,10 +131,13 @@ export class Step3Component implements OnInit {
    * @param event
    */
   search_by(event: any) {
-    this.participants = this.programAddService.getParticipants().filter((value: Participant) => value.getName().includes(event.target.value));
+    this.participants = this.programAddService.getParticipants().filter((value: Participant) => value.name.includes(event.target.value));
   }
 
   submit(): void {
-    if (this.hasChanged) this.programAddService.saveStep({ participants: this.programParticipants.map(value => value.getId()) });
+    //if (this.hasChanged){ 
+    //  let participants_loc = {participants : this.programParticipants};
+    //  this.programAddService.saveStep(participants_loc);
+    //}
   }
 }

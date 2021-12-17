@@ -2,11 +2,11 @@ import { Cron } from './cron.model';
 import {isString} from '@ng-bootstrap/ng-bootstrap/util/util';
 
 export class Trigger {
-  private id: number;
-  private triggerType: string;
-  private triggerCondition: Cron | string;
-  private priority: string;
-  private timeOut: number;
+  public id: number;
+  public triggerType: string;
+  public triggerCondition: Cron | string;
+  public priority: string;
+  public timeOut: number;
 
   constructor(trigger: any = {}) {
     this.id = trigger.id || -1;
@@ -60,7 +60,14 @@ export class Trigger {
   }
   getId() { return this.id; }
   getTriggerType() { return this.triggerType; }
-  getTriggerCondition() { return this.triggerCondition; }
+  getTriggerCondition() { 
+    if (this.triggerCondition instanceof Cron){
+      console.log(this.triggerCondition.toString());
+      return this.triggerCondition.toString();
+    } else {
+      return this.triggerCondition; 
+    }
+  }
   getPriority() { return this.priority; }
   setPriority(priority: string) { this.priority = priority; }
   getTimeOut() { return this.timeOut; }
@@ -74,9 +81,13 @@ export class Trigger {
   actOrDeactivateDay(day?: string) { if (this.triggerCondition instanceof Cron) this.triggerCondition.actOrDeactivateDay(day); }
 
   getMinutes() { if (this.triggerCondition instanceof Cron) return Number.parseInt(this.triggerCondition.getMinute()); }
-  setMinute(minutes: number) { if (this.triggerCondition instanceof Cron && minutes) this.triggerCondition.setMinute(minutes.toString()); }
+  setMinute(minutes: number) { if (this.triggerCondition instanceof Cron) 
+                                  this.triggerCondition.setMinute(minutes.toString()); 
+                              }
   getHour() { if (this.triggerCondition instanceof Cron) return Number.parseInt(this.triggerCondition.getHours()); }
-  setHour(hour: number) { if (this.triggerCondition instanceof Cron && hour) this.triggerCondition.setHour(hour.toString()); }
+  setHour(hour: number) { if (this.triggerCondition instanceof Cron) 
+                          this.triggerCondition.setHour(hour.toString()); 
+                        }
 
   changeType() {
     console.log('Begin changeType');

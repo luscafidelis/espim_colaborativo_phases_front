@@ -26,7 +26,7 @@ export class ResultsComponent implements OnInit {
   }
 
   setPrograms(response) {
-    this.programs = response.results.map(reponse => new Program(reponse));
+    this.programs = response.results.map(reponse => reponse);
     this.pagination = new Pagination(response);
   }
 

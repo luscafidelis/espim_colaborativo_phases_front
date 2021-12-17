@@ -9,12 +9,20 @@ import {
 import {HTMLInterventionElement, InterventionService} from '../intervention.service';
 import {Intervention} from '../../../models/intervention.model';
 import {Observable, Subscription} from "rxjs";
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'esm-intervention',
   templateUrl: './intervention.component.html'
 })
 export class InterventionComponent implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
+  //Nome do arquivo de mídia
+  fileName : string = '';
+
+  uploadForm = new FormGroup({
+    imgSrc: new FormControl('')
+  });
+
   offset: {x: number, y: number} = { x: 0, y: 0 };
   interventionCoordinate: HTMLInterventionElement;
   previousPosition: {x: number, y: number};
@@ -109,4 +117,24 @@ export class InterventionComponent implements OnInit, AfterViewInit, AfterConten
   remove() {
     this.interventionService.removeIntervention(this.graphIndex);
   }
+
+  onFileSelected(event) {
+
+    const file:File = event.target.files[0];
+    const reader = new FileReader();
+
+    if (event.target.files && event.target.files.length) {
+      reader.readAsDataURL(file);
+      this.fileName = file.name;
+      const formData = new FormData();
+      formData.append("thumbnail", file);
+      reader.onload = () => {
+        this.fileName = reader.result as string;
+        this.uploadForm.patchValue({
+          imgSrc: reader.result
+        });
+      }
+    }
+}
+
 }

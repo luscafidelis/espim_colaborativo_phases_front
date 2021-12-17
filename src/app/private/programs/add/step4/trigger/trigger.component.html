@@ -1,7 +1,8 @@
 <div class="mt-2">
   <li *ngIf="!isAddTriggerComponent" class="d-flex justify-content-between align-items-center text-center bg-primary-10 rounded-pill mx-2 px-3 py-1 font-weight-bold">
     <button (click)="isOpen = !isOpen" class="btn btn-block text-color-inherit font-weight-bold text-left" type="button">{{ trigger.getDescription() }}</button>
-    <i class="fas fa-times pointer"></i>
+    <!-- <i class="fas fa-times pointer"></i> !-->
+    <i class="fas fa-trash-alt text-black" (click)="delTrigger()"></i>
   </li>
   <li class="row collapse mx-5" [ngbCollapse]="!isOpen && !isAddTriggerComponent">
     <div class="col-12 d-flex justify-content-around">

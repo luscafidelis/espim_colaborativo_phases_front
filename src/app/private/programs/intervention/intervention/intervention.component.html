@@ -16,8 +16,22 @@
             <label [for]="graphIndex + '-statement'">Digite a mensagem</label>
             <textarea [id]="graphIndex + '-statement'" [(ngModel)]="interventionCoordinate.statement"></textarea>
         </div>
+        
+        <!-- Anexar mídia -->
+
+         
+        <div class="d-flex w-100 mb-3 justify-content-center"  *ngIf="fileName" style="margin-top: 10px;">
+            <img [src]="fileName" style="width:200px; height:125px">
+        </div>
+
+        <div class="w-100 mb-3">
+            <input type="file" class="file-input" (change)="onFileSelected($event)" #fileUpload style="display: none;">
+        </div>
+ 
+
+
         <div class="d-flex w-100">
-            <button class="btn btn-outline-primary my-4 mx-auto">Anexar mídia <i class="fas fa-paperclip"></i></button>
+            <button class="btn btn-outline-primary my-4 mx-auto"  (click)="fileUpload.click()">Anexar mídia <i class="fas fa-paperclip"></i></button>
         </div>
         <esm-question *ngIf="interventionCoordinate.type === 'question'" [graphIndex]="graphIndex" [nextInterventions]="nextInterventions"></esm-question>
         <div *ngIf="interventionCoordinate.type !== 'question' || interventionCoordinate.questionType !== 1">

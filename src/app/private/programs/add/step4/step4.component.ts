@@ -18,6 +18,7 @@ export class Step4Component implements OnInit {
 
   ngOnInit() {
     this.events = this.programsAddService.getEventsInstance();
+    console.log(this.events);
 
     /**
      * Subscribes to changes in the program (whenever the program in programsadd.service.ts is changed, it reflects here too)
@@ -28,7 +29,7 @@ export class Step4Component implements OnInit {
   submit() {
     // TODO - Think a better approach for beignEdited
     if (this.programsAddService.getParticipantsInstance() && this.programsAddService.getParticipantsInstance().length > 0) {
-      this.programsAddService.saveStep({editor: null, beingEdited: false});
+      this.programsAddService.saveStep();
       new SwalComponent ({
         type: 'success'
       }).show().then(_ => this.router.navigate(['/private']));
@@ -42,7 +43,7 @@ export class Step4Component implements OnInit {
         showCancelButton: true
       }).show().then(response => {
         if (response.value === true) {
-          this.programsAddService.saveStep({editor: null, beingEdited: false});
+          this.programsAddService.saveStep();
           new SwalComponent ({
             type: 'success'
           }).show().then(_ => this.router.navigate(['/private']));

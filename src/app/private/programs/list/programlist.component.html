@@ -17,41 +17,41 @@
       <!-- Item 1 -->
       <li class="col-12 d-flex justify-content-between align-content-center p-4 border">
         <!-- Titulo do programa -->
-        <span class="font-weight-bold w-100" [class.pointer]="!program.getBeingDuplicated()" (click)="goToProgram(program)">{{i + 1}}. {{program.getTitle()}}</span>
+        <span class="font-weight-bold w-100" [class.pointer]="!program.beingDuplicated" (click)="goToProgram(program)">{{i + 1}}. {{program.title}}</span>
         <!------------------>
         <!-- Ícones -->
         <div class="d-flex align-items-center mx-3">
           <i class="fas fa-lock m-2 fa-lg"
              [ngClass]="{
-              'text-warning': !program.getBeingDuplicated(),
-              'pointer': !program.getBeingDuplicated()
+              'text-warning': !program.beingDuplicated,
+              'pointer': !program.beingDuplicated
              }"
-             *ngIf="program.getBeingEdited()"></i>
+             *ngIf="program.beingEdited"></i>
           <i class="fas fa-users m-2 fa-lg"
              [ngClass]="{
-              'text-primary': !program.getBeingDuplicated(),
-              'pointer': !program.getBeingDuplicated()
+              'text-primary': !program.beingDuplicated,
+              'pointer': !program.beingDuplicated
              }"
-             *ngIf="!program.getIsPublic()"></i>
+             *ngIf="!program.isPublic"></i>
           <i class="fas m-2 fa-lg"
              [ngClass]="{
-              'fa-clone': !program.getBeingDuplicated(),
-              'text-primary': !program.getBeingDuplicated(),
-              'pointer': !program.getBeingDuplicated(),
-              'fa-spinner': program.getBeingDuplicated(),
-              'fa-spin': program.getBeingDuplicated()
+              'fa-clone': !program.beingduplicated,
+              'text-primary': !program.beingduplicated,
+              'pointer': !program.beingDuplicated,
+              'fa-spinner': program.beingDuplicated,
+              'fa-spin': program.beingDuplicated
              }"
              (click)="duplicateProgram(program)"></i>
           <i class="fas fa-edit m-2 fa-lg"
              [ngClass]="{
-              'text-primary': !program.getBeingDuplicated(),
-              'pointer': !program.getBeingDuplicated()
+              'text-primary': !program.beingDuplicated,
+              'pointer': !program.beingDuplicated
              }"
              (click)="this.goToProgram(program)"></i>
           <i class="fas fa-trash-alt m-2 fa-lg"
              [ngClass]="{
-              'text-danger': !program.getBeingDuplicated(),
-              'pointer': !program.getBeingDuplicated()
+              'text-danger': !program.beingDuplicated,
+              'pointer': !program.beingDuplicated
              }"
              (click)="deleteProgram(program)"></i>
         </div>

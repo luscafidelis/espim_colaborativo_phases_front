@@ -6,35 +6,75 @@ import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ActiveEvent} from '../../models/event.model';
 import { ESPIM_REST_Interventions } from 'src/app/app.api';
+import { ProgramsAddService } from '../add/programsadd.service';
+import { DAOService } from '../../dao/dao.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InterventionService {
 
+  //Id do programa
   program_id: number;
+
+  //Evento ao qual as intervenções pertencem
   event: ActiveEvent;
 
-  firstIntervention: number;
+  //Ùltima intervenção que foi adicionada
   lastInteractedIntervention: number;
 
+  //Primeira intervenção
+  firstIntervention: number;
+
+  //Caso exista múltiplos caminhos nas intervenções...
   hasMultiplePaths: boolean = false;
 
+  //Vetor de intervenções.. O HtmlElement une o model com o componente HTML Intervention..
   graphElements: HTMLInterventionElement[];
+  
+  //Próximas intervenções da intervenção.. vai ser mudado isso..
   interventionElementsGraph: number[][];
+
+  //Observable que serve para informar quando uma intervenção é adicionada ao vetor
   newInterventions$: Subject<{graphIndex: number, intervention: HTMLInterventionElement}> = new Subject<{graphIndex: number, intervention: HTMLInterventionElement}>();
+
+  //Observable que serve para informar quando uma intervenção é removida
   removeIntervention$: Subject<number> = new Subject<number>();
+  
+  //Para avisar quando houver alteração no vetor de intervenções
   redrawGraph$: Subject<void> = new Subject<void>();
+  
+  //Para avisar quando a primeira intervenção for alterada
   firstInterventionChange$: Subject<number> = new Subject<number>();
 
-  constructor(private router: Router, private route: ActivatedRoute, private http: HttpClient) { }
+  //Para avisar quando houver alguma alteração no programa feito por outro usuário
+  outUpdateChange$: Subject<void> = new Subject<void>();
 
-  set first(first: number) {this.firstIntervention = first; this.redrawGraph$.next(); this.firstInterventionChange$.next(first); }
-
+  constructor(private router: Router, private route: ActivatedRoute, private http: HttpClient, private programService : ProgramsAddService ) { }
+  
+  //Inicializa os dados do service
   init(program_id: number, event: ActiveEvent, interventions: Intervention[]) {
+    console.log(this.programService.getEventsInstance());
     this.program_id = program_id;
     this.event = event;
+    console.log(interventions);
+    this.updateInterventions(interventions);
+    console.log('Antes', this.graphElements);
+  }
 
+  //Alterou o primeira intervenção
+  set first(first: number) {
+    this.firstIntervention = first; 
+    this.redrawGraph$.next(); 
+    this.firstInterventionChange$.next(first); 
+  }
+
+  /**
+  * Este método vai criar todos os vetores de intervenções..
+  * Ele está sendo chamado a cada atualização..
+  * Tem que ser repensado..
+  */
+  updateInterventions(interventions : Intervention[]){
     interventions.sort((a, b) => {
       if (a.orderPosition < b.orderPosition) return -1;
       else if (a.orderPosition > b.orderPosition) return 1;
@@ -53,7 +93,6 @@ export class InterventionService {
       return intervention;
     }));
 
-    
     this.firstIntervention = this.graphElements.findIndex(value => value.first === true);
     // Not needed since lastInteractedIntervention gets update on the BFS of the canvas
     // this.lastInteractedIntervention = interventions.length;
@@ -62,51 +101,12 @@ export class InterventionService {
         return Object.keys((value as QuestionIntervention).conditions).map(alternative => orderPositions[(value as QuestionIntervention).conditions[alternative]]);
       else return [orderPositions[value.next]];
     }));
-
-    console.log('Antes', this.graphElements);
+    console.log(this.graphElements);
+    console.log(this.interventionElementsGraph);
   }
-
-  finish() {
-    if (this.hasMultiplePaths) {
-      new SwalComponent({
-        title: 'Há intervenções desconectadas',
-        text: 'Encontramos intervenções que não estão ligadas à primeira. Por favor, é necessário deleta-las ou liga-las ao caminho principal'
-      }).show().then();
-      return;
-    }
-
-    for (let i = 0; i < this.graphElements.length; i++) {
-      const intervention = this.graphElements[i]?.intervention;
-      if (!intervention) continue;
-
-      // if the intervention is of unique choice, it is already up to date (it gets updated in unique-choice.component.ts)
-      // else we must updated intervention.next to the first and only intervention it points
-      if (intervention.type !== 'question' && (intervention as QuestionIntervention).questionType !== 1){
-        this.graphElements[i].intervention.next = this.interventionElementsGraph[i][0];
-      }
-      console.log(intervention);
-      if (intervention.id){
-        this.http.patch(`${ESPIM_REST_Interventions}${intervention.id}/`, intervention).subscribe(
-          _ => {}, 
-          _ => console.log(`Failed to patch intervention of id ${intervention.id}, orderPosition ${intervention.orderPosition}`));
-      } else{
-        this.http.post(ESPIM_REST_Interventions, {intervention : intervention, event : this.event.id}).subscribe(
-          (data: any) => intervention.id = data.id, 
-          _ => console.log(`Failed to post intervention of orderPosition ${intervention.orderPosition}`));
-      }
-    }
-
-    // it is not necessary to update orderPosition since it gets updated together with the canvas (arrows)
-
-    this.event.interventionsInstances = this.graphElements.slice(1).map(value => value.intervention);
-    this.event.interventions = this.event.interventionsInstances.map(value => value.id);
-
-    this.router.navigateByUrl(`private/programs/add/${this.program_id}/fourth`).then();
-  }
-
-  graphElement(i: number) { return this.graphElements[i]; }
 
   addIntervention(intervention: HTMLInterventionElement) {
+    
     if (this.lastInteractedIntervention !== undefined) {
       if (this.graphElements[this.lastInteractedIntervention] instanceof QuestionIntervention && (this.graphElement[this.lastInteractedIntervention] as QuestionIntervention).questionType === 1)
         this.interventionElementsGraph[this.lastInteractedIntervention].push(this.interventionElementsGraph.length);
@@ -117,17 +117,15 @@ export class InterventionService {
       intervention.first = true;
       this.firstIntervention = 1;
     }
-    this.interventionElementsGraph.push([0]);
-    this.graphElements.push(intervention);
-
-    this.newInterventions$.next({graphIndex: this.graphElements.length - 1, intervention});
-    this.redrawGraph$.next();
-
-    intervention.onChange$.subscribe(_ => this.redrawGraph$.next());
-
-    console.log('graphElements', this.graphElements);
-    console.log('interventionElementsGraph', this.interventionElementsGraph);
-    console.log('firstIntervention', this.firstIntervention);
+    //Salva a intervenção no banco..
+    this.http.post(ESPIM_REST_Interventions,{intervention : intervention.intervention, event : this.event.id}).subscribe((data:any) => 
+    { intervention.intervention.id=data.id;
+      this.interventionElementsGraph.push([0]);
+      this.graphElements.push(intervention);
+      this.newInterventions$.next({graphIndex: this.graphElements.length - 1, intervention});
+      this.redrawGraph$.next();
+      intervention.onChange$.subscribe(_ => this.redrawGraph$.next());
+    });
   }
 
   removeIntervention(graphIndex: number) {
@@ -150,6 +148,51 @@ export class InterventionService {
     this.removeIntervention$.next(graphIndex);
     this.redrawGraph$.next();
   }
+
+
+  finish() {
+    if (this.hasMultiplePaths) {
+      new SwalComponent({
+        title: 'Há intervenções desconectadas',
+        text: 'Encontramos intervenções que não estão ligadas à primeira. Por favor, é necessário deleta-las ou liga-las ao caminho principal'
+      }).show().then();
+      return;
+    }
+    // Irá salvar cada uma das intervenções.... Tem que acertar isso.. está fazendo muitas requisições http...
+    this.event.interventions = [];
+    for (let i = 1; i < this.graphElements.length; i++) {
+      const intervention = this.graphElements[i]?.intervention;
+      if (!intervention) {
+        continue;
+      }
+      // if the intervention is of unique choice, it is already up to date (it gets updated in unique-choice.component.ts)
+      // else we must updated intervention.next to the first and only intervention it points
+      if (intervention.type !== 'question' && (intervention as QuestionIntervention).questionType !== 1){
+        this.graphElements[i].intervention.next = this.interventionElementsGraph[i][0];
+      }
+      if (intervention.id){
+        this.event.interventions.push(intervention);
+        this.http.patch(`${ESPIM_REST_Interventions}${intervention.id}/`, intervention).subscribe(
+          //Salva a intervenção no evento..
+          _ => { }, 
+          _ => console.log(`Failed to patch intervention of id ${intervention.id}, orderPosition ${intervention.orderPosition}`));
+      } else{
+        this.http.post(ESPIM_REST_Interventions, {intervention : intervention, event : this.event.id}).subscribe(
+          (data: any) => {intervention.id = data.id; }, 
+          _ => console.log(`Failed to post intervention of orderPosition ${intervention.orderPosition}`));
+      }
+    }
+
+    // it is not necessary to update orderPosition since it gets updated together with the canvas (arrows)
+    console.log(this.programService.getEventsInstance());
+    this.programService.updateEvent(this.event);
+    //this.event.interventions = this.event.interventionsInstances.map(value => value.id);
+
+    this.router.navigateByUrl(`private/programs/add/${this.program_id}/fourth`).then();
+  }
+
+  graphElement(i: number) { return this.graphElements[i]; }
+
 
   setNextFromTo(from: number, to: number) {
     if (this.hasArrow(from, to)) return;

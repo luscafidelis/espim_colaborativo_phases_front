@@ -36,26 +36,23 @@ export class Step2Component implements OnInit {
    * Checks if @observer is also in programObservers
    * @param observer
    */
-  isChecked(observer: Observer) { return !!(this.programObservers ? this.programObservers.find(value => value.getId() === observer.getId()) : undefined); }
+  isChecked(observer: Observer) { return !!(this.programObservers ? this.programObservers.find(value => value.id === observer.id) : undefined); }
 
   /**
    * Checks if @observer is the current user. If so, he shall not be able to deselect himself
    * @param observer
    */
-  isDisabled(observer: Observer) { return observer.getId() === Number.parseInt(this.loginService.getUser().id); }
+  isDisabled(observer: Observer) { return observer.id === Number.parseInt(this.loginService.getUser().id); }
 
   ngOnInit() {
     this.observers = this.programAddService.getObservers();
     this.programObservers = this.programAddService.getObserversInstance();
-    console.log(this.programObservers);
-
     /**
      * Subscribes to changes in the program (whenever the program in programsadd.service.ts is changed, it reflects here too)
      */
     this.programAddService.getProgramObservable().subscribe((programInstance: Program) => {
       this.observers = this.programAddService.getObservers();
       this.programObservers = this.programAddService.getObserversInstance();
-      console.log(this.programObservers);
     });
   }
 
@@ -68,8 +65,8 @@ export class Step2Component implements OnInit {
     this.dao.postObject(ESPIM_REST_Observers, observer).subscribe(data => {
       observer = new Observer(data);
 
-      this.observers.push(observer);
-      this.observers.sort((a: Observer, b: Observer) => a.getName().localeCompare(b.getName()));
+      //this.observers.push(observer);
+      //this.observers.sort((a: Observer, b: Observer) => a.name.localeCompare(b.name));
 
       this.addProgramObserver(observer);
 
@@ -89,21 +86,23 @@ export class Step2Component implements OnInit {
    * Adds an observer to the programObservers
    */
   addProgramObserver(observer: Observer | number) {
-    if (!(observer instanceof Observer)) observer = this.observers.find((value: Observer) => value.getId() === observer);
-
-    this.programObservers.push(observer);
-    this.programObservers.sort((a: Observer, b: Observer) => a.getName().localeCompare(b.getName()));
-
-    this.hasChanged = true;
+    console.log(this.observers);
+    console.log(observer);
+    if (!(observer instanceof Observer)) {
+      observer = this.observers.find((value: Observer) => value.id === observer);
+    }
+    //this.programObservers.push(observer);
+    //this.programObservers.sort((a: Observer, b: Observer) => a.name.localeCompare(b.name));
+    this.programAddService.saveStep({addObserver : observer})
   }
 
   /**
    * Removes an observer from the programObservers
    */
   removeProgramObserver(observerId: number) {
-    this.programObservers.splice(this.programObservers.findIndex((value: Observer) => value.getId() === observerId), 1);
-
-    this.hasChanged = true;
+    //this.programObservers.splice(this.programObservers.findIndex((value: Observer) => value.id === observerId), 1);
+    //this.hasChanged = true;
+    this.programAddService.saveStep({delObserver : observerId})
   }
 
   /**
@@ -126,11 +125,11 @@ export class Step2Component implements OnInit {
     }
     if (event.target.classList.contains('btn-default-active')) {
         event.target.classList.remove('btn-default-active');
-        this.observers = this.observers.filter((value: Observer) => !value.getName().startsWith(letter.toLowerCase()) && !value.getName().startsWith(letter.toUpperCase()));
+        this.observers = this.observers.filter((value: Observer) => !value.name.startsWith(letter.toLowerCase()) && !value.name.startsWith(letter.toUpperCase()));
       } else {
         event.target.classList.add('btn-default-active');
-        this.observers = this.observers.concat(this.programAddService.getObservers().filter((value: Observer) => value.getName().startsWith(letter.toLowerCase()) || value.getName().startsWith(letter.toUpperCase())));
-        this.observers.sort((first: Observer, second: Observer) => first.getName().localeCompare(second.getName()));
+        this.observers = this.observers.concat(this.programAddService.getObservers().filter((value: Observer) => value.name.startsWith(letter.toLowerCase()) || value.name.startsWith(letter.toUpperCase())));
+        this.observers.sort((first: Observer, second: Observer) => first.name.localeCompare(second.name));
       }
   }
 
@@ -139,10 +138,13 @@ export class Step2Component implements OnInit {
    * @param event
    */
   search_by(event: any) {
-    this.observers = this.programAddService.getObservers().filter((value: Observer) => value.getName().includes(event.target.value));
+    this.observers = this.programAddService.getObservers().filter((value: Observer) => value.name.includes(event.target.value));
   }
 
   submit(): void {
-    if (this.hasChanged) this.programAddService.saveStep({ observers: this.programObservers.map(value => value.getId()) });
+    if (this.hasChanged){ 
+      let observers_loc = {observers : this.programObservers };
+      this.programAddService.saveStep(observers_loc);
+    }
   }
 }

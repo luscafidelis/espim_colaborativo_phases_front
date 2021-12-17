@@ -1,6 +1,7 @@
 // configure default backend location
-export const ESPIM_API = 'https://espimbackend.herokuapp.com/';
-//export const ESPIM_API = 'http://localhost:8000/';
+//export const ESPIM_API = 'https://espimbackend.herokuapp.com/';
+export const ESPIM_API = 'http://localhost:8000/';
+export const CHANNEL_URL = 'ws://localhost:8000/ws/chat/';
 
 // configure participants module url
 export const ESPIM_REST_Participants: string = ESPIM_API + 'participants/';
@@ -22,6 +23,9 @@ export const ESPIM_REST_Triggers: string = ESPIM_API + 'triggers/';
 
 // configure sensors module url
 export const ESPIM_REST_Sensors: string = ESPIM_API + 'sensors/';
+
+//configura chat module url
+export const ESPIM_REST_Chat: string = ESPIM_API +  'chat-message/';
 
 // config default page size
 export const PAGE_SIZE = 4;

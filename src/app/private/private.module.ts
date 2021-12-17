@@ -25,7 +25,6 @@ import { ObserversComponent } from './observers/observers.component';
 import { ObserversService } from './observers/observers.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DateConverterService } from '../util/util.date.converter.service';
-import { StepPanelComponent } from './programs/add/step-panel/step-panel.component';
 import { Step1Component } from './programs/add/step1/step1.component';
 import { Step2Component } from './programs/add/step2/step2.component';
 import { Step3Component } from './programs/add/step3/step3.component';
@@ -46,6 +45,12 @@ import {QuestionComponent} from './programs/intervention/intervention/question/q
 import { MultipleChoiceComponent } from './programs/intervention/intervention/question/multiple-choice/multiple-choice.component';
 import { LikertComponent } from './programs/intervention/intervention/question/likert/likert.component';
 import { LikertCustomComponent } from './programs/intervention/intervention/question/likert-custom/likert-custom.component';
+import { ProgramHistoricComponent } from './programs/add/program-historic/program-historic.component';
+import { ProgramChatComponent } from './programs/add/program-chat/program-chat.component';
+import { EditoresOnlineComponent } from './programs/add/editores-online/editores-online.component';
+import { StepPanelComponent } from './programs/add/step-panel/step-panel.component';
+import { ChannelService } from './channel_socket/socket.service';
+import { InterventionService } from './programs/intervention/intervention.service';
 
 @NgModule({
     imports: [
@@ -90,7 +95,10 @@ import { LikertCustomComponent } from './programs/intervention/intervention/ques
       MultipleChoiceComponent,
       LikertComponent,
       LikertCustomComponent,
+      ProgramHistoricComponent,
+      ProgramChatComponent,
+      EditoresOnlineComponent,
       ],
-  providers: [DAOService, SearchService, ObserversService, DateConverterService, ProgramsAddService]
+  providers: [ChannelService, DAOService, SearchService, ObserversService, DateConverterService, ProgramsAddService, InterventionService]
 })
 export class PrivateModule { }

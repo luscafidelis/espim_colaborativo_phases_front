@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class DAOService {
@@ -7,7 +7,12 @@ export class DAOService {
     }
 
     getObjects(urlObject: string, parameters?: any) {
-        return this.http.get(urlObject, {params: parameters});
+        if (parameters){
+            let parameters_ = new HttpParams().set('params', parameters)
+            return this.http.get(urlObject, {params: parameters_});
+        } else {
+            return this.http.get(urlObject);
+        }
     }
 
     getObject(urlObject: string, id: string) {
@@ -15,8 +20,8 @@ export class DAOService {
     }
 
     postObject(urlObject: string, object: any) {
-        console.log('posted', object);
-        console.log('url', urlObject);
+        //console.log('posted', object);
+        //console.log('url', urlObject);
         return this.http.post(urlObject, object);
     }
 
@@ -26,12 +31,18 @@ export class DAOService {
 
     patchObject(urlObject: string, object: any) {
         const objectId = object.id;
-        delete object.id;
+        //delete object.id;
+        console.log(object);
         return this.http.patch(urlObject + `${objectId}/`,  object);
     }
 
     deleteObject(urlObject: string, id: string) {
         return this.http.delete(`${urlObject}${id}/`);
+    }
+
+    //O objeto no getNew deve estar de acordo com o objeto no backend referente ao model que está sendo acessado..
+    getNewObject(urlObject: string, object: any) {
+        return this.http.post(urlObject + '1/get_new/', object);
     }
 
 }

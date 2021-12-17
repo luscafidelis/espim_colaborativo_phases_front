@@ -38,22 +38,22 @@ export class Step1Component implements OnInit {
    * @param program -
    */
   setProgram(program: Program) {
-    if (!program || program.getId() === -1)
+    if (!program)
       return;
 
-    const utcStarts = Number.parseInt(program.getStarts());
-    const utcEnds = Number.parseInt(program.getEnds());
+    const utcStarts = Number.parseInt(program.starts);
+    const utcEnds = Number.parseInt(program.ends);
 
     let starts: Date;
     let ends: Date;
 
-    if (!isNaN(utcStarts)) starts = this.dateConverterService.fromUnixTimeStamp(Number.parseInt(program.getStarts()));
-    if (!isNaN(utcEnds)) ends = this.dateConverterService.fromUnixTimeStamp(Number.parseInt(program.getEnds()));
+    if (!isNaN(utcStarts)) starts = this.dateConverterService.fromUnixTimeStamp(Number.parseInt(program.starts));
+    if (!isNaN(utcEnds)) ends = this.dateConverterService.fromUnixTimeStamp(Number.parseInt(program.ends));
 
     this.programInformationForm = this.formBuilder.group({
-      title: [program.getTitle(), [Validators.required]],
-      description: [program.getDescription()],
-      isPublic: [program.getIsPublic()],
+      title: [program.title, [Validators.required]],
+      description: [program.description],
+      isPublic: [program.isPublic],
       beginDate: [starts !== undefined ? this.dateConverterService.toNgbDate(starts) : null, [Validators.required]],
       beginTime: [starts !== undefined ? this.dateConverterService.toNgbTime(starts) : null],
       endDate: [ends !== undefined ? this.dateConverterService.toNgbDate(ends) : null],
@@ -74,24 +74,80 @@ export class Step1Component implements OnInit {
     this.programAddService.getProgramObservable().subscribe((programInstance: Program) => this.setProgram(programInstance));
   }
 
+  //Atualiza os campos no banco quando são alterados
+  updateField(field : string){
+    let obj = {};
+    if (field == 'starts') {
+      obj['starts'] = this.dateConverterService.toUnixTimeStamp(this.programInformationForm.get('beginDate').value, this.programInformationForm.get('beginTime').value);
+    } else {
+      if (field == 'ends') {
+        obj['ends'] = this.dateConverterService.toUnixTimeStamp(this.programInformationForm.get('endDate').value, this.programInformationForm.get('endTime').value);        
+      } else {
+        obj[field] = this.programInformationForm.get(field).value;
+      }
+    }
+    this.programAddService.saveStep(obj);
+  }
+
   submit(): void {
     if (this.programInformationForm.valid) {
-      const dirtyProps: any = {};
-      let hasDirtyProp = false;
-
-      for (const prop in this.programInformationForm.controls)
-        if (this.programInformationForm.get(prop).dirty) {
-          if (prop === 'beginDate' || prop === 'beginTime') dirtyProps.starts = this.dateConverterService.toUnixTimeStamp(this.programInformationForm.get('beginDate').value, this.programInformationForm.get('beginTime').value);
-          else if (prop === 'endDate' || prop === 'endTime') dirtyProps.ends = this.dateConverterService.toUnixTimeStamp(this.programInformationForm.get('endDate').value, this.programInformationForm.get('endTime').value);
-          else dirtyProps[prop] = this.programInformationForm.get(prop).value;
-
-          hasDirtyProp = true;
-        }
-
-      // Checks if programs is not empty
-      if (hasDirtyProp)
-        this.programAddService.saveStep(dirtyProps);
-      this.router.navigate([this.router.url.substring(0, this.router.url.lastIndexOf('/')) + '/second']).then();
-    } else this.programInformationForm.markAllAsTouched();
+        this.router.navigate([this.router.url.substring(0, this.router.url.lastIndexOf('/')) + '/second']).then();
+    } else {
+      this.programInformationForm.markAllAsTouched();
+    }
   }
 }
+
+export interface corpo_program{
+  id: number;
+  title: string;
+  description: string;
+  starts: string;
+  ends: string;
+  hasPhases: boolean;
+  isPublic: boolean;
+  beingEdited: boolean;
+  beingDuplicated: boolean;
+}
+
+
+/**
+ *       let hasDirtyProp = false;
+
+      for (const prop in this.programInformationForm.controls){
+        if (this.programInformationForm.get(prop).dirty) {
+          hasDirtyProp = true;
+        }
+      }
+      
+      // Checks if programs is not empty
+      if (hasDirtyProp)
+        //Caso seja a primeira vez que está salvando o programa..
+        if(this.programAddService.program.id == -1){
+          this.programAddService.program.title=this.programInformationForm.get('title').value;
+          this.programAddService.program.description=this.programInformationForm.get('description').value;
+          this.programAddService.program.starts=this.dateConverterService.toUnixTimeStamp(this.programInformationForm.get('beginDate').value, this.programInformationForm.get('beginTime').value);
+          this.programAddService.program.ends=this.dateConverterService.toUnixTimeStamp(this.programInformationForm.get('endDate').value, this.programInformationForm.get('endTime').value);
+          this.programAddService.program.hasPhases=false;
+          this.programAddService.program.isPublic=this.programInformationForm.get('isPublic').value;
+          //Salva os dados no banco
+          this.programAddService.saveStep();
+
+        } else {
+          //Foi definido como corpo por causa da possibilidade de patch
+          let corpo : corpo_program = {
+            id : undefined,
+            title:this.programInformationForm.get('title').value,
+            description:this.programInformationForm.get('description').value,
+            starts:this.dateConverterService.toUnixTimeStamp(this.programInformationForm.get('beginDate').value, this.programInformationForm.get('beginTime').value),
+            ends:this.dateConverterService.toUnixTimeStamp(this.programInformationForm.get('endDate').value, this.programInformationForm.get('endTime').value),
+            hasPhases:false,
+            isPublic:this.programInformationForm.get('isPublic').value,
+            beingEdited: false,
+            beingDuplicated: false
+          }
+          this.programAddService.saveStep(corpo);
+        }  
+
+ * 
+ */

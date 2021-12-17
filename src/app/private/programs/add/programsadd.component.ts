@@ -21,22 +21,15 @@ export class ProgramsAddComponent implements OnInit {
     this.activatedRoute.paramMap.subscribe(paramMap => {
       // Gets the id in the url
       this.id = Number.parseInt(paramMap.get('id'));
-
-      if (this.id !== -1 && this.id === this.programsService.program.id)
-        return;
-
-      // If it null, sets the program to empty. Else, does a get request to get the program and then set it.
-      if (this.id !== -1)
-        this.dao.getObject(ESPIM_REST_Programs, this.id.toString()).subscribe((data: any) => this.programsService.setProgram(new Program(data)));
-      else {
-        const program = new Program();
-        // Adds the current user as observer
-        const userId = Number.parseInt(this.loginService.getUser().id);
-        program.setObserversId([userId]);
-
-        this.programsService.setProgram(program);
-      }
+      //if (this.id !== -1 && this.id === this.programsService.program.id){
+      //  return;
+      //}
+      this.programsService.setProgram(this.id);
     });
+  }
+
+  mostrar():boolean {
+    return this.programsService.program.id != -1;
   }
 
 }

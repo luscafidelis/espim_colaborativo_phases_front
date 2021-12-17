@@ -1,2 +1,2 @@
-<input type="checkbox" [id]="user.getName() + user.getId()" [checked]="checked" [disabled]="disabled" (click)="checkboxHandler($event.target.checked)">
-<label class="m-0" [for]="user.getName() + user.getId()">{{ user?.getName() }}</label>
+<input type="checkbox" [id]="user.name + user.id" [checked]="checked" [disabled]="disabled" (click)="checkboxHandler($event.target.checked)">
+<label class="m-0" [for]="user.name + user.id">{{ user.name }}</label>

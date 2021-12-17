@@ -1,11 +1,13 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ActiveEvent, Event} from '../../../../models/event.model';
 import {ProgramsAddService} from '../../programsadd.service';
-import {ESPIM_REST_Events, ESPIM_REST_Programs, ESPIM_REST_Sensors} from '../../../../../app.api';
+import {ESPIM_REST_Events, ESPIM_REST_Programs, ESPIM_REST_Sensors, ESPIM_REST_Triggers} from '../../../../../app.api';
 import {Sensor} from '../../../../models/sensor.model';
 import {DAOService} from '../../../../dao/dao.service';
 import {SwalComponent} from '@sweetalert2/ngx-sweetalert2';
 import {Trigger} from '../../../../models/trigger.model';
+import { ChannelService } from 'src/app/private/channel_socket/socket.service';
+import { VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'esm-event',
@@ -18,54 +20,96 @@ export class EventComponent implements OnInit {
   isOpen = false;
   isAddEvent = false; // This is only true if this instance is gonna be the one to add
 
-  constructor(private dao: DAOService, private programsAddService: ProgramsAddService) { }
+  constructor(private dao: DAOService, private programsAddService: ProgramsAddService, private canal : ChannelService) { }
 
   ngOnInit() {
     if (!this.event) {
       this.resetEvent();
       this.isAddEvent = true;
+    } else {
+      this.event = new Event(this.event);
+      console.log(this.event);
     }
+    this.canal.getData$.subscribe( data => this.sincronizeEvent(data));
   }
 
   resetEvent() {
     this.event = new Event();
     this.event.setType('passive');
+    this.event.setTitle('Sem nome');
     this.isAddEvent = true;
   }
 
-  addEvent() {
-    if (this.isOpen && !this.event.getTitle()) {
-      new SwalComponent({
-        type: 'warning',
-        title: 'Adicione um título'
-      }).show();
-      return;
+    /**
+ * Este método recebe as atualizações que são enviadas pelo canal e atualiza o programa 
+ * que está em edição...
+ */
+  sincronizeEvent(data:any){
+    let locdata = data.payload.message;
+    if (locdata.model == 'event' && locdata.id == this.event.id ){
+      for (let prop in locdata){
+        if (prop != 'model' && prop != 'id'){
+          //Adicionar Trigger
+          if (prop == 'addTrigger'){
+              let loc_trigger = new Trigger(locdata[prop]);
+              this.event.getTriggersId().push(loc_trigger.id);
+              this.event.getTriggersInstances().push(loc_trigger);
+          } else {
+            //Excluir Trigger
+            if (prop == 'delTrigger'){
+              let triggerId = locdata['delTrigger'];
+              this.event.triggers.splice(this.event.triggers.findIndex((value: Trigger) => value.id === triggerId), 1);
+            } else {
+              //Adicionar ComplexCondition
+              if (prop == 'addComplexCondition'){
+
+              } else {
+                //Excluir ComplexCondition
+                if (prop == 'updateSensor'){
+                  let locSensor = new Sensor(locdata[prop]);
+                  let pos = this.event.sensors.findIndex((value : Sensor) => value.id === locSensor.id);
+                  this.event.sensors[pos] = locSensor;   
+                } else {
+                  //Adicionar Sensor
+                  if (prop == 'addSensor'){
+                       this.event.addSensor(new Sensor(locdata[prop]));
+                  } else {
+                    //Excluir Sensor
+                    if (prop == 'delSensor'){
+                      let sensorId = locdata['delSensor'];
+                      this.event.sensors.splice(this.event.sensors.findIndex((value: Sensor) => value.id === sensorId), 1);
+                    } else {
+                      //Adicionar Intervenção
+                      if (prop == 'addIntervention'){
+
+                      } else {
+                        //Excluir Intervenção
+                        if (prop == 'delIntervention'){
+
+                        } else {
+                          //Outros Campos
+                          this.event[prop] = locdata[prop];
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
+  }
 
-    if (this.isOpen) this.dao.postObject(ESPIM_REST_Events, this.event).subscribe(data => {
-      const event = new Event(data);
-
-      this.programsAddService.getEventsId().push(event.getId());
-      this.programsAddService.getEventsInstance().push(event);
-
-      this.dao.patchObject(ESPIM_REST_Programs, {
-        id: this.programsAddService.program.getId(),
-        events: this.programsAddService.getEventsId()
-      }).subscribe(_ => {
-        this.resetEvent();
-        this.isOpen = !this.isOpen;
-      });
+  addEvent() {
+    this.dao.postObject(ESPIM_REST_Events, this.event).subscribe(data => {
+        const event = new Event(data);
+        this.programsAddService.saveStep({addEvent : event})
     });
-    else this.isOpen = !this.isOpen;
   }
 
   delete_event() {
-    if (this.isAddEvent) {
-      this.isOpen = !this.isOpen;
-      this.resetEvent();
-      return;
-    }
-
     new SwalComponent({
       title: 'Deletar evento?',
       text: `Você tem certeza que deseja deletar ${this.event.getTitle()}?`,
@@ -74,7 +118,7 @@ export class EventComponent implements OnInit {
       confirmButtonText: 'Sim',
       cancelButtonText: 'Não'
     }).show().then(result => {
-      if (result.value === true) this.programsAddService.delete_event(this.event.getId());
+      if (result.value === true) this.programsAddService.saveStep({delEvent : this.event.getId()});
     });
   }
 
@@ -96,51 +140,59 @@ export class EventComponent implements OnInit {
     this.requestTriggers();
     this.requestSensors();
   }
+
   updateEvent(eventChanges: any) {
     eventChanges.id = this.event.getId();
-
-    if (!this.isAddEvent) this.dao.patchObject(ESPIM_REST_Events, eventChanges).subscribe();
+    this.dao.patchObject(ESPIM_REST_Events, eventChanges).subscribe((data:any) => {
+      eventChanges.model = 'event';
+      this.canal.sendMessage(eventChanges);
+    } );
   }
+
   updateSensor(sensorType: string, collector: string) {
     const sensor = this.event.getSensorOfType(sensorType);
+    let volta : any = {};
+    volta.model = 'event';
+    volta.id = this.event.id;
     if (sensor) {
-      if (sensor.getCollector() === collector)
-        this.dao.deleteObject(ESPIM_REST_Sensors, sensor.getId().toString()).subscribe(_ => this.event.removeCollectorOfType(sensorType));
-      else
-        this.dao.patchObject(ESPIM_REST_Sensors, {id: sensor.getId(), collector}).subscribe(_ => sensor.setCollector(collector));
-    } else this.dao.postObject(ESPIM_REST_Sensors, {sensor: sensorType, collector, sensorType: 0}).subscribe(data => {
-      this.event.addSensor(new Sensor(data));
-      if (!this.isAddEvent) this.dao.patchObject(ESPIM_REST_Events, {id: this.event.getId(), sensors: this.event.getSensorsId()}).subscribe();
+      if (sensor.getCollector() === collector) {
+        this.updateEvent({delSensor : sensor.id });
+      }else {
+        //Aqui é feita a atualização do evento.. Como a gravação é feita no model de sensor não dá para usar o updateEvent
+        this.dao.patchObject(ESPIM_REST_Sensors, {id: sensor.getId(), collector}).subscribe( (data:any) => {sensor.setCollector(collector);
+                                                                                                  volta.updateSensor = data;
+                                                                                                  this.canal.sendMessage(volta);
+                                                                                                 }
+                                                                                            );
+      }
+    } else { 
+      this.dao.postObject(ESPIM_REST_Sensors, {sensor: sensorType, collector, sensorType: 0}).subscribe(data => {
+        this.updateEvent({addSensor : data})
+        //this.event.addSensor(new Sensor(data));
+      });
+    }
+  }
+  
+
+  addTrigger(trigger: any) {
+    //Grava a trigger no evento...
+    this.dao.postObject(ESPIM_REST_Triggers,trigger). subscribe((data:any) => {
+      this.updateEvent({addTrigger : data});
+      //this.event.getTriggersId().push(data.id);
+      //this.event.getTriggersInstances().push( new Trigger(data));
     });
   }
 
-  addTrigger(trigger: Trigger) {
-    this.event.getTriggersId().push(trigger.getId());
-
-    if (!this.isAddEvent) this.dao.patchObject(ESPIM_REST_Events, {
-      id: this.event.getId(),
-      triggers: this.event.getTriggersId()
-    }).subscribe(response => {
-      this.event.getTriggersInstances().push(trigger);
-    }, error => {
-      // TODO - Deletar o trigger caso esse patch falhe
-    });
-    else this.event.getTriggersInstances().push(trigger);
+  delTrigger(id: any){
+    this.updateEvent({delTrigger : id});
   }
 
   requestTriggers() {
-    if (this.event.getTriggersId().length === this.event.getTriggersInstances().length)
-      return this.event.getTriggersInstances();
-    const triggersInstances = this.programsAddService.requestTriggers(this.event.getTriggersId());
-    this.event.setTriggerInstance(triggersInstances);
-    return triggersInstances;
+    return this.event.getTriggersInstances();
   }
+
   requestSensors() {
-    if (this.event.getSensorsId().length === this.event.getSensorsInstance().length)
-      return this.event.getSensorsInstance();
-    const sensorsInstance = this.programsAddService.requestSensors(this.event.getSensorsId());
-    this.event.setSensorsInstances(sensorsInstance);
-    return sensorsInstance;
+    return this.event.getSensorsInstance();
   }
 
 }

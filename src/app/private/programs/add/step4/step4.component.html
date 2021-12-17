@@ -3,7 +3,7 @@
 <div class="container-fluid">
   <!--Instancia Evento-->
   <div class="mt-4" *ngFor="let event of events; index as i">
-    <esm-active-event [event]="event" *ngIf="event.getType() === 'active'"></esm-active-event>
+    <esm-active-event [event]="event" *ngIf="event.type === 'active'"></esm-active-event>
   </div>
   <!-------------------->
 </div>
@@ -20,7 +20,7 @@
 <div class="container-fluid">
   <!--Instancia coleta por sensor-->
   <div class="mt-4" *ngFor="let event of events; index as i">
-    <esm-event [event]="event" *ngIf="event.getType() === 'passive'"></esm-event>
+    <esm-event [event]="event" *ngIf="event.type === 'passive'"></esm-event>
   </div>
   <!------------------------------->
 </div>

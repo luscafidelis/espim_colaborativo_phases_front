@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  ComponentFactory,
   ComponentFactoryResolver,
   ComponentRef, ElementRef, HostListener,
   OnInit, Renderer2,
@@ -18,12 +19,23 @@ import {NAVBAR_HEIGHT} from './navbar/navbar.component';
 })
 export class InterventionsComponent implements OnInit, AfterViewInit {
 
+  //Vetor com todas a janelas que são criadas no canvas..
   interventionComponents: ComponentRef<InterventionComponent>[] = [];
+  
+  //Posição inicial janela..Usada no método de move..
   previousPosition: {x?: number, y?: number} = {};
+  
+  //Posição onde fica a janela..
   offset: {x: number, y: number} = {x: 0, y: 0};
 
-  @ViewChild('container', { read: ViewContainerRef }) interventionsContainer;
-  @ViewChild('main_div') mainDiv;
+  //Esta linha cria uma variável chamada interventionsContainer que faz referência ao container do código HTML
+  //Na criação de um componente no container será utilizado um ComponentFactory https://netbasal.com/dynamically-creating-components-with-angular-a7346f4a982d
+  //Quando o componente for criado será retornando um componentRef https://angular.io/api/core/ComponentRef
+  //Este modelo vai permitir que o componente seja criado e destruído de forma dinâmica no canvas
+  @ViewChild('container', { read: ViewContainerRef }) interventionsContainer: { createComponent: (arg0: ComponentFactory<InterventionComponent>) => ComponentRef<InterventionComponent>; };
+  
+  //Referência ao div onde fica o canvas..
+  @ViewChild('main_div') mainDiv: { nativeElement: any; };
 
   constructor(private interventionService: InterventionService, private renderer: Renderer2, private componentFactoryResolver: ComponentFactoryResolver) { }
 
@@ -49,20 +61,31 @@ export class InterventionsComponent implements OnInit, AfterViewInit {
     });
   }
 
+  //Método que determina o tamanho da janela do canvas..
   resizeScreen() {
     this.renderer.setStyle(this.mainDiv.nativeElement, 'width', `${document.documentElement.scrollWidth}px`);
     this.renderer.setStyle(this.mainDiv.nativeElement, 'height', `${document.documentElement.scrollHeight - NAVBAR_HEIGHT - 20}px`);
   }
 
   createIntervention(intervention: HTMLInterventionElement, graphIndex: number) {
+    //Declara o objeto de intervention
     const interventionComponent: ComponentRef<InterventionComponent> = this.interventionsContainer.createComponent(this.componentFactoryResolver.resolveComponentFactory(InterventionComponent));
     // 340.5 is the size of an intervention + a gap between. 50 is a arbitrary padding
     interventionComponent.instance.offset = { x: 340.5 * this.interventionComponents.length + 50, y: 50 };
+   
+    // Determina o conteúdo desta instância
     interventionComponent.instance.interventionCoordinate = intervention;
+   
+    //Marca a posição no vetor de intervenções
     interventionComponent.instance.graphIndex = graphIndex;
+   
+    //Subscreve para ser avisado quando a janela for movida..
     interventionComponent.instance.interventionMoved.subscribe(_ => this.resizeScreen());
+   
+    //Adiciona a janela com a intervenção no vetor janela de intervenções.. 
     this.interventionComponents.push(interventionComponent);
 
+    //Tem que ter um Timeout para atualizar a janela.. não sei pq..
     setTimeout(_ => {
       this.resizeScreen();
       this.interventionService.redrawGraph$.next();

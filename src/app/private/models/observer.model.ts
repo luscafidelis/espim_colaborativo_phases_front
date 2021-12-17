@@ -2,17 +2,17 @@
 import { Address } from './address.model';
 
 export class Observer {
-    private id: number;
-    private name: string;
-    private email: string;
-    private phoneNumber: string;
-    private profilePhotoUrl: string;
-    private role: string;
-    private about: string;
-    private birthDate: Date;
-    private schooling: string;
-    private institution: string;
-    private address: Address;
+    public id: number;
+    public name: string;
+    public email: string;
+    public phoneNumber: string;
+    public profilePhotoUrl: string;
+    public role: string;
+    public about: string;
+    public birthDate: Date;
+    public schooling: string;
+    public institution: string;
+    public address: Address;
 
     constructor(observer: any) {
       this.id = observer.id;

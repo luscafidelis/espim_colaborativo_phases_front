@@ -2,7 +2,7 @@
   <!--Header-->
   <div>
     <!--Cabecalho-->
-    <div class="row bg-primary py-2 px-2 mx-1 mx-xl-4" [ngbCollapse]="isAddEvent && !isOpen" [ngStyle]="{'background-color': event.getColor()}">
+    <div class="row py-2 px-2 mx-1 mx-xl-4" [ngbCollapse]="isAddEvent && !isOpen" [ngStyle]="{'background-color': event.getColor()}">
       <div class="col-12 d-flex justify-content-between align-items-center text-white">
         <button class="btn btn-link text-white" data-toggle="collapse" (click)="getEventDetails(); isOpen = !isOpen">{{ event.getTitle() }}</button>
         <div>
@@ -27,11 +27,35 @@
     <!--Corpo-->
     <div class="row border shadow-sm mx-1 mx-xl-4 py-2">
       <!--Nome e descrição do programa-->
-      <div class="col-12 mt-4">
+      <div class="col-8 mt-4">
         <label [for]="event_title">Nome do programa</label>
         <input (change)="updateEvent({ title: event_title.value })" class="d-block w-100 w-xl-75 py-2" type="text" placeholder="Nome do programa" #event_title (keyup)="event.setTitle(event_title.value)" [value]="event.getTitle() || ''">
+      </div>
+      <div class="col-4 mt-4">
+        <!--Botão cores-->
+        <button class="btn btn-outline-primary btn-block dropdown-toggle d-flex align-items-center justify-content-between" data-toggle="dropdown" [value]="event.getColor()">
+          <span class="text-black">Cor do evento: </span>
+          <span class="d-inline-block rounded-tab filter-blur mx-2" [ngStyle]="{'background-color': event.getColor()}"></span>
+        </button>
+        <!------------------>
+        <!--Dropdown-->
+        <div class="dropdown-menu w-100 w-xl-auto bg-white text-center px-0">
+          <button class="dropdown-item btn bg-primary rounded-tab d-inline-block p-0 m-0 my-1" (click)="event.setColor('#0a467f'); updateEvent({ color: '#0a467f'})"></button>
+          <button class="dropdown-item btn bg-danger rounded-tab d-inline-block p-0 m-0 my-1" (click)="event.setColor('#dc3545'); updateEvent({ color: '#dc3545'})"></button>
+          <button class="dropdown-item btn bg-info rounded-tab d-inline-block p-0 m-0 my-1" (click)="event.setColor('#17a2b8'); updateEvent({ color: '#17a2b8'})"></button>
+          <button class="dropdown-item btn bg-success rounded-tab d-inline-block p-0 m-0 my-1" (click)="event.setColor('#28a745'); updateEvent({ color: '#28a745'})"></button>
+          <button class="dropdown-item btn bg-warning rounded-tab d-inline-block p-0 m-0 my-1" (click)="event.setColor('#ffc107'); updateEvent({ color: '#ffc107'})"></button>
+          <button class="dropdown-item btn bg-dark rounded-tab d-inline-block p-0 m-0 my-1" (click)="event.setColor('#343a40'); updateEvent({ color: '#343a40'})"></button>
+          <button class="dropdown-item btn bg-secondary rounded-tab d-inline-block p-0 m-0 my-1" (click)="event.setColor('#6c757d'); updateEvent({ color: '#6c757d'})"></button>
+          <button class="dropdown-item btn bg-light rounded-tab d-inline-block p-0 m-0 my-1" (click)="event.setColor('#f8f9fa'); updateEvent({ color: '#f8f9fa'})"></button>
+        </div>
+        <!------------------>
+      </div>
+      
+      <div class="col-12 mt-4">
         <textarea (change)="updateEvent({ description: event_title.value })" class="d-block w-100 py-2 mt-3" rows="1" placeholder="Descrição do programa" (keyup)="event.setDescription($event.target.value)">{{ event.getDescription() }}</textarea>
       </div>
+
       <!-------------------------------->
       <!--Dispostivo e sensores-->
       <h5 class="ml-3 mt-3 font-weight-bold">Coletar:</h5>
@@ -71,7 +95,7 @@
         <div class="row mt-3">
           <ul class="col-12 list-unstyled px-4 d-flex flex-column">
             <!--Disparo 1-->
-            <esm-trigger [trigger]="trigger" *ngFor="let trigger of event.getTriggersInstances();"></esm-trigger>
+            <esm-trigger [trigger]="trigger" (delTriggerEmit)="delTrigger($event)" *ngFor="let trigger of event.getTriggersInstances();"></esm-trigger>
             <!------------->
             <h5 class="mt-3">Adicionar disparo</h5>
             <!--Adicionar disparo-->

@@ -5,7 +5,7 @@
   <div class="form-row form-group">
     <div class="col">
       <label for="program-name">Nome do programa <b class="text-danger">*</b>:</label>
-      <input class="d-block w-100 form-control" [class.is-invalid]="invalidTitle" id="program-name" type="text" placeholder="Nome do programa" formControlName="title">
+      <input class="d-block w-100 form-control" [class.is-invalid]="invalidTitle" id="program-name" type="text" placeholder="Nome do programa" formControlName="title" (change)="updateField('title')">
     </div>
   </div>
   <!-------------------->
@@ -13,13 +13,13 @@
   <div class="form-row form-group">
     <div class="col">
       <label for="program-description">Descrição do programa:</label>
-      <textarea class="d-block w-100" name="program-description" id="program-description" rows="2" placeholder="Descrição do programa" formControlName="description"></textarea>
+      <textarea class="d-block w-100" name="program-description" id="program-description" rows="2" placeholder="Descrição do programa" formControlName="description" (change)="updateField('description')"></textarea>
     </div>
   </div>
   <!------------------------->
   <!--Programa público checkbox-->
   <div class="form-group">
-    <input type="checkbox" name="program-checkbox" id="program-checkbox" formControlName="isPublic">
+    <input type="checkbox" name="program-checkbox" id="program-checkbox" formControlName="isPublic" (change)="updateField('isPublic')">
     <label for="program-checkbox">Programa público</label>
   </div>
   <!----------------------------->
@@ -32,13 +32,13 @@
         <div class="input-group-prepend">
           <button (click)="beginDate.toggle()" class="input-group-text"><i class="far fa-calendar-alt"></i></button>
         </div>
-        <input (click)="beginDate.toggle()" ngbDatepicker #beginDate="ngbDatepicker" [navigation]="'arrows'" [class.is-invalid]="invalidBeginDate" type="text" class="px-2 py-1 form-control" placeholder="Data de início" formControlName="beginDate" readonly>
+        <input (click)="beginDate.toggle()" ngbDatepicker #beginDate="ngbDatepicker" [navigation]="'arrows'" [class.is-invalid]="invalidBeginDate" type="text" class="px-2 py-1 form-control" placeholder="Data de início" formControlName="beginDate" (ngModelChange)="updateField('starts')" readonly>
       </div>
     </div>
     <!------------------>
     <!--Hora de início-->
     <div class="col">
-      <ngb-timepicker formControlName="beginTime" [minuteStep]="30"></ngb-timepicker>
+      <ngb-timepicker formControlName="beginTime" [minuteStep]="30" (ngModelChange)="updateField('starts')"></ngb-timepicker>
     </div>
     <!------------------>
   </div>
@@ -52,13 +52,13 @@
         <div class="input-group-prepend">
           <button (click)="endDate.toggle()" class="input-group-text"><i class="far fa-calendar-alt"></i></button>
         </div>
-        <input (click)="endDate.toggle()" ngbDatepicker #endDate="ngbDatepicker" [navigation]="'arrows'" type="text" class="form-control px-2 py-1" placeholder="Data de fim" formControlName="endDate" readonly>
+        <input (click)="endDate.toggle()" ngbDatepicker #endDate="ngbDatepicker" [navigation]="'arrows'" type="text" class="form-control px-2 py-1" placeholder="Data de fim" formControlName="endDate" (ngModelChange)="updateField('ends')" readonly>
       </div>
     </div>
     <!--------------->
     <!--Hora de fim-->
     <div class="col">
-      <ngb-timepicker formControlName="endTime" [minuteStep]="30"></ngb-timepicker>
+      <ngb-timepicker formControlName="endTime" (ngModelChange)="updateField('ends')" [minuteStep]="30"></ngb-timepicker>
     </div>
     <!--------------->
   </div>

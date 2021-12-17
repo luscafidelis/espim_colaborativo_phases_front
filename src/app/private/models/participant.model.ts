@@ -1,10 +1,10 @@
 export class Participant {
-    private id: number;
-    private name: string;
-    private email: string;
-    private phoneNumber: string;
-    private profilePhotoUrl: string;
-    private alias: string;
+    public id: number;
+    public name: string;
+    public email: string;
+    public phoneNumber: string;
+    public profilePhotoUrl: string;
+    public alias: string;
 
     constructor(participant?: any) {
         if (participant) {

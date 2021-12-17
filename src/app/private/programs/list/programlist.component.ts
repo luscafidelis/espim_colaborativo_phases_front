@@ -53,7 +53,7 @@ export class ProgramsListComponent implements OnInit {
   setPrograms(response) {
     this.totalPrograms = response.count;
     this.programs = response.results.map(responseIn => {
-      const program = new Program(responseIn);
+      const program = responseIn;
       if (program.beingDuplicated) this.checkDuplication(program);
       return program;
     });
@@ -62,22 +62,22 @@ export class ProgramsListComponent implements OnInit {
 
   // deleting a program from list
   deleteProgram(program: Program) {
-    if (program.getBeingDuplicated()) return;
+    if (program.beingDuplicated) return;
     this.tempProgram = program;
     this.swalDeleteProgram.show();
   }
 
   onConfirmDeleteProgram(event) {
-    this.dao.deleteObject(this.urlPrograms, this.tempProgram.getId().toString()).subscribe(response => {
+    this.dao.deleteObject(this.urlPrograms, this.tempProgram.id.toString()).subscribe(response => {
       this.swalAfterDelete.show();
       this.getPrograms();
     });
   }
 
   checkDuplication(program: Program) {
-    if (!program.getBeingDuplicated()) return;
+    if (!program.beingDuplicated) return;
     console.log('Requesting program');
-    this.dao.getObject(ESPIM_REST_Programs, program.getId().toString()).subscribe((dataIn2: any) => {
+    this.dao.getObject(ESPIM_REST_Programs, program.id.toString()).subscribe((dataIn2: any) => {
       console.log(`Response received\nBeingDuplicated: ${dataIn2.beingDuplicated}`);
       if (!dataIn2.beingDuplicated) this.getPrograms(`http://localhost:8000/programs/?page=${this.pagination.actualPage}`);
     });
@@ -85,12 +85,12 @@ export class ProgramsListComponent implements OnInit {
   }
 
   goToProgram(program: Program) {
-    if (program.getBeingDuplicated()) return;
-    this.router.navigate(['/private/programs/add', program.getId(), 'first']);
+    if (program.beingDuplicated) return;
+    this.router.navigate(['/private/programs/add', program.id, 'first']);
   }
 
   duplicateProgram(program: Program) {
-    if (program.getBeingDuplicated()) return;
+    if (program.beingDuplicated) return;
 
     new SwalComponent({
       title: 'Duplicar um programa',
@@ -99,7 +99,7 @@ export class ProgramsListComponent implements OnInit {
       showCancelButton: true
     }).show().then(response => {
       if (response.value === true) {
-        this.dao.getObjects(ESPIM_REST_Programs + `${program.getId().toString()}/duplicate/`).subscribe((data: any) => this.dao.getObject(ESPIM_REST_Programs, data.id.toString()).subscribe(dataIn => {
+        this.dao.getObjects(ESPIM_REST_Programs + `${program.id.toString()}/duplicate/`).subscribe((data: any) => this.dao.getObject(ESPIM_REST_Programs, data.id.toString()).subscribe(dataIn => {
           this.getPrograms(`http://localhost:8000/programs/?page=${this.pagination.actualPage}`);
 
           new SwalComponent({

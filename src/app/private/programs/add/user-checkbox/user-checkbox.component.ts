@@ -22,8 +22,8 @@ export class UserCheckBoxComponent implements OnInit {
   ngOnInit() { }
 
   checkboxHandler(checked: boolean) {
-    if (checked) this.addUser.emit(this.user.getId());
-    else this.removeUser.emit(this.user.getId());
+    if (checked) this.addUser.emit(this.user.id);
+    else this.removeUser.emit(this.user.id);
   }
 
 }

@@ -1,6 +1,6 @@
 <!--Adicionar observador menu popup-->
 <form class="bg-white shadow-lg popup p-5 collapse" style="z-index: 3; top: 10%" id="addObserver" [formGroup]="addObserverForm">
-  <h3 class="mb-5">Adicionar participante</h3>
+  <h3 class="mb-5">Adicionar Observadores</h3>
   <div class="mb-3">
     <label class="mb-0" for="email">E-mail <span class="text-danger">*</span>:</label>
     <input class="w-100" type=email id="email" formControlName="email">
@@ -82,7 +82,7 @@
       </div>
       <div class="col-12 col-md-10 d-flex flex-wrap flex-row justify-content-center align-items-center py-3">
           <div *ngIf="!programObservers?.length" class="text-center text-primary font-weight-bold w-100">No participant selected</div>
-          <div class="bg-primary rounded-pill text-white my-1 mx-2 px-3 py-1" *ngFor="let selectedObserver of programObservers">{{ selectedObserver.getName() }}</div>
+          <div class="bg-primary rounded-pill text-white my-1 mx-2 px-3 py-1" *ngFor="let selectedObserver of programObservers">{{ selectedObserver.name }}</div>
       </div>
     </div>
   </form>

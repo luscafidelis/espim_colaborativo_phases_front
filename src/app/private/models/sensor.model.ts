@@ -3,10 +3,10 @@ export class Sensor {
    * sensor: May be "activity", "location" or "measure_use".
    * collector: May be "smartphone" or "smartwatch"
    */
-  private id: number;
-  private sensor: string;
-  private collector: string;
-  private sensorType: number;
+  public id: number;
+  public sensor: string;
+  public collector: string;
+  public sensorType: number;
 
   constructor(data: any = {}) {
     this.id = data.id;

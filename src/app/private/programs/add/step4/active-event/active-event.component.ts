@@ -3,10 +3,11 @@ import {ActiveEvent} from '../../../../models/event.model';
 import {ProgramsAddService} from '../../programsadd.service';
 import {SwalComponent} from '@sweetalert2/ngx-sweetalert2';
 import {DAOService} from '../../../../dao/dao.service';
-import {ESPIM_REST_Events, ESPIM_REST_Programs} from '../../../../../app.api';
+import {ESPIM_REST_Events, ESPIM_REST_Programs, ESPIM_REST_Triggers} from '../../../../../app.api';
 import {Trigger} from '../../../../models/trigger.model';
 import {ActivatedRoute, Router} from "@angular/router";
 import {InterventionService} from "../../../intervention/intervention.service";
+import { ChannelService } from 'src/app/private/channel_socket/socket.service';
 
 @Component({
   selector: 'esm-active-event',
@@ -19,12 +20,17 @@ export class ActiveEventComponent implements OnInit {
   isOpen = false;
   isAddEvent = false; // This is only true if this instance is gonna be the one to add
 
-  constructor(private programsAddService: ProgramsAddService, private interventionService: InterventionService, private dao: DAOService, private router: Router, private route: ActivatedRoute) { }
+  constructor(private programsAddService: ProgramsAddService, private interventionService: InterventionService, private dao: DAOService, 
+    private router: Router, private route: ActivatedRoute, private canal : ChannelService) { }
 
   ngOnInit() {
     if (!this.event) {
       this.resetEvent();
+    } else {
+      this.event = new ActiveEvent(this.event);
     }
+    //Nesta linha o service irá escutar o websocket..
+    this.canal.getData$.subscribe( data => this.sincronizeEvent(data));
   }
 
   resetEvent() {
@@ -36,37 +42,18 @@ export class ActiveEventComponent implements OnInit {
   }
 
   addEvent() {
-    //Grava o evento
-    //if (this.isOpen){ 
-      this.dao.postObject(ESPIM_REST_Events, this.event).subscribe(data => {
+    this.dao.postObject(ESPIM_REST_Events, this.event).subscribe(data => {
         const event = new ActiveEvent(data);
-        this.programsAddService.getEventsId().push(event.getId());
-        this.programsAddService.getEventsInstance().push(event);
-        // Atualiza o programa no backend
-        this.dao.patchObject(ESPIM_REST_Programs, {
-          id: this.programsAddService.program.getId(),
-          events: this.programsAddService.getEventsId()
-        }).subscribe(_ => {
-          //this.resetEvent();
-          //this.isOpen = !this.isOpen;
-        });
-      });
-    //} else { 
-    //  this.isOpen = !this.isOpen;
-    //  this.isAddEvent = false;
-    //}
+        this.programsAddService.saveStep({addEvent : event})
+    });
   }
+
   getEventDetails() {
     this.requestInterventions();
     this.requestTriggers();
   }
-  delete_event() {
-    if (this.isAddEvent) {
-      this.isOpen = !this.isOpen;
-      this.resetEvent();
-      return;
-    }
 
+  delete_event() {
     new SwalComponent({
       title: 'Deletar evento?',
       text: `Você tem certeza que deseja deletar ${this.event.getTitle()}?`,
@@ -75,42 +62,97 @@ export class ActiveEventComponent implements OnInit {
       confirmButtonText: 'Sim',
       cancelButtonText: 'Não'
     }).show().then(result => {
-      if (result.value === true) this.programsAddService.delete_event(this.event.getId());
+      if (result.value === true) this.programsAddService.saveStep({delEvent : this.event.getId()});
     });
   }
+
   updateEvent(eventChanges: any) {
     eventChanges.id = this.event.getId();
-
-    if (!this.isAddEvent) this.dao.patchObject(ESPIM_REST_Events, eventChanges).subscribe();
+    this.dao.patchObject(ESPIM_REST_Events, eventChanges).subscribe((data:any) => {
+      eventChanges.model = 'event';
+      this.canal.sendMessage(eventChanges);
+    } );
   }
 
-  addTrigger(trigger: Trigger) {
-    this.event.getTriggersId().push(trigger.getId());
 
-    if (!this.isAddEvent) this.dao.patchObject(ESPIM_REST_Events, {
-      id: this.event.getId(),
-      triggers: this.event.getTriggersId()
-    }).subscribe(response => {
-      this.event.getTriggersInstances().push(trigger);
-    }, error => {
-      // TODO - Deletar o trigger caso esse patch falhe
+  /**
+ * Este método recebe as atualizações que são enviadas pelo canal e atualiza o programa 
+ * que está em edição...
+ */
+  sincronizeEvent(data:any){
+    let locdata = data.payload.message;
+    if (locdata.model == 'event' && locdata.id == this.event.id ){
+      for (let prop in locdata){
+        if (prop != 'model' && prop != 'id'){
+          //Adicionar Trigger
+          if (prop == 'addTrigger'){
+              let loc_trigger = new Trigger(locdata[prop]);
+              this.event.getTriggersId().push(loc_trigger.id);
+              this.event.getTriggersInstances().push(loc_trigger);
+          } else {
+            //Excluir Trigger
+            if (prop == 'delTrigger'){
+              let triggerId = locdata['delTrigger'];
+              this.event.triggers.splice(this.event.triggers.findIndex((value: Trigger) => value.id === triggerId), 1);
+            } else {
+              //Adicionar ComplexCondition
+              if (prop == 'addComplexCondition'){
+
+              } else {
+                //Excluir ComplexCondition
+                if (prop == 'delComplexCondition'){
+
+                } else {
+                  //Adicionar Sensor
+                  if (prop == 'addSensor'){
+
+                  } else {
+                    //Excluir Sensor
+                    if (prop == 'delSensor'){
+
+                    } else {
+                      //Adicionar Intervenção
+                      if (prop == 'addIntervention'){
+
+                      } else {
+                        //Excluir Intervenção
+                        if (prop == 'delIntervention'){
+
+                        } else {
+                          //Outros Campos
+                          this.event[prop] = locdata[prop];
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  addTrigger(trigger: any) {
+    //Grava a trigger no evento...
+    this.dao.postObject(ESPIM_REST_Triggers,trigger). subscribe((data:any) => {
+      this.updateEvent({addTrigger : data});
+      //this.event.getTriggersId().push(data.id);
+      //this.event.getTriggersInstances().push( new Trigger(data));
     });
-    else this.event.getTriggersInstances().push(trigger);
+  }
+
+  delTrigger(id: any){
+    this.updateEvent({delTrigger : id});
   }
 
   requestInterventions() {
-    if (this.event.getInterventionsId().length === this.event.getInterventionsInstances().length)
-      return this.event.getInterventionsInstances();
-    const interventionsInstances = this.programsAddService.requestInterventions(this.event.getInterventionsId());
-    this.event.setInterventionsInstances(interventionsInstances);
-    return interventionsInstances;
+    return this.event.getInterventionsInstances();
   }
+
   requestTriggers() {
-    if (this.event.getTriggersId().length === this.event.getTriggersInstances().length)
-      return this.event.getTriggersInstances();
-    const triggersInstances = this.programsAddService.requestTriggers(this.event.getTriggersId());
-    this.event.setTriggerInstance(triggersInstances);
-    return triggersInstances;
+    return this.event.getTriggersInstances();
   }
 
   goToInterventions() {

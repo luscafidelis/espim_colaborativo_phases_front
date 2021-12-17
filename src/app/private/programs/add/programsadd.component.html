@@ -1,4 +1,18 @@
-<main class="card mx-auto my-4 w-main mb-5" id="container">
-  <esm-step-panel [id]="id"></esm-step-panel>
-  <router-outlet></router-outlet>
-</main>
+
+<div class="container-xxl">
+  <div class="row">
+    <div class="col-2">
+      <esm-program-historic *ngIf="mostrar()"></esm-program-historic>
+    </div>
+    <div class="col-8">
+      <main class="card w-100 mx-auto my-4 mb-5" id="container">
+        <esm-editores-online></esm-editores-online>
+        <esm-step-panel [id]="id"></esm-step-panel>
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+    <div class="col-2">
+      <esm-program-chat></esm-program-chat>
+    </div>
+  </div>
+</div>
