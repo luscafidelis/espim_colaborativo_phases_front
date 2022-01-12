@@ -28,7 +28,6 @@ export class EventComponent implements OnInit {
       this.isAddEvent = true;
     } else {
       this.event = new Event(this.event);
-      console.log(this.event);
     }
     this.canal.getData$.subscribe( data => this.sincronizeEvent(data));
   }

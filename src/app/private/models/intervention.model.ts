@@ -4,8 +4,12 @@ export class Intervention {
   public statement: string;
   public orderPosition: number;
   public first: boolean;
-  public next: number;
+  public next: any = {next : []};
   public obligatory: boolean;
+  public _x?: number=0;
+  public _y?: number=0;
+  public _width?: number=0;
+  public _height?: number=0;
 
   protected medias;
   protected complexConditions;
@@ -17,6 +21,11 @@ export class Intervention {
     this.first = intervention.first !== undefined ? intervention.first : false;
     this.next = intervention.next;
     this.obligatory = intervention.obligatory !== undefined ? intervention.obligatory : false;
+
+    this._x = intervention._x;
+    this._y = intervention._y;
+    this._height = intervention._height;
+    this._width = intervention._width;
 
     this.medias = intervention.medias;
     this.complexConditions = intervention.complexConditions;

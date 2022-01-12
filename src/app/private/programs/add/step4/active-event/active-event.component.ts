@@ -8,6 +8,8 @@ import {Trigger} from '../../../../models/trigger.model';
 import {ActivatedRoute, Router} from "@angular/router";
 import {InterventionService} from "../../../intervention/intervention.service";
 import { ChannelService } from 'src/app/private/channel_socket/socket.service';
+import { Intervention, MediaIntervention, QuestionIntervention, TaskIntervention } from 'src/app/private/models/intervention.model';
+import { CONFIG } from 'ngx-social-login/lib/models/config-injection-token';
 
 @Component({
   selector: 'esm-active-event',
@@ -29,8 +31,8 @@ export class ActiveEventComponent implements OnInit {
     } else {
       this.event = new ActiveEvent(this.event);
     }
-    //Nesta linha o service irá escutar o websocket..
-    this.canal.getData$.subscribe( data => this.sincronizeEvent(data));
+  //Nesta linha o service irá escutar o websocket..
+  this.canal.getData$.subscribe( data => this.sincronizeEvent(data));
   }
 
   resetEvent() {
@@ -74,7 +76,6 @@ export class ActiveEventComponent implements OnInit {
     } );
   }
 
-
   /**
  * Este método recebe as atualizações que são enviadas pelo canal e atualiza o programa 
  * que está em edição...
@@ -107,21 +108,20 @@ export class ActiveEventComponent implements OnInit {
                   if (prop == 'addSensor'){
 
                   } else {
-                    //Excluir Sensor
-                    if (prop == 'delSensor'){
-
+                    //atualiza todas as intervenções
+                    if (prop == 'updateEvent'){
+                      console.log(locdata[prop]);
+                      this.event = new ActiveEvent(locdata[prop]);
+                      console.log(this.event);
                     } else {
-                      //Adicionar Intervenção
-                      if (prop == 'addIntervention'){
-
+                      //Excluir Intervenção
+                      if (prop == 'delIntervention'){
+                        //A deleção no banco é feita diretamente pelo editor canvas..
+                        let interventionId = locdata[prop];
+                        this.event.interventions.splice(this.event.interventions.findIndex((value: Intervention) => value.id === interventionId), 1);
                       } else {
-                        //Excluir Intervenção
-                        if (prop == 'delIntervention'){
-
-                        } else {
-                          //Outros Campos
-                          this.event[prop] = locdata[prop];
-                        }
+                        //Outros Campos
+                        this.event[prop] = locdata[prop];
                       }
                     }
                   }

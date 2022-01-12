@@ -11,6 +11,8 @@ import {
 import {InterventionComponent} from './intervention/intervention.component';
 import {HTMLInterventionElement, InterventionService} from './intervention.service';
 import {NAVBAR_HEIGHT} from './navbar/navbar.component';
+import { ReplaySubject, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs-compat/operator/takeUntil';
 
 @Component({
   selector: 'esm-interventions',
@@ -45,6 +47,11 @@ export class InterventionsComponent implements OnInit, AfterViewInit {
     window.scrollTo(0, 0);
   }
 
+  // representam as subscrições no canal..
+  private subscriptionnew;
+  private subscriptiondel;
+  private subscriptioncom;
+
   ngAfterViewInit(): void {
     // I don't know why but there has to be a timeout here
     setTimeout(_ => {
@@ -53,9 +60,9 @@ export class InterventionsComponent implements OnInit, AfterViewInit {
       this.interventionService.redrawGraph$.next();
     }, 0);
     //Se inscreve para ser informada de novas intervenções 
-    this.interventionService.newInterventions$.subscribe((add) => this.createIntervention(add.intervention, add.graphIndex));
+    this.subscriptionnew = this.interventionService.newInterventions$.subscribe((add : any) => this.createIntervention(add.intervention, add.graphIndex));
     //Se inscreve para ser informada quando intervenções foram apagadas
-    this.interventionService.removeIntervention$.subscribe(index => {
+    this.subscriptiondel = this.interventionService.removeIntervention$.subscribe(index => {
       this.interventionComponents[index - 1].destroy();
       this.interventionComponents.splice(index - 1, 1);
     });
@@ -71,8 +78,10 @@ export class InterventionsComponent implements OnInit, AfterViewInit {
     //Declara o objeto de intervention
     const interventionComponent: ComponentRef<InterventionComponent> = this.interventionsContainer.createComponent(this.componentFactoryResolver.resolveComponentFactory(InterventionComponent));
     // 340.5 is the size of an intervention + a gap between. 50 is a arbitrary padding
-    interventionComponent.instance.offset = { x: 340.5 * this.interventionComponents.length + 50, y: 50 };
-   
+    //interventionComponent.instance.offset = { x: 340.5 * this.interventionComponents.length + 50, y: 50 };
+    // a posição do componente é definida no interventionservice..
+    interventionComponent.instance.offset = { x: intervention.intervention._x, y: intervention.intervention._y};
+
     // Determina o conteúdo desta instância
     interventionComponent.instance.interventionCoordinate = intervention;
    
@@ -80,8 +89,9 @@ export class InterventionsComponent implements OnInit, AfterViewInit {
     interventionComponent.instance.graphIndex = graphIndex;
    
     //Subscreve para ser avisado quando a janela for movida..
-    interventionComponent.instance.interventionMoved.subscribe(_ => this.resizeScreen());
-   
+    this.subscriptioncom = interventionComponent.instance.interventionMoved.subscribe(_ => this.resizeScreen());
+    
+
     //Adiciona a janela com a intervenção no vetor janela de intervenções.. 
     this.interventionComponents.push(interventionComponent);
 
@@ -113,5 +123,13 @@ export class InterventionsComponent implements OnInit, AfterViewInit {
 
       this.previousPosition = currentPosition;
     }
+  }
+
+  ngOnDestroy(): void {
+    //https://ichi.pro/pt/como-criar-um-vazamento-de-memoria-no-angular-83941828037515
+    this.subscriptiondel.unsubscribe();
+    this.subscriptionnew.unsubscribe();
+    this.subscriptioncom.unsubscribe();
+
   }
 }

@@ -8,6 +8,9 @@ export class Cron {
   private year: string;
 
   constructor(cronString: string = '0 0 0 ? *  *') {
+    if (typeof cronString !== "string" ){
+      cronString = '0 0 0 ? *  *'
+    }  
     const cronArray = cronString.split(' ');
     this.seconds = cronArray[0];
     this.minutes = cronArray[1];

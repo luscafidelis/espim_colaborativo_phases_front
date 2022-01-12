@@ -27,6 +27,10 @@ export const ESPIM_REST_Sensors: string = ESPIM_API + 'sensors/';
 //configura chat module url
 export const ESPIM_REST_Chat: string = ESPIM_API +  'chat-message/';
 
+//configura chat module url
+export const ESPIM_REST_Editores: string = ESPIM_API +  'editores/';
+
+
 // config default page size
 export const PAGE_SIZE = 4;
 

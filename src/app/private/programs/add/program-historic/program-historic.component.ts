@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'esm-program-historic',
-  templateUrl: './program-historic.component.html',
-  styleUrls: ['./program-historic.component.css']
+  templateUrl: './program-historic.component.html'
 })
 export class ProgramHistoricComponent implements OnInit {
 

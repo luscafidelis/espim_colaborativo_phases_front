@@ -7,16 +7,23 @@ import {NAVBAR_HEIGHT} from '../navbar/navbar.component';
   templateUrl: './canvas.component.html'
 })
 export class CanvasComponent implements OnInit, AfterViewInit {
+  /**
+   * O Canvas só desenha o grafo e acerta a última intervenção...
+   */
 
   canvas: HTMLCanvasElement;
+
+  subs;
 
   @ViewChild('canvas') canvasRef: ElementRef;
 
   constructor(private interventionService: InterventionService) { }
 
+  //Toda vez que o service modificar o Grafo ele será redesenhado...
+  
   ngOnInit(): void {
     // this.interventionService.newInterventions$.subscribe((interventionElement: HTMLInterventionElement) => this.drawArrow(this.interventionService.lastIntervention, interventionElement));
-    this.interventionService.redrawGraph$.subscribe(_ => this.drawAllArrows());
+    this.subs = this.interventionService.redrawGraph$.subscribe(_ => this.drawAllArrows());
   }
 
   ngAfterViewInit(): void {
@@ -35,7 +42,9 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     const ctx = this.canvas.getContext('2d');
     ctx.beginPath(); ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); ctx.stroke();
   }
-
+  /**
+   * Esta método desenha todas a setas do grafo e acerta o last interacted intervention
+   */
   drawAllArrows() {
     this.resizeCanvas();
 
@@ -82,8 +91,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   drawArrow(origin: HTMLInterventionElement, destination: HTMLInterventionElement, main: boolean = true) {
-    if (!origin || !destination) return;
-
+    if (!origin || !destination || !origin.intervention || !destination.intervention ) return;
     const x_difference = destination.x - origin.x, y_difference = destination.y -   origin.y;
 
     let arrow_origin: {x: number, y: number}, arrow_destination: {x: number, y: number};
@@ -115,5 +123,10 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     ctx.lineTo(arrow_destination.x - sizeHead * Math.cos(angle + Math.PI / 6), arrow_destination.y - sizeHead * Math.sin(angle + Math.PI / 6));
 
     ctx.stroke();
+  }
+
+  ngOnDestroy(): void {
+    //https://ichi.pro/pt/como-criar-um-vazamento-de-memoria-no-angular-83941828037515
+    this.subs.unsubscribe();
   }
 }

@@ -51,6 +51,7 @@ import { EditoresOnlineComponent } from './programs/add/editores-online/editores
 import { StepPanelComponent } from './programs/add/step-panel/step-panel.component';
 import { ChannelService } from './channel_socket/socket.service';
 import { InterventionService } from './programs/intervention/intervention.service';
+import { PhasesComponent } from './programs/add/step4/phases/phases.component';
 
 @NgModule({
     imports: [
@@ -98,6 +99,8 @@ import { InterventionService } from './programs/intervention/intervention.servic
       ProgramHistoricComponent,
       ProgramChatComponent,
       EditoresOnlineComponent,
+      PhasesComponent,
+      //InterventionService
       ],
   providers: [ChannelService, DAOService, SearchService, ObserversService, DateConverterService, ProgramsAddService, InterventionService]
 })

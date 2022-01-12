@@ -3,6 +3,7 @@ import { Trigger } from './trigger.model';
 import { Sensor } from './sensor.model';
 import { forkJoin } from 'rxjs';
 import { trigger } from '@angular/animations';
+import { Cron } from './cron.model';
 
 export class Event {
     public id: number;
@@ -38,7 +39,12 @@ export class Event {
     private criaTriggers(triggerIn : Trigger[]){
         this.triggers=[];
         for (let i=0; i < triggerIn.length; i++){
-            this.triggers.push(new Trigger(triggerIn[i]));
+            //Este if é necessário pq tem diferença quando é atualizado a página com dados locais e com dados que vem do BD
+            if (triggerIn[i].triggerCondition instanceof Cron){
+                this.triggers.push(triggerIn[i]);
+            } else {
+                this.triggers.push(new Trigger(triggerIn[i]));
+            }
         }
     }
 

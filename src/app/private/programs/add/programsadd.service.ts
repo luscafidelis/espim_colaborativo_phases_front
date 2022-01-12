@@ -130,10 +130,8 @@ export class ProgramsAddService {
   saveStep(dados:any = {}) {
     console.log(this.program);
     dados.id = this.program.id;
-    console.log(dados);
     this.daoService.patchObject(ESPIM_REST_Programs, dados).subscribe((data : any) => {
       //this.program = data;
-      console.log(this.program);
       dados.model = 'program';
       this.canal.sendMessage(dados);
       //this.programObservable$.next(this.program); 
@@ -142,10 +140,9 @@ export class ProgramsAddService {
 
   /**
    * Este método recebe as atualizações que são enviadas pelo canal e atualiza o programa 
-   * que está em edição...
+   * que está em edição... Todas as atualizações são enviadas pelo canal..
    */
   updateProgram(data:any){
-    console.log(data.payload.message);
     let locdata = data.payload.message;
     if (locdata.model == 'program' && locdata.id == this.program.id ){
       for (let prop in locdata){
@@ -193,8 +190,14 @@ export class ProgramsAddService {
                       let eventId = locdata['delEvent'];
                       this.program.events.splice(this.program.events.findIndex((value: Event) => value.id === eventId), 1);
                     } else {
-                      //Outros Campos
-                      this.program[prop] = locdata[prop];
+                      if (prop == 'updateEvent') {
+                        const eventInstancesIndex = this.program.events.findIndex(value => value.id === locdata[prop].id);
+                        this.program.events[eventInstancesIndex] = new ActiveEvent(locdata[prop]);
+                        console.log (this.program);
+                      } else {
+                        //Outros Campos
+                        this.program[prop] = locdata[prop];
+                      }
                     }
                   }
                 }
@@ -267,12 +270,8 @@ export class ProgramsAddService {
   }
 
   updateEvent(event : Event){
-    console.log(event);
-    console.log(this.getEventsInstance());
     const eventInstancesIndex = this.program.events.findIndex(value => value.id === event.id);
-    console.log(eventInstancesIndex);
     this.program.events[eventInstancesIndex] = event;
-    console.log(this.program.events[eventInstancesIndex]);
     this.programObservable$.next(this.program); 
   }
 }

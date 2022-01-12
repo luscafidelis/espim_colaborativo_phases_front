@@ -9,8 +9,7 @@ import { ProgramsAddService } from '../programsadd.service';
 
 @Component({
   selector: 'esm-program-chat',
-  templateUrl: './program-chat.component.html',
-  styleUrls: ['./program-chat.component.css']
+  templateUrl: './program-chat.component.html'
 })
 export class ProgramChatComponent implements OnInit {
 
@@ -21,8 +20,7 @@ export class ProgramChatComponent implements OnInit {
   message : string = '';
   
   
-  constructor(private dao : DAOService, private loginService : LoginService,  private programService : ProgramsAddService, channelService : ChannelService) { }  
-
+  constructor(private dao : DAOService, private loginService : LoginService,  private programService : ProgramsAddService,  private canal : ChannelService) { }  
 
   clickEvent(){
       this.status = !this.status;       
@@ -34,19 +32,27 @@ export class ProgramChatComponent implements OnInit {
     let date_time = new Date();
     let volta_dat : string = date_time.getDate().toString() + "/"  + (date_time.getMonth() +1).toString() + "/" + date_time.getFullYear().toString() + "-" + date_time.getHours().toString() + ':' + date_time.getMinutes().toString();
     let loc_message = new ChatMessage({day_message : volta_dat, user_message: user_message, message : this.message, program: program_message})
-    console.log(loc_message);
     this.dao.postObject(ESPIM_REST_Chat,loc_message).subscribe((data:any) => {this.message = '';
-                                                                              this.loc_messages.push(data)});
+                                                                              data.model = 'chat';
+                                                                              this.canal.sendMessage(data)});
   }
   
 
   ngOnInit(): void {
+    //Colocar a lista de mensagens...
+    this.programService.getProgramObservable().subscribe((data : any) => 
+        { if (data.id != -1) {   
+             this.dao.getNewObject(ESPIM_REST_Chat,{idProgram : data.id}).subscribe ((data2 : any) => {this.loc_messages = data2})
+         }});
+
     //Este observer será executado toda vez que o programa no programaddservice mudar
-    this.programService.getProgramObservable().subscribe( (program_ : Program) => {
-      this.loc_messages = program_.chat_program;
-      console.log(this.loc_messages);
-    })
-      //se conecta ao canal do chat daquele programa...
+    //Nesta linha o service irá escutar o websocket..
+    this.canal.getData$.subscribe( (data : any) => { 
+                                    let locdata = data.payload.message;
+                                    if (locdata.program == this.programService.program.id && locdata.model == 'chat'){
+                                      let locChat = new ChatMessage(locdata);
+                                      this.loc_messages.push(locChat);
+                                    }});
   }
 
   haveProgram():boolean{

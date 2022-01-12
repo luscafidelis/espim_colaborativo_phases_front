@@ -10,6 +10,8 @@ import {HTMLInterventionElement, InterventionService} from '../intervention.serv
 import {Intervention} from '../../../models/intervention.model';
 import {Observable, Subscription} from "rxjs";
 import { FormControl, FormGroup } from '@angular/forms';
+import { DAOService } from 'src/app/private/dao/dao.service';
+import { ESPIM_REST_Interventions } from 'src/app/app.api';
 
 @Component({
   selector: 'esm-intervention',
@@ -31,30 +33,36 @@ export class InterventionComponent implements OnInit, AfterViewInit, AfterConten
 
   nextInterventions: HTMLInterventionElement[] = [];
   nextInterventionSelect: string;
-
+  
+  //Variáveis para Unsubscribe
   redrawGraphSubscription: Subscription;
+  interFirst : Subscription;
+  interRemove : Subscription;
+
 
   @Output() interventionMoved = new EventEmitter<HTMLInterventionElement>();
 
   @ViewChild('interventionDiv') interventionDiv: ElementRef;
 
-  constructor(private interventionService: InterventionService) { }
+  constructor(private interventionService: InterventionService, private dao : DAOService) { }
 
   ngOnInit(): void {
     this.nextInterventionSelect = '0';
-    this.interventionService.firstInterventionChange$.subscribe(value => {
+    this.interFirst = this.interventionService.firstInterventionChange$.subscribe(value => {
       if (this.graphIndex !== value) this.interventionCoordinate.first = false;
     });
-    this.interventionService.removeIntervention$.subscribe(index => {
+    this.interRemove = this.interventionService.removeIntervention$.subscribe(index => {
       if (this.graphIndex > index) this.graphIndex -= 1;
     });
+    console.log(this.interventionCoordinate);
   }
 
   ngAfterViewInit(): void {
     this.interventionCoordinate.width = this.interventionDiv.nativeElement.clientWidth;
     this.interventionCoordinate.height = this.interventionDiv.nativeElement.clientHeight;
-    this.interventionCoordinate.x = this.offset.x + this.interventionCoordinate.width / 2;
-    this.interventionCoordinate.y = this.offset.y + this.interventionCoordinate.height / 2;
+    //this.interventionCoordinate.x = this.offset.x + this.interventionCoordinate.width / 2;
+    //this.interventionCoordinate.y = this.offset.y + this.interventionCoordinate.height / 2;
+
   }
 
   ngAfterContentInit(): void {
@@ -64,6 +72,8 @@ export class InterventionComponent implements OnInit, AfterViewInit, AfterConten
 
   ngOnDestroy() {
     this.redrawGraphSubscription.unsubscribe();
+    this.interFirst.unsubscribe();
+    this.interRemove.unsubscribe();
   }
 
   toChar(num: number) {
@@ -86,12 +96,17 @@ export class InterventionComponent implements OnInit, AfterViewInit, AfterConten
     this.previousPosition = this.interventionCurrentCoordinate();
   }
 
+  //Não está atualizando a posição das outras intervenções nas outras máquinas...
+  onDragEnd(){
+    this.dao.patchObject(ESPIM_REST_Interventions, {id: this.interventionCoordinate.intervention.id, _x : this.interventionCoordinate.x, _y : this.interventionCoordinate.y}).subscribe((data: any) => console.log (data));
+  }
+
+  //È necessário jogar os valores no canal...
   moving() {
     const currentPosition = this.interventionCurrentCoordinate();
     const movement = { x: currentPosition.x - this.previousPosition.x, y: currentPosition.y - this.previousPosition.y };
     this.interventionCoordinate.x = this.interventionCoordinate.x + movement.x;
     this.interventionCoordinate.y = this.interventionCoordinate.y + movement.y;
-
     this.interventionMoved.emit(this.interventionCoordinate);
     this.previousPosition = currentPosition;
   }

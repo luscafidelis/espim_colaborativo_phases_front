@@ -13,8 +13,11 @@ export class Trigger {
 
     this.triggerType = trigger.triggerType || 'time';
 
-    if (this.triggerType === 'time') this.triggerCondition = new Cron(trigger.triggerCondition);
-    else this.triggerCondition = trigger.triggerCondition;
+    if (this.triggerType === 'time'){
+      this.triggerCondition = new Cron(trigger.triggerCondition);
+    }else{ 
+      this.triggerCondition = trigger.triggerCondition;
+    }
 
     this.priority = trigger.priority;
     this.timeOut = trigger.timeOut;

@@ -29,14 +29,12 @@ export class ChannelService {
         //if (data.message == 'guto'){
         //    console.log("Enviado por mim..");
         //} else {
-            console.log(data);
             this.getData$.next(data);
         //}
     }
 
     //Fazer funcionar o socket..
     sendMessage(mensa : any = {}){
-        console.log(mensa);
         this.subject.next({message: mensa, event : 'MOVE'});
     }
 

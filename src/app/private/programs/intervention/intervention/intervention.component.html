@@ -1,4 +1,4 @@
-<div #interventionDiv class="card position-absolute" style="top: 0; width: 300px" cdkDrag [cdkDragFreeDragPosition]="offset" (cdkDragStarted)="onDragStart()" (cdkDragMoved)="moving()" cdkDragBoundary=".interventionBoundary">
+<div #interventionDiv class="card position-absolute" style="top: 0; width: 300px" cdkDrag [cdkDragFreeDragPosition]="offset" (cdkDragStarted)="onDragStart()" (cdkDragMoved)="moving()" cdkDragBoundary=".interventionBoundary"  (cdkDragEnded)="onDragEnd()">
     <div class="d-flex align-items-center justify-content-between bg-primary text-white w-100 p-2" cdkDragHandle>
         <span class="font-weight-bold">{{ interventionCoordinate.orderPosition < 0 ? toChar(interventionCoordinate.orderPosition * -1) : interventionCoordinate.orderPosition }} - {{ interventionCoordinate.typeDescription }}</span>
         <i class="fas fa-times pointer" (click)="remove()"></i>
@@ -33,6 +33,7 @@
         <div class="d-flex w-100">
             <button class="btn btn-outline-primary my-4 mx-auto"  (click)="fileUpload.click()">Anexar mídia <i class="fas fa-paperclip"></i></button>
         </div>
+        
         <esm-question *ngIf="interventionCoordinate.type === 'question'" [graphIndex]="graphIndex" [nextInterventions]="nextInterventions"></esm-question>
         <div *ngIf="interventionCoordinate.type !== 'question' || interventionCoordinate.questionType !== 1">
             <hr style="border-top: 2px dashed #E8E8E8"/>
