@@ -18,7 +18,6 @@ export class Step4Component implements OnInit {
 
   ngOnInit() {
     this.events = this.programsAddService.getEventsInstance();
-    console.log(this.events);
 
     /**
      * Subscribes to changes in the program (whenever the program in programsadd.service.ts is changed, it reflects here too)
