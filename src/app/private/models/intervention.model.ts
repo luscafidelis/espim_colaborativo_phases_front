@@ -33,7 +33,7 @@ export class Intervention {
     this.type = 'empty';
   }
 
-  getTypeDescription() { return 'Mensagem'; }
+  getTypeDescription() { return this.type; }
 }
 
 export class MediaIntervention extends Intervention {

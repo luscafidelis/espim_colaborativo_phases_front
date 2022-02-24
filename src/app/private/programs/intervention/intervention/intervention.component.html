@@ -9,12 +9,12 @@
             <label [for]="graphIndex + '-first'">1ª Intervenção</label>
         </div>
         <div class="w-100 mb-3">
-            <input type="checkbox" [(ngModel)]="interventionCoordinate.obligatory" [id]="graphIndex + '-obligatory'">
+            <input type="checkbox" [(ngModel)]="interventionCoordinate.obligatory" (change)="updateIntervention({obligatory  : interventionCoordinate.obligatory })"  [id]="graphIndex + '-obligatory'">
             <label [for]="graphIndex + '-obligatory'">Obrigatória</label>
         </div>
         <div class="d-flex flex-column">
             <label [for]="graphIndex + '-statement'">Digite a mensagem</label>
-            <textarea [id]="graphIndex + '-statement'" [(ngModel)]="interventionCoordinate.statement"></textarea>
+            <textarea [id]="graphIndex + '-statement'" [(ngModel)]="interventionCoordinate.statement" (change)="updateIntervention({ statement : interventionCoordinate.statement })"></textarea>
         </div>
         
         <!-- Anexar mídia -->

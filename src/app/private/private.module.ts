@@ -52,6 +52,9 @@ import { StepPanelComponent } from './programs/add/step-panel/step-panel.compone
 import { ChannelService } from './channel_socket/socket.service';
 import { InterventionService } from './programs/intervention/intervention.service';
 import { PhasesComponent } from './programs/add/step4/phases/phases.component';
+import { GamificationComponent } from './programs/add/step4/active-event/gamification/gamification.component';
+import { CircleComponent } from './programs/add/step4/active-event/circle/circle.component';
+import { AdvancedComponent } from './programs/add/step4/active-event/advanced/advanced.component';
 
 @NgModule({
     imports: [
@@ -100,6 +103,9 @@ import { PhasesComponent } from './programs/add/step4/phases/phases.component';
       ProgramChatComponent,
       EditoresOnlineComponent,
       PhasesComponent,
+      GamificationComponent,
+      CircleComponent,
+      AdvancedComponent,
       //InterventionService
       ],
   providers: [ChannelService, DAOService, SearchService, ObserversService, DateConverterService, ProgramsAddService, InterventionService]

@@ -2,11 +2,9 @@ import { Injectable } from '@angular/core';
 import {Subject} from 'rxjs';
 import {Intervention, MediaIntervention, QuestionIntervention, TaskIntervention} from '../../models/intervention.model';
 import {SwalComponent} from '@sweetalert2/ngx-sweetalert2';
-import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ActiveEvent} from '../../models/event.model';
 import { ESPIM_REST_Events, ESPIM_REST_Interventions } from 'src/app/app.api';
-import { ProgramsAddService } from '../add/programsadd.service';
 import { DAOService } from '../../dao/dao.service';
 import { ChannelService } from '../../channel_socket/socket.service';
 
@@ -54,7 +52,10 @@ export class InterventionService {
   //Subscrições, vetor para marcar todas as subscrições do service
   inscritos : any[] = [];
 
-  constructor(private router: Router, private route: ActivatedRoute, private http: HttpClient, private canal : ChannelService, public dao : DAOService ) { }
+  //Esta variável serve para definir a instância que chamou o canal e fazer as atualizações no banco quando necessário..
+  chamouCanal : boolean = false;
+
+  constructor(private router: Router, private route: ActivatedRoute, private canal : ChannelService, public dao : DAOService ) { }
   
   //Inicializa os dados do service
   init(program_id: number, event: ActiveEvent, interventions: Intervention[]) {
@@ -80,6 +81,7 @@ export class InterventionService {
           //Adicionar Intervention
           if (prop == 'addIntervention'){
             let criar = true;
+            //Verifica se a intervenção já não está criada para evitar duplicação..
             for (let i = 1; i < this.graphElements.length; i++){
               if (this.graphElements[i].intervention.id == locdata[prop].id){
                 criar = false;
@@ -105,22 +107,30 @@ export class InterventionService {
                   graphIndex = i;
                 }
               }
-              console.log(graphIndex);
               if (graphIndex > 0) {
                 this.graphElements.splice(graphIndex, 1);
                 this.interventionElementsGraph.splice(graphIndex, 1);
-                for (const intervention of this.interventionElementsGraph) {
+                for (let pos=1; pos < this.interventionElementsGraph.length; pos++) {
                   let i = 0;
-                  while (i < intervention.length) {
-                    if (intervention[i] === graphIndex)
-                      intervention[i] = 0;
-                    else if (intervention[i] > graphIndex) {
-                      intervention[i]--;
-                      i++;
+                  while (i < this.interventionElementsGraph[pos].length) {
+                    if (this.interventionElementsGraph[pos][i] === graphIndex){
+                      this.interventionElementsGraph[pos][i] = 0;
+                    } else {
+                      if (this.interventionElementsGraph[pos][i] > graphIndex) {
+                        this.interventionElementsGraph[pos][i]--;
+                      }
                     }
-                    else
-                      i++;
+                    i++;
                   }
+                  console.log(this.graphElements);
+                  console.log(this.interventionElementsGraph);
+                  
+                  this.graphElements[pos].intervention.next= {next : this.interventionElementsGraph[pos]};
+                  //Esta gravação vai ser repetida por todas as máquinas.. Tem que criar uma situação para só um fazer isso..
+                  let grava:any ={};
+                  grava.id = this.graphElements[pos].intervention.id;
+                  grava.next = this.graphElements[pos].intervention.next;
+                  this.dao.patchObject(ESPIM_REST_Interventions,grava).subscribe(data => {});
                 }
                 this.removeIntervention$.next(graphIndex);
                 this.redrawGraph$.next();
@@ -139,7 +149,7 @@ export class InterventionService {
 
   //Alterou o primeira intervenção
   set first(first: number) {
-    this.firstIntervention = first; 
+    this.firstIntervention = first;
     this.redrawGraph$.next(); 
     this.firstInterventionChange$.next(first); 
   }
@@ -176,16 +186,12 @@ export class InterventionService {
     this.interventionElementsGraph.push([0]);
     //agora o next é um campo Json e dentro o vetor next indica as próximas intervenções
     for (let i=0; i < interventions.length; i++){
-      console.log(interventions[i]);
       if (interventions[i].next.next != null){ 
         this.interventionElementsGraph.push(interventions[i].next.next);
       } else {
         this.interventionElementsGraph.push([0]);
       }
     }
-    console.log(this.interventionElementsGraph);
-    console.log(this.graphElements);
-
   }
 
   //Este método atualiza os vetores com os dados de uma nova intervenção criada..
@@ -193,8 +199,6 @@ export class InterventionService {
     //Caso o canal tente criar o mesmo elemento duas vezes..
     let voltar = false;
     for (let i = 1; i < this.graphElements.length; i++){
-      console.log(intervention);
-      console.log(this.graphElement);
       if (this.graphElements[i].intervention.id == intervention.intervention.id){
         voltar = true;
       }
@@ -203,16 +207,14 @@ export class InterventionService {
       console.log('achou um id igual..')
       return;
     }
-    console.log(intervention.intervention.id);
     
     //Verifica se o tipo da intervenção é de questão única que permite múltiplos caminhos..
     if (this.lastInteractedIntervention !== undefined) {
-      if (this.graphElements[this.lastInteractedIntervention].intervention instanceof QuestionIntervention && (this.graphElements[this.lastInteractedIntervention].intervention as QuestionIntervention).questionType === 1)
-        this.interventionElementsGraph[this.lastInteractedIntervention].push(this.interventionElementsGraph.length);
-      else
-        this.interventionElementsGraph[this.lastInteractedIntervention] = [this.interventionElementsGraph.length];
-    }
-    else {
+      //if (this.graphElements[this.lastInteractedIntervention].intervention instanceof QuestionIntervention && (this.graphElements[this.lastInteractedIntervention].intervention as QuestionIntervention).questionType === 1)
+      //  this.interventionElementsGraph[this.lastInteractedIntervention].push(this.interventionElementsGraph.length);
+      //else
+      this.interventionElementsGraph[this.lastInteractedIntervention] = [this.interventionElementsGraph.length];
+    } else {
       this.firstIntervention = 1;
     }
     this.interventionElementsGraph.push([0]);
@@ -227,11 +229,12 @@ export class InterventionService {
   
   /**
    * Processo adicionar intervenção..
-   * O HtmlIntervention vem do Novbar..  
+   * O HtmlIntervention vem do Navbar..  
    * 
    */
   
   addIntervention(intervention: HTMLInterventionElement) {
+    console.log(this.lastInteractedIntervention);
     if (this.lastInteractedIntervention === undefined) {
       intervention.first = true;
     }
@@ -246,31 +249,22 @@ export class InterventionService {
 
     //Estas linhas salvam no banco de dados a alteração da última intervenção
     //Estas linhas serão repetidas no sincgraph para atualizar os vetores...
-    //Verifica se o tipo da intervenção é de questão única que permite múltiplos caminhos..
     if (this.lastInteractedIntervention !== undefined) {
-      if (this.graphElements[this.lastInteractedIntervention].intervention instanceof QuestionIntervention && (this.graphElements[this.lastInteractedIntervention].intervention as QuestionIntervention).questionType === 1){
-        let vetloc = this.interventionElementsGraph[this.lastInteractedIntervention].slice() ;
-        vetloc.push(this.interventionElementsGraph.length);
-        this.graphElements[this.lastInteractedIntervention].intervention.next = {next: vetloc};
-      } else {
-        this.graphElements[this.lastInteractedIntervention].intervention.next = {next : [this.interventionElementsGraph.length]};
-      }
-      console.log(this.graphElements[this.lastInteractedIntervention]);
+      this.graphElements[this.lastInteractedIntervention].intervention.next = {next : [this.interventionElementsGraph.length]};
       let locInt = this.graphElements[this.lastInteractedIntervention].intervention;
       let volta = {id : locInt.id, next : locInt.next};
-      //Precisa atualizar o canal...
-      this.dao.patchObject(ESPIM_REST_Interventions,volta).subscribe((data: any) => {console.log(data)});
+      //Tem que salvar por aqui, senão todo mundo vai salvar e vai crias acessos desencessários
+      this.dao.patchObject(ESPIM_REST_Interventions,volta).subscribe((data: any) => {});
     }
 
     //Cria a nova intervenção e avisa o canal...
-    this.http.post(ESPIM_REST_Interventions,{intervention : intervention.intervention, event : this.event.id}).subscribe((data:any) => 
+    this.dao.postObject(ESPIM_REST_Interventions,{intervention : intervention.intervention, event : this.event.id}).subscribe((data:any) => 
     { 
       intervention.intervention.id=data.id;
       let volta : any = {};
       volta.model = 'event';
       volta.id = this.event.id;
       volta.addIntervention = intervention;
-      console.log(volta);
       this.canal.sendMessage(volta);
     });
   }
@@ -280,9 +274,7 @@ export class InterventionService {
     volta.model = 'event';
     volta.id = this.event.id;
     volta.delIntervention = this.graphElements[graphIndex].intervention.id;
-    console.log(volta);
-    this.dao.patchObject(ESPIM_REST_Events, {id : this.event.id, delIntervention : volta.delIntervention}).subscribe( _ => { });
-    this.canal.sendMessage(volta);
+    this.dao.patchObject(ESPIM_REST_Events, {id : this.event.id, delIntervention : volta.delIntervention}).subscribe( _ => { this.canal.sendMessage(volta); });
   }
 
   finish() {
@@ -309,7 +301,6 @@ export class InterventionService {
 
 
   graphElement(i: number) { return this.graphElements[i]; }
-
 
   setNextFromTo(from: number, to: number) {
     if (this.hasArrow(from, to)) return;
@@ -338,6 +329,14 @@ export class InterventionService {
     this.redrawGraph$.next();
     this.firstInterventionChange$.next(vertice);
   }
+
+  saveUpdate(dado : any = {id : -1}){
+    if (dado.id > 0){
+      this.dao.patchObject(ESPIM_REST_Interventions,dado).subscribe();
+    }
+  }
+
+
 }
 
 export class HTMLInterventionElement {

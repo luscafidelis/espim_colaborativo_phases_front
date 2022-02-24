@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observer } from '../../../models/observer.model';
 import { ProgramsAddService } from '../programsadd.service';
@@ -7,12 +7,15 @@ import {LoginService} from '../../../../security/login/login.service';
 import {ESPIM_REST_Observers} from '../../../../app.api';
 import {DAOService} from '../../../dao/dao.service';
 import {Program} from '../../../models/program.model';
+import { SubSink } from 'subsink';
 
 @Component({
   selector: 'esm-step2',
   templateUrl: './step2.component.html'
 })
-export class Step2Component implements OnInit {
+export class Step2Component implements OnInit, OnDestroy {
+
+  subSynk = new SubSink();
 
   observers: Observer[]; // These are the general observers
   programObservers: Observer[]; // These are the observers of this program
@@ -31,6 +34,11 @@ export class Step2Component implements OnInit {
 
 
   constructor(private dao: DAOService, private programAddService: ProgramsAddService, private formBuilder: FormBuilder, private loginService: LoginService) {}
+  
+  
+  ngOnDestroy(): void {
+    this.subSynk.unsubscribe()
+  }
 
   /**
    * Checks if @observer is also in programObservers
@@ -50,7 +58,7 @@ export class Step2Component implements OnInit {
     /**
      * Subscribes to changes in the program (whenever the program in programsadd.service.ts is changed, it reflects here too)
      */
-    this.programAddService.getProgramObservable().subscribe((programInstance: Program) => {
+    this.subSynk.sink = this.programAddService.getProgramObservable().subscribe((programInstance: Program) => {
       this.observers = this.programAddService.getObservers();
       this.programObservers = this.programAddService.getObserversInstance();
     });
@@ -62,7 +70,7 @@ export class Step2Component implements OnInit {
   addObserver(): void {
     let observer = new Observer(this.addObserverForm.getRawValue());
 
-    this.dao.postObject(ESPIM_REST_Observers, observer).subscribe(data => {
+    this.subSynk.sink = this.dao.postObject(ESPIM_REST_Observers, observer).subscribe(data => {
       observer = new Observer(data);
 
       //this.observers.push(observer);

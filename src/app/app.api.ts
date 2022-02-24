@@ -1,8 +1,8 @@
 // configure default backend location
-export const ESPIM_API = 'https://espim-back.herokuapp.com/';
-//export const ESPIM_API = 'http://localhost:8000/';
-export const CHANNEL_URL = 'wss://espim-back.herokuapp.com/ws/chat/';
-//export const CHANNEL_URL = 'ws://localhost:8000/ws/chat/';
+//export const ESPIM_API = 'https://espim-back.herokuapp.com/';
+export const ESPIM_API = 'http://localhost:8000/';
+//export const CHANNEL_URL = 'wss://espim-back.herokuapp.com/ws/chat/';
+export const CHANNEL_URL = 'ws://localhost:8000/ws/chat/';
 
 
 // configure participants module url
@@ -34,6 +34,21 @@ export const ESPIM_REST_Editores: string = ESPIM_API +  'editores/';
 
 //configura chat module url
 export const ESPIM_REST_Phases: string = ESPIM_API +  'phases/';
+
+//Configura Circle
+export const ESPIM_REST_CircleTypes: string = ESPIM_API +  'circle-types/';
+
+//Configura Circle Event
+export const ESPIM_REST_SameCircleEvents: string = ESPIM_API +  'same-circle-events/';
+
+//Configura Circle Event
+export const ESPIM_REST_CustomCircleEvents: string = ESPIM_API +  'custom-circle-events/';
+
+//Configura Circle Event
+export const ESPIM_REST_RespostCircleEvents: string = ESPIM_API +  'respost-circle-events/';
+
+//Configura Circle Event
+export const ESPIM_REST_TargetCircleEvents: string = ESPIM_API +  'target-circle-events/';
 
 // config default page size
 export const PAGE_SIZE = 4;

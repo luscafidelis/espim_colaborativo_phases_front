@@ -14,8 +14,8 @@ export class Observer {
     public institution: string;
     public address: Address;
 
-    constructor(observer: any) {
-      this.id = observer.id;
+    constructor(observer: any = {}) {
+      this.id = observer.id || -1;
       this.name = observer.name;
       this.email = observer.email;
       this.phoneNumber = observer.phoneNumber;

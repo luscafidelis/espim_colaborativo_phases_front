@@ -1,7 +1,6 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {QuestionIntervention} from '../../../../../models/intervention.model';
 import {HTMLInterventionElement, InterventionService} from '../../../intervention.service';
-import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'esm-unique-choice',
@@ -12,7 +11,10 @@ export class UniqueChoiceComponent implements OnInit, OnChanges {
   @Input() nextInterventions: HTMLInterventionElement[];
 
   intervention: QuestionIntervention;
+  id : number = -1;
 
+  locAlternative : string [] = [];
+ 
   get alternatives() { return this.intervention?.options; }
   get conditions() { return this.intervention?.conditions; }
 
@@ -20,6 +22,8 @@ export class UniqueChoiceComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.intervention = this.interventionService.graphElement(this.graphIndex).intervention as QuestionIntervention;
+    this.id = this.intervention.id;
+    this.locAlternative = this.alternatives.slice();
     this.interventionService.newInterventions$.subscribe(value => {
       if (this.interventionService.lastInteractedIntervention === this.graphIndex) {
         let change = false;
@@ -45,7 +49,9 @@ export class UniqueChoiceComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     // graphIndex only changes when removing an intervention and unique-choice needs special treatment so graphIndex gets updated in a subscription in ngInit()
     // if (changes.graphIndex) this.graphIndex = changes.graphIndex.currentValue;
-    if (changes.nextInterventions) this.nextInterventions = changes.nextInterventions.currentValue;
+    if (changes.nextInterventions){ 
+      this.nextInterventions = changes.nextInterventions.currentValue;
+    }
   }
 
   toChar(num: number) {
@@ -55,31 +61,51 @@ export class UniqueChoiceComponent implements OnInit, OnChanges {
   addChoice(nextIndex: number = 0) {
     const text = `Alternativa ${this.alternatives.length + 1}`;
     this.alternatives.push(text);
+    this.locAlternative.push(text);
     this.conditions[text] = nextIndex;
+    //this.interventionService.saveUpdate({id : this.id, conditions : this.conditions, options : this.alternatives})
   }
 
   removeChoice(choiceIndex: number) {
+    delete this.conditions[this.alternatives[choiceIndex]];
     this.alternatives.splice(choiceIndex, 1);
+    this.locAlternative.splice(choiceIndex, 1);
     this.updateEdges();
+    this.updateIntervention({conditions : this.conditions, options : this.alternatives, next : {next : this.interventionService.interventionElementsGraph[this.graphIndex]}});
+
   }
 
   updateEdges() {
     this.interventionService.removeEdges(this.graphIndex);
-    for (const alternative of this.alternatives)
-      if (this.conditions[alternative] !== 0) this.interventionService.setNextFromTo(this.graphIndex, Number.parseInt(this.conditions[alternative]));
+    for (const alternative of this.alternatives){
+      if (this.conditions[alternative] !== 0) {
+        this.interventionService.setNextFromTo(this.graphIndex, Number.parseInt(this.conditions[alternative]));
+      }
+    }
   }
 
   setNextTo() {
     this.updateEdges();
   }
 
-  onTextChange(alternativeIndex: number, oldAlternative: string, newAlternative: string) {
-    this.conditions[newAlternative] = this.conditions[oldAlternative];
-    this.alternatives[alternativeIndex] = newAlternative;
-    delete this.conditions[oldAlternative];
+  onTextChange(index: number) {
+    //this.conditions[newAlternative] = this.conditions[oldAlternative];
+    //delete this.conditions[oldAlternative];
+    //this.alternatives[alternativeIndex] = newAlternative;
+    this.conditions[this.locAlternative[index]] = this.conditions[this.alternatives[index]];
+    delete this.conditions[this.alternatives[index]];
+    this.alternatives[index] = this.locAlternative[index];
+    this.updateIntervention({conditions : this.conditions, options : this.alternatives})
   }
 
   onNextChange(alternative: string, nextSelected: string) {
     this.conditions[alternative] = Number.parseInt(nextSelected);
+    this.updateEdges();
+    this.updateIntervention({conditions : this.conditions, next : {next : this.interventionService.interventionElementsGraph[this.graphIndex]}})
+  }
+
+  updateIntervention(dados : any = {id : -1}) {
+    dados.id = this.intervention.id;
+    this.interventionService.saveUpdate(dados);
   }
 }

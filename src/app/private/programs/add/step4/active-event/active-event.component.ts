@@ -1,38 +1,50 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActiveEvent} from '../../../../models/event.model';
 import {ProgramsAddService} from '../../programsadd.service';
 import {SwalComponent} from '@sweetalert2/ngx-sweetalert2';
 import {DAOService} from '../../../../dao/dao.service';
-import {ESPIM_REST_Events, ESPIM_REST_Programs, ESPIM_REST_Triggers} from '../../../../../app.api';
+import {ESPIM_REST_Events, ESPIM_REST_Interventions, ESPIM_REST_Programs, ESPIM_REST_Triggers} from '../../../../../app.api';
 import {Trigger} from '../../../../models/trigger.model';
 import {ActivatedRoute, Router} from "@angular/router";
 import {InterventionService} from "../../../intervention/intervention.service";
 import { ChannelService } from 'src/app/private/channel_socket/socket.service';
 import { Intervention, MediaIntervention, QuestionIntervention, TaskIntervention } from 'src/app/private/models/intervention.model';
 import { CONFIG } from 'ngx-social-login/lib/models/config-injection-token';
+import { SubSink } from 'subsink';
 
 @Component({
   selector: 'esm-active-event',
   templateUrl: './active-event.component.html'
 })
-export class ActiveEventComponent implements OnInit {
+export class ActiveEventComponent implements OnInit, OnDestroy {
 
   @Input() event: ActiveEvent;
 
+  subSynk = new SubSink();
+
+  isOpenAdvanced = true;
+  isOpenCircle = true;
+  isOpenGame = true;
   isOpen = false;
   isAddEvent = false; // This is only true if this instance is gonna be the one to add
 
   constructor(private programsAddService: ProgramsAddService, private interventionService: InterventionService, private dao: DAOService, 
     private router: Router, private route: ActivatedRoute, private canal : ChannelService) { }
+  
+  
+  ngOnDestroy(): void {
+    this.subSynk.unsubscribe();
+  }
 
   ngOnInit() {
     if (!this.event) {
       this.resetEvent();
     } else {
+      console.log(this.event);
       this.event = new ActiveEvent(this.event);
     }
   //Nesta linha o service irá escutar o websocket..
-  this.canal.getData$.subscribe( data => this.sincronizeEvent(data));
+  this.subSynk.sink = this.canal.getData$.subscribe( data => this.sincronizeEvent(data));
   }
 
   resetEvent() {
@@ -44,7 +56,7 @@ export class ActiveEventComponent implements OnInit {
   }
 
   addEvent() {
-    this.dao.postObject(ESPIM_REST_Events, this.event).subscribe(data => {
+    this.subSynk.sink = this.dao.postObject(ESPIM_REST_Events, this.event).subscribe(data => {
         const event = new ActiveEvent(data);
         this.programsAddService.saveStep({addEvent : event})
     });
@@ -70,7 +82,7 @@ export class ActiveEventComponent implements OnInit {
 
   updateEvent(eventChanges: any) {
     eventChanges.id = this.event.getId();
-    this.dao.patchObject(ESPIM_REST_Events, eventChanges).subscribe((data:any) => {
+    this.subSynk.sink = this.dao.patchObject(ESPIM_REST_Events, eventChanges).subscribe((data:any) => {
       eventChanges.model = 'event';
       this.canal.sendMessage(eventChanges);
     } );
@@ -136,7 +148,7 @@ export class ActiveEventComponent implements OnInit {
 
   addTrigger(trigger: any) {
     //Grava a trigger no evento...
-    this.dao.postObject(ESPIM_REST_Triggers,trigger). subscribe((data:any) => {
+    this.subSynk.sink = this.dao.postObject(ESPIM_REST_Triggers,trigger). subscribe((data:any) => {
       this.updateEvent({addTrigger : data});
       //this.event.getTriggersId().push(data.id);
       //this.event.getTriggersInstances().push( new Trigger(data));
@@ -155,8 +167,27 @@ export class ActiveEventComponent implements OnInit {
     return this.event.getTriggersInstances();
   }
 
+  openAdvanced(){
+    this.isOpenAdvanced = !this.isOpenAdvanced;
+  }
+
+  openCircle(){
+    this.isOpenCircle = !this.isOpenCircle;
+  }
+
+  openGame(){
+    this.isOpenGame = !this.isOpenGame;
+  }
+  
+
   goToInterventions() {
-    this.interventionService.init(this.programsAddService.program.id, this.event, this.event.getInterventionsInstances());
-    this.router.navigate([this.event.getId(), 'interventions'], {relativeTo: this.route});
+    //Antes de abrir o editor de intervenções atualiza o evento com os dados do banco..
+    console.log(this.event.getInterventionsInstances());
+    this.subSynk.sink=this.dao.getNewObject(ESPIM_REST_Interventions,{ActiveEvent : this.event.id}).subscribe((data : any) => {
+      console.log(data);
+      this.event.criaInterventions(data);
+      this.interventionService.init(this.programsAddService.program.id, this.event, this.event.getInterventionsInstances());
+      this.router.navigate([this.event.getId(), 'interventions'], {relativeTo: this.route});
+    })
   }
 }

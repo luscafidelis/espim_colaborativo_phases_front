@@ -53,6 +53,7 @@ export class InterventionComponent implements OnInit, AfterViewInit, AfterConten
     });
     this.interRemove = this.interventionService.removeIntervention$.subscribe(index => {
       if (this.graphIndex > index) this.graphIndex -= 1;
+      console.log(this.graphIndex);
     });
     console.log(this.interventionCoordinate);
   }
@@ -65,15 +66,20 @@ export class InterventionComponent implements OnInit, AfterViewInit, AfterConten
 
   }
 
+  updateIntervention (campo : any){
+    campo.id = this.interventionCoordinate.intervention.id;
+    this.dao.patchObject(ESPIM_REST_Interventions,campo).subscribe((data:any) => {console.log(data)});
+  }
+
   ngAfterContentInit(): void {
     this.updateNextInterventions();
     this.redrawGraphSubscription = this.interventionService.redrawGraph$.subscribe(_ => this.updateNextInterventions());
   }
 
   ngOnDestroy() {
-    this.redrawGraphSubscription.unsubscribe();
-    this.interFirst.unsubscribe();
-    this.interRemove.unsubscribe();
+    //this.redrawGraphSubscription.unsubscribe();
+    //this.interFirst.unsubscribe();
+    //this.interRemove.unsubscribe();
   }
 
   toChar(num: number) {
@@ -84,7 +90,9 @@ export class InterventionComponent implements OnInit, AfterViewInit, AfterConten
     this.nextInterventions = this.interventionService.graphElements;
     // If this intervention isn't of "unique-choice", this intervention will connect to only one other, that's why we only need to take the first connection (interventionElementsGraph[this.graphIndex][0]),
     // if there is no connection, 0. If it is unique-choice, "nextInterventionSelect" will not be used so it doesn't matter
-    this.nextInterventionSelect = this.interventionService.interventionElementsGraph[this.graphIndex][0]?.toString() || '0';
+    if (this.graphIndex < this.interventionService.interventionElementsGraph.length){
+      this.nextInterventionSelect = this.interventionService.interventionElementsGraph[this.graphIndex][0]?.toString() || '0';
+    }
   }
 
   interventionCurrentCoordinate() {
@@ -96,7 +104,7 @@ export class InterventionComponent implements OnInit, AfterViewInit, AfterConten
     this.previousPosition = this.interventionCurrentCoordinate();
   }
 
-  //Não está atualizando a posição das outras intervenções nas outras máquinas...
+  //Não está atualizando a posição das outras intervenções nas outras máquinas...Tem que arrumar.....
   onDragEnd(){
     this.dao.patchObject(ESPIM_REST_Interventions, {id: this.interventionCoordinate.intervention.id, _x : this.interventionCoordinate.x, _y : this.interventionCoordinate.y}).subscribe((data: any) => console.log (data));
   }
@@ -115,17 +123,22 @@ export class InterventionComponent implements OnInit, AfterViewInit, AfterConten
     const from = this.graphIndex;
     if (this.nextInterventionSelect === '0') {
       this.interventionService.removeEdges(from);
-      return;
+    } else {
+      const to = Number.parseInt(this.nextInterventionSelect);
+      this.interventionService.removeEdges(from, false);
+      this.interventionService.setNextFromTo(from, to);
     }
-    const to = Number.parseInt(this.nextInterventionSelect);
-    this.interventionService.removeEdges(from, false);
-    this.interventionService.setNextFromTo(from, to);
+    let volta : any = {};
+    volta.id = this.interventionCoordinate.intervention.id;
+    volta.next = {next : this.interventionService.interventionElementsGraph[this.graphIndex]};
+    this.interventionService.saveUpdate(volta);
   }
 
   setFirst() {
     if (!this.interventionCoordinate.first) {
       this.interventionCoordinate.first = true;
       this.interventionService.setFirst(this.graphIndex);
+      this.updateIntervention({first : true});
     }
   }
 
@@ -133,8 +146,10 @@ export class InterventionComponent implements OnInit, AfterViewInit, AfterConten
     this.interventionService.removeIntervention(this.graphIndex);
   }
 
+  
+  
+  //Tem que arrumar para os arquivos serem armazenados no bucket...
   onFileSelected(event) {
-
     const file:File = event.target.files[0];
     const reader = new FileReader();
 

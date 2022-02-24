@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Participant } from '../../../models/participant.model';
 import { ProgramsAddService } from '../programsadd.service';
@@ -6,12 +6,15 @@ import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import {DAOService} from '../../../dao/dao.service';
 import {Program} from '../../../models/program.model';
 import {ESPIM_REST_Participants} from '../../../../app.api';
+import { SubSink } from 'subsink';
 
 @Component({
   selector: 'esm-step3',
   templateUrl: './step3.component.html'
 })
-export class Step3Component implements OnInit {
+export class Step3Component implements OnInit, OnDestroy {
+
+  subSynk = new SubSink();
 
   participants: Participant[]; // These are the general participants
   programParticipants: Participant[]; // These are the participants of this program
@@ -30,6 +33,10 @@ export class Step3Component implements OnInit {
 
 
   constructor(private dao: DAOService, private programAddService: ProgramsAddService, private formBuilder: FormBuilder) { }
+  
+  ngOnDestroy(): void {
+    this.subSynk.unsubscribe();
+  }
 
   /**
    * Checks if @participant is also in programParticipant
@@ -44,7 +51,7 @@ export class Step3Component implements OnInit {
     /**
      * Subscribes to changes in the program (whenever the program in programsadd.service.ts is changed, it reflects here too)
      */
-    this.programAddService.getProgramObservable().subscribe((programInstance: Program) => {
+    this.subSynk.sink = this.programAddService.getProgramObservable().subscribe((programInstance: Program) => {
       this.participants = this.programAddService.getParticipants();
       this.programParticipants = this.programAddService.getParticipantsInstance();
     });
@@ -54,7 +61,7 @@ export class Step3Component implements OnInit {
    * Adds an participant
    */
   addParticipant(): void {
-    this.dao.postObject(ESPIM_REST_Participants, new Participant(this.addParticipantForm.getRawValue())).subscribe(data => {
+    this.subSynk.sink = this.dao.postObject(ESPIM_REST_Participants, new Participant(this.addParticipantForm.getRawValue())).subscribe(data => {
       const participant = new Participant(data);
 
       //this.participants.push(participant);

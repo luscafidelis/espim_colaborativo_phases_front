@@ -1,3 +1,5 @@
+import { CircleRelationship } from "./circle.model";
+
 export class Participant {
     public id: number;
     public name: string;
@@ -5,6 +7,7 @@ export class Participant {
     public phoneNumber: string;
     public profilePhotoUrl: string;
     public alias: string;
+    public circle : CircleRelationship[];
 
     constructor(participant?: any) {
         if (participant) {
@@ -14,6 +17,7 @@ export class Participant {
           this.phoneNumber = participant.phoneNumber ? participant.phoneNumber : '';
           this.profilePhotoUrl = participant.profilePhotoUrl ? participant.profilePhotoUrl : '';
           this.alias = participant.alias ? participant.alias : '';
+          this.circle = participant.circle ? participant.circle : [];
         } else {
           this.id = null;
           this.name = '';
@@ -21,6 +25,7 @@ export class Participant {
           this.phoneNumber = '';
           this.profilePhotoUrl = '';
           this.alias = '';
+          this.circle = [];
         }
     }
 

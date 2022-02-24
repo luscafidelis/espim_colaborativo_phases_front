@@ -1,25 +1,28 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProgramsAddService } from '../programsadd.service';
 import { DateConverterService } from '../../../../util/util.date.converter.service';
 import { Program } from '../../../models/program.model';
 import { Router } from '@angular/router';
+import { SubSink } from 'subsink';
 import {isNumber} from '@ng-bootstrap/ng-bootstrap/util/util';
 
 @Component({
   selector: 'esm-step1',
   templateUrl: './step1.component.html'
 })
-export class Step1Component implements OnInit {
+export class Step1Component implements OnInit, OnDestroy {
 
+  subSink = new SubSink();
+  
   programInformationForm: FormGroup = this.formBuilder.group({
     title: ['', [Validators.required]],
     description: [''],
     isPublic: [false],
     beginDate: ['', [Validators.required]],
-    beginTime: [{ hour: 10, minute: 0, second: 0 }],
+    beginTime: [{ hour: 0, minute: 0, second: 0 }],
     endDate: [null],
-    endTime: [null]
+    endTime: [{ hour: 0, minute: 0, second: 0 }]
   });
 
   get invalidTitle() {
@@ -32,12 +35,17 @@ export class Step1Component implements OnInit {
   }
 
   constructor(private programAddService: ProgramsAddService, private formBuilder: FormBuilder, private router: Router, private dateConverterService: DateConverterService) {}
+  
+  ngOnDestroy(): void {
+    this.subSink.unsubscribe();
+  }
 
   /**
    * Sets programInformationForm according to the passed program
    * @param program -
    */
   setProgram(program: Program) {
+    console.log('Setou o programa ' , program);
     if (!program)
       return;
 
@@ -71,7 +79,7 @@ export class Step1Component implements OnInit {
     /**
      * Subscribes to changes in the program (whenever the program in programsadd.service.ts is changed, it reflects here too)
      */
-    this.programAddService.getProgramObservable().subscribe((programInstance: Program) => this.setProgram(programInstance));
+    this.subSink.sink = this.programAddService.getProgramObservable().subscribe((programInstance: Program) => this.setProgram(programInstance));
   }
 
   //Atualiza os campos no banco quando são alterados

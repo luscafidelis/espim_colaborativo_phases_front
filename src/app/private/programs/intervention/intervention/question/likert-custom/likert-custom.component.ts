@@ -12,12 +12,20 @@ export class LikertCustomComponent implements OnInit, OnChanges {
 
   intervention: QuestionIntervention;
 
+  locScales : string [] = [];
+
   get scales() { return this.intervention.scales; }
 
   constructor(private interventionService: InterventionService) { }
 
   ngOnInit(): void {
     this.intervention = this.interventionService.graphElement(this.graphIndex).intervention as QuestionIntervention;
+    if (this.intervention.scales.length > 0) {
+      this.locScales = this.intervention.scales.slice();
+    } else {
+      this.locScales = [];
+      this.intervention.scales = [];
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -26,11 +34,23 @@ export class LikertCustomComponent implements OnInit, OnChanges {
   }
 
   addChoice() {
-    this.scales.push('Valor' + (this.scales.length + 1));
+    this.scales.push('');
+    this.locScales.push('');
   }
 
   removeChoice(choiceIndex: number) {
     this.scales.splice(choiceIndex, 1);
+    this.locScales.splice(choiceIndex, 1);
+  }
+
+  updateIntervention(dados : any = {id : -1}) {
+    dados.id = this.intervention.id;
+    this.interventionService.saveUpdate(dados);
+  }
+
+  encheVetor(pos: number = 0){
+    this.scales[pos]= this.locScales[pos];
+    this.updateIntervention({scales : this.scales});
   }
 
 }

@@ -23,23 +23,7 @@ import { ChannelService } from '../../channel_socket/socket.service';
 })
 export class ProgramsAddService {
   //Programa
-  public program: Program = {
-    id: -1,
-    title: '',
-    description: '',
-    starts: '',
-    ends: '',
-    updateDate: '',
-    hasPhases: false,
-    isPublic: false,
-    beingEdited: false,
-    beingDuplicated: false,
-    editor: undefined,
-    observers:  [],
-    participants: [],
-    events: [],
-    chat_program: []
-  };
+  public program: Program = new Program();
 
   //Verificar se foi iniciado ou não a lista de participantes e de observadores
   started : boolean = false;
@@ -73,15 +57,18 @@ export class ProgramsAddService {
     // If it null, sets the program to empty. Else, does a get request to get the program and then set it.
     if (programId !== -1){
       this.daoService.getObject(ESPIM_REST_Programs, programId.toString()).subscribe((data: any) => 
-        { this.program = data;
+        { 
+          console.log(data);
+          this.program = new Program(data);
+          console.log(this.program);
           this.programObservable$.next(this.program);
         }
       );
     } else {
       // Adds the current user as observer
-      this.program = {id: -1, title: '', description:  '', starts: '',  ends: '', updateDate: '', 
+      this.program = new Program({id: -1, title: 'Sem nome', description:  'Sem nome', starts: '',  ends: '', updateDate: '', 
                       hasPhases: false, isPublic: false, beingEdited: false, beingDuplicated: false, editor : undefined,
-                      observers:  [], participants: [], events: [], chat_program: []}
+                      observers:  [], participants: [], events: [], chat_program: []});
       const userId = Number.parseInt(this.loginService.getUser().id);
       //Busca os dados do observador que está criando o programa no banco de dados
       this.daoService.getObject(ESPIM_REST_Observers,userId.toString()).subscribe(data => {
@@ -127,12 +114,15 @@ export class ProgramsAddService {
   /**
    * Saves an step patching "programs". Patching results in updating the attributes specified in programs
    */
+  codigoMensagem = 0;
   saveStep(dados:any = {}) {
     console.log(this.program);
     dados.id = this.program.id;
     this.daoService.patchObject(ESPIM_REST_Programs, dados).subscribe((data : any) => {
       //this.program = data;
       dados.model = 'program';
+      this.codigoMensagem = Math.random();
+      dados.codigoMensagem = this.codigoMensagem;
       this.canal.sendMessage(dados);
       //this.programObservable$.next(this.program); 
     });
@@ -141,9 +131,17 @@ export class ProgramsAddService {
   /**
    * Este método recebe as atualizações que são enviadas pelo canal e atualiza o programa 
    * que está em edição... Todas as atualizações são enviadas pelo canal..
+   * 
    */
+  //Serve para não deixar mensagens repetidas
+  ultima : number = 0;
   updateProgram(data:any){
     let locdata = data.payload.message;
+    if (locdata.codigoMensagem != this.ultima){
+      this.ultima = locdata.codigoMensagem;
+    } else {
+      return;
+    }
     if (locdata.model == 'program' && locdata.id == this.program.id ){
       for (let prop in locdata){
         if (prop != 'model' && prop != 'id'){
@@ -211,12 +209,14 @@ export class ProgramsAddService {
     }
   }
 
-  getObservers(): Observer[] { return this.observers; }
-  getObserversInstance(): Observer[] { return this.program.observers; }
+  getObservers(): Observer[] { 
+    console.log(this.program);
+    return this.observers; }
+  getObserversInstance(): Observer[] { return this.program?.observers || []; }
   getParticipants(): Participant[] { return this.participants; }
-  getParticipantsInstance(): Participant[] { return this.program.participants; }
-  getEventsId(): number[] { return this.program.events.map((evento) => evento.getId()) }
-  getEventsInstance(): Event[] { return this.program.events; }
+  getParticipantsInstance(): Participant[] { return this.program?.participants || []; }
+  getEventsId(): number[] { return this.program?.events.map((evento) => evento.getId()) || [] }
+  getEventsInstance(): Event[] {return this.program?.events || []; }
 
  
   delete_event(eventId: number): void {

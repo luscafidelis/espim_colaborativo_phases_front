@@ -3,7 +3,7 @@ import {
   Component,
   ComponentFactory,
   ComponentFactoryResolver,
-  ComponentRef, ElementRef, HostListener,
+  ComponentRef, 
   OnInit, Renderer2,
   ViewChild,
   ViewContainerRef
@@ -11,8 +11,7 @@ import {
 import {InterventionComponent} from './intervention/intervention.component';
 import {HTMLInterventionElement, InterventionService} from './intervention.service';
 import {NAVBAR_HEIGHT} from './navbar/navbar.component';
-import { ReplaySubject, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs-compat/operator/takeUntil';
+
 
 @Component({
   selector: 'esm-interventions',
@@ -129,7 +128,7 @@ export class InterventionsComponent implements OnInit, AfterViewInit {
     //https://ichi.pro/pt/como-criar-um-vazamento-de-memoria-no-angular-83941828037515
     this.subscriptiondel.unsubscribe();
     this.subscriptionnew.unsubscribe();
-    this.subscriptioncom.unsubscribe();
+    //this.subscriptioncom.unsubscribe();
 
   }
 }

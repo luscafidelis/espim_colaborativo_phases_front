@@ -109,7 +109,7 @@ export class ActiveEvent extends Event{
         //this.interventionsInstances = [];
     }
 
-    criaInterventions (interventions : Intervention[]){
+    public criaInterventions (interventions : any[]){
         this.interventions = [];
         for (let i = 0; i < interventions.length; i++) {
             if (interventions[i].type === 'empty')

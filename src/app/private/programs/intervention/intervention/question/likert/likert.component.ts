@@ -14,14 +14,23 @@ export class LikertComponent implements OnInit, OnChanges {
 
   // Normal Likert only has 1 scale
   get scale() { return this.intervention.scales[0]; }
-  set scale(scale) { this.intervention.scales[0] = scale; }
-  get affirmatives() { return this.intervention.options; }
+  set scale(scale) { this.intervention.scales[0] = scale; 
+                     this.updateIntervention({scales : this.intervention.scales})}
 
   constructor(private interventionService: InterventionService) { }
 
+  locOptions : string[] = [];
+  palavra : string;
+  
   ngOnInit(): void {
+
     this.intervention = this.interventionService.graphElement(this.graphIndex).intervention as QuestionIntervention;
-    this.scale = '5 AGREEMENT';
+    this.locOptions = this.intervention.options.slice();
+    if (this.intervention.scales.length > 0) {
+      this.scale = this.intervention.scales[0];
+    } else {
+      this.scale = '5 AGREEMENT';
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -30,10 +39,22 @@ export class LikertComponent implements OnInit, OnChanges {
   }
 
   addChoice() {
-    this.affirmatives.push('Afirmativa' + (this.affirmatives.length + 1));
+    this.locOptions.push('');
+    this.intervention.options.push('');
   }
 
   removeChoice(choiceIndex: number) {
-    this.affirmatives.splice(choiceIndex, 1);
+    this.locOptions.splice(choiceIndex, 1);
+    this.updateIntervention({options : this.locOptions});
+  }
+
+  updateIntervention(dados : any = {id : -1}) {
+    dados.id = this.intervention.id;
+    this.interventionService.saveUpdate(dados);
+  }
+
+  encheVetor(pos: number = 0){
+    this.locOptions[pos]= this.intervention.options[pos];
+    this.updateIntervention({options : this.intervention.options});
   }
 }

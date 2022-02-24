@@ -1,3 +1,40 @@
+<!--Adicionar participante menu popup-->
+<form class="bg-white shadow-lg popup p-5 collapse" style="z-index: 3; top: 10%" id="addParticipant" [formGroup]="addParticipantForm">
+    <h3 class="mb-5">Adicionar participante</h3>
+    <div class="mb-3">
+      <label class="mb-0" for="email">E-mail <span class="text-danger">*</span>:</label>
+      <input class="w-100" type=email id="email" formControlName="email">
+    </div>
+    <div class="mb-3">
+      <label class="mb-0" for="name">Nome <span class="text-danger">*</span>:</label>
+      <input class="w-100" type=text id="name" formControlName="name">
+    </div>
+    <div class="mb-3">
+      <label class="mb-0" for="nickname">Alias:</label>
+      <input class="w-100" type=text id="nickname" formControlName="alias">
+    </div>
+    <div class="d-flex justify-content-between mt-5">
+      <button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#addParticipant" aria-expanded="false" aria-controls="addParticipantCollapseCancel" (click)="addParticipantForm.reset()">Cancelar</button>
+      <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#addParticipant" aria-expanded="false" aria-controls="addParticipantCollapseAdd" (click)="addParticipant()">Adicionar</button>
+    </div>
+</form>
+
+
+<!--Adicionar Tipo Círculo menu popup-->
+<form class="bg-white shadow-lg popup p-5 collapse" style="z-index: 3; top: 10%" id="addCircleType" [formGroup]="addCircleTypeForm">
+    <h3 class="mb-5">Adicionar Tipos Participantes Círculo</h3>
+    <div class="mb-3">
+      <label class="mb-0" for="email">Descrição <span class="text-danger">*</span>:</label>
+      <input class="w-100" type=text id="description" formControlName="description">
+    </div>
+    <div class="d-flex justify-content-between mt-5">
+      <button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#addCircleType" aria-expanded="false" aria-controls="addCircleTypeCollapseCancel" (click)="addCircleTypeForm.reset()">Cancelar</button>
+      <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#addCircleType" aria-expanded="false" aria-controls="addCircleTypeCollapseAdd" (click)="addCircleType()">Adicionar</button>
+    </div>
+</form>
+
+
+
 <div class="card mx-auto mt-4 w-main container-fluid">
     <div class="row">
         <section class="col-12 mx-auto bg-white rounded p-xl-2 p-0">
@@ -35,43 +72,96 @@
                                             class="form-control-plaintext border-bottom" formControlName="alias">
                                     </div>
                                 </div>
-                                <button class="btn btn-secondary text-center font-weight-bold"
-                                    [swal]="swalSaveAndAddAnother" name="saveAndAddAnother"
-                                    *ngIf="(participantForm.valid && !participantForm.get('id').value)" translate>
-                                    private.participants.add.saveAndAddAnother
-                                </button>
-                                <button type="submit" name="saveButton"
-                                    class="btn btn-success mx-auto col-7 col-xl-4 p-3 px-xl-0 mt-4 mt-xl-0 font-weight-bold"
-                                    [disabled]="participantForm.invalid" *ngIf="participantForm.valid"
-                                    [swal]="swalSaveButton" translate>
-                                    private.participants.add.saveButton
-                                </button>
-                                <!-- Sweet alert messages-->
-                                <span>
-                                    <swal #swalSaveAndAddAnother
-                                        title="{{'private.participants.add.messageTitle'|translate}}"
-                                        text="{{'private.participants.add.addMessage'|translate}}" type="question"
-                                        [showCancelButton]="true" [focusCancel]="true"
-                                        (confirm)="saveAndAddAnother($event)">
-                                    </swal>
-                                    <swal #swalSaveButton title="{{'private.participants.add.messageTitle'|translate}}"
-                                        text="{{'private.participants.add.addMessage'|translate}}" type="question"
-                                        [showCancelButton]="true" [focusCancel]="true" (confirm)="save($event)">
-                                    </swal>
-                                    <swal #swalSaveSuccess title="{{'private.participants.add.saveTitle'|translate}}"
-                                        text="{{'private.participants.add.saveMessage'|translate}}" type="success"
-                                        [focusCancel]="true" (confirm)="onSaveSuccess($event)">
-                                    </swal>
-                                    <swal #swalSaveAndAddAnotherSuccess
-                                        title="{{'private.participants.add.saveTitle'|translate}}"
-                                        text="{{'private.participants.add.saveMessage'|translate}}" type="success"
-                                        [focusCancel]="true" (confirm)="onSaveAndAddAnotherSuccess($event)">
-                                    </swal>
-                                </span>
+                            </div>
+                            <hr>
+                            <!--Participante Círculo -->
+                            <div class="row justify-content-center" style="margin-top: 20px;">
+                                <h2 class="text-center mb-1">Participantes Círculo</h2>
+                                <button class="btn btn-primary ml-2 btn-sm rounded-circle" (click)="addCirculo()"><i class="fa fa-plus"></i></button>
+                            </div>
+                            <hr>
+                            <div formArrayName="circle">
+                                <!--
+                                <div class="d-flex flex-row align-items-center">
+                                    <div class="col-4">Tipo do Círculo</div>
+                                    <div class="col-8">Participante Círculo</div>
+                                </div>
+                                -->
+                                <div *ngFor="let member of circuloList.controls; let i=index">
+                                    <div class="d-flex flex-row align-items-center mt-10" [formGroupName]="i">
+                                        <div class="col-4">  
+                                            <select class="form-control" formControlName="id_type">
+                                                <option *ngFor="let op of list_type" [value]="op.id">{{op.description}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-7">  
+                                            <select class="form-control" formControlName="id_circle">
+                                                <option *ngFor="let op of list_participant" [value]="op.id">{{op.name}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-1">  
+                                            <button class="btn btn-danger ml-2 btn-sm rounded-circle" (click)="removeCirculo(i)">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                </div>
+                                <div *ngIf="circuloList.length > 0" class="d-flex flex-row align-items-center justify-content-center mt-20">
+                                    <div class="col-4">
+                                        Adicionar novo tipo:
+                                        <button class="btn btn-primary ml-2 btn-sm rounded-circle" data-toggle="collapse" data-target="#addCircleType" aria-expanded="false" aria-controls="addCircleTypeCollapse"><i class="fa fa-edit"></i></button>
+                                    </div>
+                                    <div class="col-8">
+                                        Adicionar novo participante:
+                                        <button class="btn btn-primary ml-2 btn-sm rounded-circle" data-toggle="collapse" data-target="#addParticipant" aria-expanded="false" aria-controls="addParticipantCollapse"><i class="fa fa-edit"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="height: 50px;"></div>
+                            <hr>
+                            <div class="d-flex flex-row align-items-center justify-content-center mt-10" >
+                                   <!--
+                                    <button class="btn btn-secondary"
+                                        [swal]="swalSaveAndAddAnother" name="saveAndAddAnother"
+                                        translate>
+                                        private.participants.add.saveAndAddAnother
+                                    </button>
+                                    --> 
+                                <div class="d-flex flex-col align-items-center justify-content-center mt-10">
+                                    <button type="submit" name="saveButton"
+                                        class="btn btn-success"
+                                        [disabled]="participantForm.invalid" *ngIf="participantForm.valid"
+                                        [swal]="swalSaveButton" translate>
+                                        private.participants.add.saveButton
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </form>
                 </div>
+                <!-- Sweet alert messages-->
+                <span>
+                    <swal #swalSaveAndAddAnother
+                        title="{{'private.participants.add.messageTitle'|translate}}"
+                        text="{{'private.participants.add.addMessage'|translate}}" type="question"
+                        [showCancelButton]="true" [focusCancel]="true"
+                        (confirm)="saveAndAddAnother($event)">
+                    </swal>
+                    <swal #swalSaveButton title="{{'private.participants.add.messageTitle'|translate}}"
+                        text="{{'private.participants.add.addMessage'|translate}}" type="question"
+                        [showCancelButton]="true" [focusCancel]="true" (confirm)="save($event)">
+                    </swal>
+                    <swal #swalSaveSuccess title="{{'private.participants.add.saveTitle'|translate}}"
+                        text="{{'private.participants.add.saveMessage'|translate}}" type="success"
+                        [focusCancel]="true" (confirm)="onSaveSuccess($event)">
+                    </swal>
+                    <swal #swalSaveAndAddAnotherSuccess
+                        title="{{'private.participants.add.saveTitle'|translate}}"
+                        text="{{'private.participants.add.saveMessage'|translate}}" type="success"
+                        [focusCancel]="true" (confirm)="onSaveAndAddAnotherSuccess($event)">
+                    </swal>
+                </span>
             </div>
         </section>
     </div>

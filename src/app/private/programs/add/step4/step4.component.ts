@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ProgramsAddService } from '../programsadd.service';
 import { Event } from '../../../models/event.model';
@@ -6,15 +6,22 @@ import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Router } from '@angular/router';
 import { DAOService } from '../../../dao/dao.service';
 import {Program} from '../../../models/program.model';
+import { SubSink } from 'subsink';
 
 @Component({
   selector: 'esm-step4',
   templateUrl: './step4.component.html'
 })
-export class Step4Component implements OnInit {
+export class Step4Component implements OnInit, OnDestroy {
   events: Array<Event>;
+  subSynk = new SubSink();
 
   constructor(private programsAddService: ProgramsAddService, private formbuilder: FormBuilder, private router: Router, private dao: DAOService) { }
+  
+  
+  ngOnDestroy(): void {
+    this.subSynk.unsubscribe();
+  }
 
   ngOnInit() {
     this.events = this.programsAddService.getEventsInstance();
@@ -22,7 +29,7 @@ export class Step4Component implements OnInit {
     /**
      * Subscribes to changes in the program (whenever the program in programsadd.service.ts is changed, it reflects here too)
      */
-    this.programsAddService.getProgramObservable().subscribe((programInstance: Program) => this.events = this.programsAddService.getEventsInstance());
+    this.subSynk.sink = this.programsAddService.getProgramObservable().subscribe((programInstance: Program) => this.events = this.programsAddService.getEventsInstance());
   }
 
   submit() {
