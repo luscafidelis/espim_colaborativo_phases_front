@@ -6,8 +6,8 @@
       <div class="col-12 d-flex justify-content-between align-items-center text-white">
         <button class="btn btn-link text-white" data-toggle="collapse" (click)="getEventDetails(); isOpen = !isOpen">{{ event.getTitle() }}</button>
         <div>
-          <i class="fas fa-edit text-white"></i>
-          <i class="fas fa-trash-alt text-white" (click)="delete_event()"></i>
+          <fa-icon [icon]="edit" class="text-white" (click)="getEventDetails(); isOpen = !isOpen"></fa-icon>
+          <fa-icon [icon]="trash" class="text-white" (click)="delete_event()"></fa-icon>
         </div>
       </div>
     </div>
@@ -53,45 +53,45 @@
       </div>
       
       <div class="col-12 mt-4">
-        <textarea (change)="updateEvent({ description: event_title.value })" class="d-block w-100 py-2 mt-3" rows="1" placeholder="Descrição do programa" (keyup)="event.setDescription($event.target.value)">{{ event.getDescription() }}</textarea>
+        <textarea [(ngModel)]="event.description" (change)="updateEvent({ description: event.description})" class="d-block w-100 py-2 mt-3" rows="1" placeholder="Descrição do programa"></textarea>
       </div>
 
       <!-------------------------------->
       <!--Dispostivo e sensores-->
-      <h5 class="ml-3 mt-3 font-weight-bold">Coletar:</h5>
+      <h5 class="ml-3 mt-3 fw-bold">Coletar:</h5>
       <div class="col-12 d-flex justify-content-around my-3">
         <div class="input-group justify-content-center align-items-center mb-3">
-          <span class="font-weight-bold">Atividades:</span>
+          <span class="fw-bold">Atividades:</span>
           <div class="input-group-prepend justify-content-center mr-2 w-100">
-            <button class="input-group-text" (click)="updateSensor('activity', 'smartphone')" [ngClass]="{'bg-primary': getActivitySensorCollector() === 'smartphone', 'text-white': getActivitySensorCollector() === 'smartphone'}" type="button"><i class="fas fa-mobile-alt"></i></button>
+            <button class="input-group-text" (click)="updateSensor('activity', 'smartphone')" [ngClass]="{'bg-primary': getActivitySensorCollector() === 'smartphone', 'text-white': getActivitySensorCollector() === 'smartphone'}" type="button"><fa-icon [icon]="mobile"></fa-icon></button>
             <span class="input-group-text bg-white" [ngbCollapse]="getActivitySensorCollector() !== 'smartphone'">Smartphone</span>
             <span class="input-group-text bg-white" [ngbCollapse]="getActivitySensorCollector() !== 'smartwatch'">Smartwatch</span>
-            <button class="input-group-text" (click)="updateSensor('activity', 'smartwatch')" [ngClass]="{'bg-primary': getActivitySensorCollector() === 'smartwatch', 'text-white': getActivitySensorCollector() === 'smartwatch'}" type="button"><i class="fas fa-clock"></i></button>
+            <button class="input-group-text" (click)="updateSensor('activity', 'smartwatch')" [ngClass]="{'bg-primary': getActivitySensorCollector() === 'smartwatch', 'text-white': getActivitySensorCollector() === 'smartwatch'}" type="button"><fa-icon [icon]="clock"></fa-icon></button>
           </div>
         </div>
         <div class="input-group justify-content-center align-items-center mb-3">
-          <span class="font-weight-bold">Localização:</span>
+          <span class="fw-bold">Localização:</span>
           <div class="input-group-prepend justify-content-center mr-2 w-100">
-            <button class="input-group-text" (click)="updateSensor('location', 'smartphone')" [ngClass]="{'bg-primary': getLocationSensorCollector() === 'smartphone', 'text-white': getLocationSensorCollector() === 'smartphone'}" type="button"><i class="fas fa-mobile-alt"></i></button>
+            <button class="input-group-text" (click)="updateSensor('location', 'smartphone')" [ngClass]="{'bg-primary': getLocationSensorCollector() === 'smartphone', 'text-white': getLocationSensorCollector() === 'smartphone'}" type="button"><fa-icon [icon]="mobile"></fa-icon></button>
             <span class="input-group-text bg-white" [ngbCollapse]="getLocationSensorCollector() !== 'smartphone'">Smartphone</span>
             <span class="input-group-text bg-white" [ngbCollapse]="getLocationSensorCollector() !== 'smartwatch'">Smartwatch</span>
-            <button class="input-group-text" (click)="updateSensor('location', 'smartwatch')" [ngClass]="{'bg-primary': getLocationSensorCollector() === 'smartwatch', 'text-white': getLocationSensorCollector() === 'smartwatch'}" type="button"><i class="fas fa-clock"></i></button>
+            <button class="input-group-text" (click)="updateSensor('location', 'smartwatch')" [ngClass]="{'bg-primary': getLocationSensorCollector() === 'smartwatch', 'text-white': getLocationSensorCollector() === 'smartwatch'}" type="button"><fa-icon [icon]="clock"></fa-icon></button>
           </div>
         </div>
         <div class="input-group justify-content-center align-items-center mb-3">
-          <span class="font-weight-bold">Uso:</span>
+          <span class="fw-bold">Uso:</span>
           <div class="input-group-prepend justify-content-center mr-2 w-100">
-            <button class="input-group-text" (click)="updateSensor('measure_use', 'smartphone')" [ngClass]="{'bg-primary': getMeasureUseSensorCollector() === 'smartphone', 'text-white': getMeasureUseSensorCollector() === 'smartphone'}" type="button"><i class="fas fa-mobile-alt"></i></button>
+            <button class="input-group-text" (click)="updateSensor('measure_use', 'smartphone')" [ngClass]="{'bg-primary': getMeasureUseSensorCollector() === 'smartphone', 'text-white': getMeasureUseSensorCollector() === 'smartphone'}" type="button"><fa-icon [icon]="mobile"></fa-icon></button>
             <span class="input-group-text bg-white" [ngbCollapse]="getMeasureUseSensorCollector() !== 'smartphone'">Smartphone</span>
             <span class="input-group-text bg-white" [ngbCollapse]="getMeasureUseSensorCollector() !== 'smartwatch'">Smartwatch</span>
-            <button class="input-group-text" (click)="updateSensor('measure_use', 'smartwatch')" [ngClass]="{'bg-primary': getMeasureUseSensorCollector() === 'smartwatch', 'text-white': getMeasureUseSensorCollector() === 'smartwatch'}" type="button"><i class="fas fa-clock"></i></button>
+            <button class="input-group-text" (click)="updateSensor('measure_use', 'smartwatch')" [ngClass]="{'bg-primary': getMeasureUseSensorCollector() === 'smartwatch', 'text-white': getMeasureUseSensorCollector() === 'smartwatch'}" type="button"><fa-icon [icon]="clock"></fa-icon></button>
           </div>
         </div>
       </div>
       <!------------------------->
       <!--Frequencia do disparo-->
       <div class="col-12">
-        <h4 class="font-weight-bold">Disparos cadastrados</h4>
+        <h4 class="fw-bold">Disparos cadastrados</h4>
         <div class="row mt-3">
           <ul class="col-12 list-unstyled px-4 d-flex flex-column border">
             <!--Disparo 1-->

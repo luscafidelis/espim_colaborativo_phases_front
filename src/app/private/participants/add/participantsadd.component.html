@@ -41,7 +41,7 @@
             <div class="container-fluid">
                 <div class="row p-xl-5 p-4">
                     <div class="col-12 mt-4 mt-xl-0 p-0">
-                        <h1 class="h4 font-weight-bold" translate>private.participants.add.title</h1>
+                        <h1 class="h4 fw-bold" translate>private.participants.add.title</h1>
                     </div>
                     <form class="col-12 pl-0 pb-3 pr-0" [formGroup]="participantForm">
                         <div class="container-fluid">
@@ -76,62 +76,55 @@
                             <hr>
                             <!--Participante Círculo -->
                             <div class="row justify-content-center" style="margin-top: 20px;">
-                                <h2 class="text-center mb-1">Participantes Círculo</h2>
-                                <button class="btn btn-primary ml-2 btn-sm rounded-circle" (click)="addCirculo()"><i class="fa fa-plus"></i></button>
+                                <h2 class="text-center mb-1">Participantes Círculo <span><button class="btn btn-primary ml-2 btn-sm rounded-circle" (click)="addCirculo()"><fa-icon [icon]="plus"></fa-icon></button></span></h2>
                             </div>
                             <hr>
                             <div formArrayName="circle">
-                                <!--
-                                <div class="d-flex flex-row align-items-center">
+                                <div *ngIf="circuloList.length > 0" class="d-flex flex-row align-items-center">
                                     <div class="col-4">Tipo do Círculo</div>
-                                    <div class="col-8">Participante Círculo</div>
+                                    <div class="col-8 ml-10">Participante Círculo</div>
                                 </div>
-                                -->
                                 <div *ngFor="let member of circuloList.controls; let i=index">
                                     <div class="d-flex flex-row align-items-center mt-10" [formGroupName]="i">
                                         <div class="col-4">  
-                                            <select class="form-control" formControlName="id_type">
+                                            <select class="form-select" aria-label="Default select example" formControlName="id_type">
                                                 <option *ngFor="let op of list_type" [value]="op.id">{{op.description}}</option>
                                             </select>
                                         </div>
-                                        <div class="col-7">  
-                                            <select class="form-control" formControlName="id_circle">
+                                        <div class="col-7 ml-10">  
+                                            <select class="form-select" formControlName="id_circle">
                                                 <option *ngFor="let op of list_participant" [value]="op.id">{{op.name}}</option>
                                             </select>
                                         </div>
-                                        <div class="col-1">  
+                                        <div class="col-1 d-flex justify-content-end">  
                                             <button class="btn btn-danger ml-2 btn-sm rounded-circle" (click)="removeCirculo(i)">
-                                                <i class="fa fa-trash"></i>
+                                                <fa-icon [icon]="trash"></fa-icon>
                                             </button>
                                         </div>
                                     </div>
-                                    <hr>
                                 </div>
                                 <div *ngIf="circuloList.length > 0" class="d-flex flex-row align-items-center justify-content-center mt-20">
                                     <div class="col-4">
                                         Adicionar novo tipo:
-                                        <button class="btn btn-primary ml-2 btn-sm rounded-circle" data-toggle="collapse" data-target="#addCircleType" aria-expanded="false" aria-controls="addCircleTypeCollapse"><i class="fa fa-edit"></i></button>
+                                        <span><button class="btn btn-primary ml-2 btn-sm rounded-circle" data-toggle="collapse" data-target="#addCircleType" aria-expanded="false" aria-controls="addCircleTypeCollapse"><fa-icon [icon]="edit"></fa-icon></button></span>
                                     </div>
-                                    <div class="col-8">
+                                    <div class="col-8 ml-10">
                                         Adicionar novo participante:
-                                        <button class="btn btn-primary ml-2 btn-sm rounded-circle" data-toggle="collapse" data-target="#addParticipant" aria-expanded="false" aria-controls="addParticipantCollapse"><i class="fa fa-edit"></i></button>
+                                        <span><button class="btn btn-primary ml-2 btn-sm rounded-circle" data-toggle="collapse" data-target="#addParticipant" aria-expanded="false" aria-controls="addParticipantCollapse"><fa-icon [icon]="edit"></fa-icon></button></span>
                                     </div>
                                 </div>
                             </div>
                             <div style="height: 50px;"></div>
-                            <hr>
                             <div class="d-flex flex-row align-items-center justify-content-center mt-10" >
-                                   <!--
                                     <button class="btn btn-secondary"
                                         [swal]="swalSaveAndAddAnother" name="saveAndAddAnother"
                                         translate>
                                         private.participants.add.saveAndAddAnother
                                     </button>
-                                    --> 
                                 <div class="d-flex flex-col align-items-center justify-content-center mt-10">
                                     <button type="submit" name="saveButton"
                                         class="btn btn-success"
-                                        [disabled]="participantForm.invalid" *ngIf="participantForm.valid"
+                                        [disabled]="participantForm.invalid" 
                                         [swal]="swalSaveButton" translate>
                                         private.participants.add.saveButton
                                     </button>

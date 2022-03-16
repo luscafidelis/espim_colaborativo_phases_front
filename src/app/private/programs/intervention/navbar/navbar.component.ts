@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, EventEmitter, HostListener, OnInit, Output} from '@angular/core';
 import {
   Intervention,
   MediaIntervention,
@@ -6,7 +6,8 @@ import {
   TaskIntervention
 } from '../../../models/intervention.model';
 import {HTMLInterventionElement, InterventionService} from '../intervention.service';
-import {SwalComponent} from "@sweetalert2/ngx-sweetalert2";
+import Swal from 'sweetalert2';
+
 
 export const NAVBAR_HEIGHT = 60;
 
@@ -15,8 +16,9 @@ export const NAVBAR_HEIGHT = 60;
   templateUrl: './navbar.component.html'
 })
 export class NavbarComponent implements OnInit {
-  over1200px: boolean;
-  mobileToggleActivated: boolean;
+  @Output() closeEditor = new EventEmitter()
+  over1200px!: boolean;
+  mobileToggleActivated!: boolean;
   addInterventionPopUp = false;
 
   constructor(private interventionService: InterventionService) { }
@@ -29,7 +31,7 @@ export class NavbarComponent implements OnInit {
   }
 
   addIntervention(type: string, subtype?: number) {
-    let intervention: Intervention;
+    let intervention!: Intervention;
     if (type === 'empty') intervention = new Intervention();
     else if (type === 'media') intervention = new MediaIntervention();
     else if (type === 'question') intervention = new QuestionIntervention({ questionType: subtype });
@@ -45,14 +47,15 @@ export class NavbarComponent implements OnInit {
   }
 
   zoomPopUp() {
-    new SwalComponent({
+    Swal.fire({
       title: 'Zoom',
       text: 'Utilize o zoom do navegador para controlar o zoom.\nNormalmente isso pode ser feito segurando a tecla "CTRL" e pressionando as teclas "+" ou "-"'
-    }).show().then();
+    });
   }
 
   finish() {
     this.interventionService.finish();
+    this.closeEditor.emit('nada');
   }
 
   debug() {

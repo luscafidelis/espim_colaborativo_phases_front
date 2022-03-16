@@ -8,6 +8,7 @@ import {ESPIM_REST_Observers} from '../../../../app.api';
 import {DAOService} from '../../../dao/dao.service';
 import {Program} from '../../../models/program.model';
 import { SubSink } from 'subsink';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'esm-step2',
@@ -17,8 +18,8 @@ export class Step2Component implements OnInit, OnDestroy {
 
   subSynk = new SubSink();
 
-  observers: Observer[]; // These are the general observers
-  programObservers: Observer[]; // These are the observers of this program
+  observers!: Observer[]; // These are the general observers
+  programObservers!: Observer[]; // These are the observers of this program
 
   hasChanged = false; // True if some change was applied
 
@@ -28,9 +29,9 @@ export class Step2Component implements OnInit, OnDestroy {
     role: ['']
   });
 
-  @ViewChild('alphabet1') alphabet1: ElementRef;
-  @ViewChild('alphabet2') alphabet2: ElementRef;
-  @ViewChild('alphabetAll') alphabetAll: ElementRef;
+  @ViewChild('alphabet1') alphabet1!: ElementRef;
+  @ViewChild('alphabet2') alphabet2!: ElementRef;
+  @ViewChild('alphabetAll') alphabetAll!: ElementRef;
 
 
   constructor(private dao: DAOService, private programAddService: ProgramsAddService, private formBuilder: FormBuilder, private loginService: LoginService) {}
@@ -72,36 +73,33 @@ export class Step2Component implements OnInit, OnDestroy {
 
     this.subSynk.sink = this.dao.postObject(ESPIM_REST_Observers, observer).subscribe(data => {
       observer = new Observer(data);
-
+      console.log(observer);
       //this.observers.push(observer);
       //this.observers.sort((a: Observer, b: Observer) => a.name.localeCompare(b.name));
-
       this.addProgramObserver(observer);
-
       // Sends a success message
-      new SwalComponent ({
-        title: 'Observador adicionado aos contatos!',
-        type: 'success'
-      }).show();
+      Swal.fire ({title: 'Observador adicionado',text: 'Obsevador adicionado com sucesso!!', icon: 'success'});
       this.addObserverForm.reset();
-    }, error => new SwalComponent({
-      title: 'Falha ao adicionar o contato',
-      type: 'error'
-    }).show());
+    });
   }
 
   /**
    * Adds an observer to the programObservers
    */
   addProgramObserver(observer: Observer | number) {
-    console.log(this.observers);
-    console.log(observer);
+    let locObserver = new Observer();
     if (!(observer instanceof Observer)) {
-      observer = this.observers.find((value: Observer) => value.id === observer);
+      for (let i=0; i < this.observers.length; i++){
+        if (this.observers[i].id == observer){
+          locObserver = this.observers[i];
+        }
+      }
+    } else {
+      locObserver = observer;
     }
     //this.programObservers.push(observer);
     //this.programObservers.sort((a: Observer, b: Observer) => a.name.localeCompare(b.name));
-    this.programAddService.saveStep({addObserver : observer})
+    this.programAddService.saveStep({addObserver : locObserver})
   }
 
   /**

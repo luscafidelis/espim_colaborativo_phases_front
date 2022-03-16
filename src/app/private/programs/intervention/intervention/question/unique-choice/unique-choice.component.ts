@@ -1,22 +1,23 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {QuestionIntervention} from '../../../../../models/intervention.model';
 import {HTMLInterventionElement, InterventionService} from '../../../intervention.service';
+import {faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'esm-unique-choice',
   templateUrl: './unique-choice.component.html'
 })
 export class UniqueChoiceComponent implements OnInit, OnChanges {
-  @Input() graphIndex: number;
-  @Input() nextInterventions: HTMLInterventionElement[];
+  @Input() graphIndex: number = 0;
+  @Input() nextInterventions: HTMLInterventionElement[] = [];
 
-  intervention: QuestionIntervention;
+  intervention: QuestionIntervention = new QuestionIntervention();
   id : number = -1;
-
+  faminus = faMinusCircle;
   locAlternative : string [] = [];
  
-  get alternatives() { return this.intervention?.options; }
-  get conditions() { return this.intervention?.conditions; }
+  get alternatives(): string[] { return this.intervention?.options; }
+  get conditions(): any { return this.intervention?.conditions; }
 
   constructor(private interventionService: InterventionService) { }
 
@@ -49,8 +50,8 @@ export class UniqueChoiceComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     // graphIndex only changes when removing an intervention and unique-choice needs special treatment so graphIndex gets updated in a subscription in ngInit()
     // if (changes.graphIndex) this.graphIndex = changes.graphIndex.currentValue;
-    if (changes.nextInterventions){ 
-      this.nextInterventions = changes.nextInterventions.currentValue;
+    if (changes['nextInterventions']){ 
+      this.nextInterventions = changes['nextInterventions'].currentValue;
     }
   }
 

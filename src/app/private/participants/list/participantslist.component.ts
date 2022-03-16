@@ -4,6 +4,7 @@ import { ESPIM_REST_Participants } from 'src/app/app.api';
 import { DAOService } from '../../dao/dao.service';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Participant } from '../../models/participant.model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'esm-particpants-list',
@@ -13,16 +14,12 @@ import { Participant } from '../../models/participant.model';
 export class ParticipantsListComponent implements OnInit {
 
   urlParticipants: string = ESPIM_REST_Participants;
-  participants: Participant[];
-  totalParticipants: string;
-  pagination: Pagination;
-
-  // sweet alert elements
-  @ViewChild('swalDeleteParticipant') private swalDeleteParticipant: SwalComponent;
-  @ViewChild('swalAfterDelete') private swalAfterDelete: SwalComponent;
+  participants: Participant[] =[];
+  totalParticipants: string = '';
+  pagination!: Pagination;
 
   // temp program stored for deleting program
-  tempParticipant: Participant;
+  tempParticipant: Participant = new Participant();
 
   constructor(private daoService: DAOService) { }
 
@@ -37,29 +34,40 @@ export class ParticipantsListComponent implements OnInit {
       });
   }
 
-  onNext(event) {
+  onNext(event : any) {
     this.getParticipants(event.url);
   }
 
-  onNextSearch(event) {
+  onNextSearch(event : any) {
     this.setParticipants(event.response);
   }
 
-  setParticipants(response) {
+  setParticipants(response : any) {
     this.totalParticipants = response.count;
-    this.participants = response.results.map(reponse => new Participant(reponse));
+    this.participants = response.results.map((reponse : any) => new Participant(reponse));
     this.pagination = new Pagination(response);
   }
 
   // deleting a program from list
   deleteParticipant(participant: Participant) {
     this.tempParticipant = participant;
-    this.swalDeleteParticipant.show();
+    Swal.fire({
+      title: 'Deletar Participante?',
+      text: 'O participante será excluido de forma definitiva',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim',
+      cancelButtonText: 'Não',
+    }).then((result) => {
+      if (result.value) {
+        this.onConfirmDeleteParticipant();
+      } 
+    });
   }
 
-  onConfirmDeleteParticipant(event) {
+  onConfirmDeleteParticipant() {
     this.daoService.deleteObject(this.urlParticipants, this.tempParticipant.getId().toString()).subscribe(response => {
-      this.swalAfterDelete.show();
+      Swal.fire('Participante Excluido', 'O participante foi excluído com sucesso', 'success');
       this.getParticipants();
     });
   }

@@ -1,5 +1,5 @@
 import { Cron } from './cron.model';
-import {isString} from '@ng-bootstrap/ng-bootstrap/util/util';
+
 
 export class Trigger {
   public id: number;
@@ -31,11 +31,10 @@ export class Trigger {
       const dow = this.triggerCondition.getDow();
       if (dow.length === 0) return 'Nenhum dia selecionado. Antes de modificar selecione ao menos algum dia.';
       else if (dow.length < 7) {
-        if (dow[0] === '1' || dow[0] === '7') ans = 'Todas os ';
+        if (dow[0] === '1' || dow[0] === '7') ans = 'Todos os ';
         else ans = 'Todas as ';
-
         for (const day of dow) {
-          ans += dowNames[day];
+          ans += dowNames[Number.parseInt(day)];
 
           if (dow[dow.length - 1] === day) {
             ans += ' ';
@@ -80,14 +79,14 @@ export class Trigger {
     this.timeOut = timeOut * 60000;
   }
 
-  isDayActive(day?: string) { if (this.triggerCondition instanceof Cron) return this.triggerCondition.isDayActive(day); }
+  isDayActive(day?: string) { if (this.triggerCondition instanceof Cron) return this.triggerCondition.isDayActive(day); return -1}
   actOrDeactivateDay(day?: string) { if (this.triggerCondition instanceof Cron) this.triggerCondition.actOrDeactivateDay(day); }
 
-  getMinutes() { if (this.triggerCondition instanceof Cron) return Number.parseInt(this.triggerCondition.getMinute()); }
+  getMinutes() { if (this.triggerCondition instanceof Cron) return Number.parseInt(this.triggerCondition.getMinute()); return -1}
   setMinute(minutes: number) { if (this.triggerCondition instanceof Cron) 
                                   this.triggerCondition.setMinute(minutes.toString()); 
                               }
-  getHour() { if (this.triggerCondition instanceof Cron) return Number.parseInt(this.triggerCondition.getHours()); }
+  getHour() { if (this.triggerCondition instanceof Cron) return Number.parseInt(this.triggerCondition.getHours()); return -1}
   setHour(hour: number) { if (this.triggerCondition instanceof Cron) 
                           this.triggerCondition.setHour(hour.toString()); 
                         }

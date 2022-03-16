@@ -3,15 +3,14 @@ import {
   AfterViewInit,
   Component,
   ElementRef, EventEmitter, OnDestroy,
-  OnInit, Output, Renderer2,
+  OnInit, Output,
   ViewChild
 } from '@angular/core';
 import {HTMLInterventionElement, InterventionService} from '../intervention.service';
-import {Intervention} from '../../../models/intervention.model';
-import {Observable, Subscription} from "rxjs";
 import { FormControl, FormGroup } from '@angular/forms';
 import { DAOService } from 'src/app/private/dao/dao.service';
 import { ESPIM_REST_Interventions } from 'src/app/app.api';
+import { faTimes, faPaperclip } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'esm-intervention',
@@ -20,42 +19,37 @@ import { ESPIM_REST_Interventions } from 'src/app/app.api';
 export class InterventionComponent implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
   //Nome do arquivo de mídia
   fileName : string = '';
+  fatimes = faTimes;
+  fapaperclip = faPaperclip;
 
   uploadForm = new FormGroup({
     imgSrc: new FormControl('')
   });
 
-  offset: {x: number, y: number} = { x: 0, y: 0 };
-  interventionCoordinate: HTMLInterventionElement;
-  previousPosition: {x: number, y: number};
+  offset!: {x: number, y: number};
+  interventionCoordinate!: HTMLInterventionElement;
+  previousPosition!: {x: number, y: number};
 
-  graphIndex: number;
+  graphIndex!: number;
 
   nextInterventions: HTMLInterventionElement[] = [];
-  nextInterventionSelect: string;
+  nextInterventionSelect: string = '';
   
-  //Variáveis para Unsubscribe
-  redrawGraphSubscription: Subscription;
-  interFirst : Subscription;
-  interRemove : Subscription;
-
-
   @Output() interventionMoved = new EventEmitter<HTMLInterventionElement>();
 
-  @ViewChild('interventionDiv') interventionDiv: ElementRef;
+  @ViewChild('interventionDiv') interventionDiv!: ElementRef;
 
   constructor(private interventionService: InterventionService, private dao : DAOService) { }
 
   ngOnInit(): void {
     this.nextInterventionSelect = '0';
-    this.interFirst = this.interventionService.firstInterventionChange$.subscribe(value => {
+    this.interventionService.firstInterventionChange$.subscribe(value => {
       if (this.graphIndex !== value) this.interventionCoordinate.first = false;
     });
-    this.interRemove = this.interventionService.removeIntervention$.subscribe(index => {
+    this.interventionService.removeIntervention$.subscribe(index => {
       if (this.graphIndex > index) this.graphIndex -= 1;
       console.log(this.graphIndex);
     });
-    console.log(this.interventionCoordinate);
   }
 
   ngAfterViewInit(): void {
@@ -73,13 +67,10 @@ export class InterventionComponent implements OnInit, AfterViewInit, AfterConten
 
   ngAfterContentInit(): void {
     this.updateNextInterventions();
-    this.redrawGraphSubscription = this.interventionService.redrawGraph$.subscribe(_ => this.updateNextInterventions());
+    this.interventionService.redrawGraph$.subscribe(_ => this.updateNextInterventions());
   }
 
   ngOnDestroy() {
-    //this.redrawGraphSubscription.unsubscribe();
-    //this.interFirst.unsubscribe();
-    //this.interRemove.unsubscribe();
   }
 
   toChar(num: number) {
@@ -96,7 +87,7 @@ export class InterventionComponent implements OnInit, AfterViewInit, AfterConten
   }
 
   interventionCurrentCoordinate() {
-    const position = this.interventionDiv.nativeElement.style.transform.match(/\d+px/g).map(value => Number.parseInt(value.substring(0, value.length - 2)));
+    const position = this.interventionDiv.nativeElement.style.transform.match(/\d+px/g).map((value:any) => Number.parseInt(value.substring(0, value.length - 2)));
     return {x: position[0], y: position[1]};
   }
 
@@ -149,7 +140,7 @@ export class InterventionComponent implements OnInit, AfterViewInit, AfterConten
   
   
   //Tem que arrumar para os arquivos serem armazenados no bucket...
-  onFileSelected(event) {
+  onFileSelected(event : any) {
     const file:File = event.target.files[0];
     const reader = new FileReader();
 

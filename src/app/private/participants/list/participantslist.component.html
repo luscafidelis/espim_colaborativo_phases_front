@@ -1,14 +1,14 @@
 <main class="card mx-auto mt-4 w-main px-5 mb-5">
     <!--Título & busca-->
-    <h1 class="h4 font-weight-bold mt-5" translate>private.participants.list.pageTitle</h1>
+    <h1 class="h4 fw-bold mt-5" translate>private.participants.list.pageTitle</h1>
     <esm-search (searchResults)="onNextSearch($event)" [urlObject]="urlParticipants"></esm-search>
     <!---->
     <section class="container-fluid mx-auto">
         <!-- Cabeçalho -->
         <div class="row">
             <div class="col-12 bg-primary d-flex justify-content-between align-items-center p-3 text-white">
-                <h2 class="h6 m-0 d-inline ml-1 font-weight-bold" translate>private.participants.list.listTitle</h2>
-                <small class="font-weight-bold"><span translate>private.participants.list.totalNumber</span>:{{totalParticipants? totalParticipants : 0}}</small> 
+                <h2 class="h6 m-0 d-inline ml-1 fw-bold" translate>private.participants.list.listTitle</h2>
+                <small class="fw-bold"><span translate>private.participants.list.totalNumber</span>:{{totalParticipants? totalParticipants : 0}}</small> 
             </div>
         </div>
         <!--Lista-->
@@ -40,16 +40,6 @@
             </li>
           </ul>
         </div>
-        <span>
-            <swal #swalDeleteParticipant title="{{'private.participants.list.deleteMessageTitle'|translate}}"
-              text="{{'private.participants.list.deleteMessage'|translate}}" type="question" [showCancelButton]="true"
-              [focusCancel]="true" (confirm)="onConfirmDeleteParticipant($event)">
-            </swal>
-            <swal #swalAfterDelete title="{{'private.participants.list.afterDeleteTitle'|translate}}"
-              text="{{'private.participants.list.afterDelete'|translate}}" type="success"
-              [focusCancel]="true">
-            </swal>
-          </span>
         <esm-pagination [pagination]="pagination" (next)="onNext($event)"></esm-pagination>
     </section>
   </main>

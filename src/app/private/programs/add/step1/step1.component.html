@@ -10,29 +10,27 @@
   </div>
   <!-------------------->
   <!--Descrição do programa-->
-  <div class="form-row form-group">
+  <div class="form-row form-group mt-2">
     <div class="col">
       <label for="program-description">Descrição do programa:</label>
-      <textarea class="d-block w-100" name="program-description" id="program-description" rows="2" placeholder="Descrição do programa" formControlName="description" (change)="updateField('description')"></textarea>
+      <textarea class="d-block w-100" name="program-description" id="program-description" rows="1" placeholder="Descrição do programa" formControlName="description" (change)="updateField('description')"></textarea>
     </div>
   </div>
   <!------------------------->
   <!--Programa público checkbox-->
-  <div class="form-group">
+  <div class="form-group mt-3">
     <input type="checkbox" name="program-checkbox" id="program-checkbox" formControlName="isPublic" (change)="updateField('isPublic')">
     <label for="program-checkbox">Programa público</label>
   </div>
   <!----------------------------->
   <!--Data de início/Hora de início-->
-  <h5>Data e hora de início<b class="text-danger">*</b>:</h5>
-  <div class="form-row form-group input-group">
+  <div class="form-row form-group d-flex align-items-bottom mt-3">
     <!--Data de Início-->
-    <div class="col form-inline">
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <button (click)="beginDate.toggle()" class="input-group-text"><i class="far fa-calendar-alt"></i></button>
-        </div>
-        <input (click)="beginDate.toggle()" ngbDatepicker #beginDate="ngbDatepicker" [navigation]="'arrows'" [class.is-invalid]="invalidBeginDate" type="text" class="px-2 py-1 form-control" placeholder="Data de início" formControlName="beginDate" (ngModelChange)="updateField('starts')" readonly>
+    <div class="col-3">
+      <label><h5>Data e hora de início<b class="text-danger">*</b>:</h5></label>
+      <div class="input-group form-group">
+        <input class="form-control" formControlName="beginDate" ngbDatepicker #beginDate="ngbDatepicker" (click)="beginDate.toggle()" placeholder="Data de início" (dateSelect)="setBeginDate($event)" readonly>
+        <button class="btn btn-secondary" (click)="beginDate.toggle()" type="button"><fa-icon class="text-white" [icon]="calendar"></fa-icon></button>
       </div>
     </div>
     <!------------------>
@@ -44,15 +42,13 @@
   </div>
   <!--------------------------------->
   <!--Data de fim/Hora de fim-->
-  <h5>Data e hora de fim</h5>
-  <div class="form-row form-group input-group">
+  <div class="form-row form-group d-flex align-items-bottom  mt-3">
     <!--Data de fim-->
-    <div class="col form-inline">
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <button (click)="endDate.toggle()" class="input-group-text"><i class="far fa-calendar-alt"></i></button>
-        </div>
-        <input (click)="endDate.toggle()" ngbDatepicker #endDate="ngbDatepicker" [navigation]="'arrows'" type="text" class="form-control px-2 py-1" placeholder="Data de fim" formControlName="endDate" (ngModelChange)="updateField('ends')" readonly>
+    <div class="col-3">
+      <label><h5>Data e hora de fim</h5></label>
+      <div class="input-group form-group">
+        <input class="form-control" formControlName="endDate" ngbDatepicker #endDate="ngbDatepicker"  (click)="endDate.toggle()" placeholder="Data de fim" (dateSelect)="setEndDate($event)"  readonly>
+        <button (click)="endDate.toggle()" class="btn btn-secondary" type="button"><fa-icon class="text-white" [icon]="calendar"></fa-icon></button>
       </div>
     </div>
     <!--------------->
@@ -65,7 +61,17 @@
   <!--------------------------->
   <small class="text-danger">* Campo obrigatório</small>
   <hr>
-  <div class="container-fluid p-0 mb-3">
+  <!--Botões de Comunicação-->
+  <div class="col-12 mt-3 ms-2 me-2">
+    <button type="button" class="btn btn-secondary btn-block w-100" (click)="openButtons()" >Alertas, Notificações e Comunicação</button>
+  </div>
+  <div class="col-12 border border-secondary ms-2 me-2 mt-2 mb-3" [ngbCollapse]="isOpenButtons">
+    <app-comunicate-buttons></app-comunicate-buttons>
+  </div>
+
+  
+  <hr>
+  <div class="container-fluid p-0 mb-3 mt-2">
     <div class="row">
       <div class="col-12 col-xl-4">
         <button type="button" class="btn btn btn-outline-primary btn-block py-2">IMPORTAR PROGRAMA</button>

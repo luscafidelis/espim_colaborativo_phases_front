@@ -2,11 +2,12 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Participant } from '../../../models/participant.model';
 import { ProgramsAddService } from '../programsadd.service';
-import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import {DAOService} from '../../../dao/dao.service';
 import {Program} from '../../../models/program.model';
 import {ESPIM_REST_Participants} from '../../../../app.api';
 import { SubSink } from 'subsink';
+import Swal from 'sweetalert2';
+import {faSearch} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'esm-step3',
@@ -14,10 +15,11 @@ import { SubSink } from 'subsink';
 })
 export class Step3Component implements OnInit, OnDestroy {
 
+  fasearch = faSearch;
   subSynk = new SubSink();
 
-  participants: Participant[]; // These are the general participants
-  programParticipants: Participant[]; // These are the participants of this program
+  participants: Participant[] = []; // These are the general participants
+  programParticipants: Participant[] = []; // These are the participants of this program
 
   hasChanged = false; // True if some change was applied
 
@@ -27,9 +29,9 @@ export class Step3Component implements OnInit, OnDestroy {
     nickname: ['']
   });
 
-  @ViewChild('alphabet1') alphabet1: ElementRef;
-  @ViewChild('alphabet2') alphabet2: ElementRef;
-  @ViewChild('alphabetAll') alphabetAll: ElementRef;
+  @ViewChild('alphabet1') alphabet1!: ElementRef;
+  @ViewChild('alphabet2') alphabet2!: ElementRef;
+  @ViewChild('alphabetAll') alphabetAll!: ElementRef;
 
 
   constructor(private dao: DAOService, private programAddService: ProgramsAddService, private formBuilder: FormBuilder) { }
@@ -63,21 +65,12 @@ export class Step3Component implements OnInit, OnDestroy {
   addParticipant(): void {
     this.subSynk.sink = this.dao.postObject(ESPIM_REST_Participants, new Participant(this.addParticipantForm.getRawValue())).subscribe(data => {
       const participant = new Participant(data);
-
       //this.participants.push(participant);
       //this.participants.sort((a: Participant, b: Participant) => a.name.localeCompare(b.name));
-
       this.addProgramParticipant(participant);
-
-      new SwalComponent ({
-        title: 'Participante adicionado aos contatos!',
-        type: 'success'
-      }).show();
+      Swal.fire('Sucesso','Participante adicionado aos contatos!','success');
       this.addParticipantForm.reset();
-    }, error => new SwalComponent({
-      title: 'Falha ao adicionar o contato',
-      type: 'error'
-    }).show());
+    })
   }
 
   /**
@@ -85,15 +78,16 @@ export class Step3Component implements OnInit, OnDestroy {
    */
   addProgramParticipant(participant: Participant | number) {
     //Caso seja passado um número ao invés de um objeto..
+    let locparticipant : any = {};
     if (!(participant instanceof Participant)) {
-      participant = this.participants.find((value: Participant) => value.id === participant);
+      locparticipant = this.participants.find((value: Participant) => value.id === participant);
+    } else {
+      locparticipant = participant;
     }
-
     //this.programParticipants.push(participant);
     //this.programParticipants.sort((a: Participant, b: Participant) => a.name.localeCompare(b.name));
     //this.hasChanged = true;
-
-    this.programAddService.saveStep({addParticipant : participant});
+    this.programAddService.saveStep({addParticipant : locparticipant});
   }
 
   /**

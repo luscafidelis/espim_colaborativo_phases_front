@@ -1,145 +1,180 @@
-<!--As intervenções do Alvo serão enviadas para o Círculo -->
-<div class="container-fluid border border-dark  mt-2 ml-2 mr-2 mb-2">
-    <div class="row border">
-        <div class="col-12 font-weight-bold">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" [(ngModel)]="sameInterventions.selected" (change)="changeSelected(same)" id="flexCheckDefault">
-                <label class="form-check-label font-weight-bold" for="flexCheckDefault">
-                Enviar as intervenções do participante alvo para os participantes círculo:                
-                </label>
+<div class="container-fluid mb-2 me-2">
+    <!--As intervenções do Alvo serão enviadas para o Círculo -->
+    <div class="container-fluid border border-dark  mt-2 ms-2 me-2 mb-2">
+        <div class="row">
+            <div class="col-12" [ngClass]="gClass(sameInterventions.selected)">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="sameInterventions.selected" (change)="changeSelected(same)" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                    Enviar as intervenções do participante alvo para os participantes círculo:                
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3" *ngIf="sameInterventions.selected">
+            <div class="col-12 d-flex justify-content-center">
+                <button type="button" class="btn btn-light btn-outline-secondary fw-bold" (click)="chooseCircle(same)" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Adicionar Participantes Círculo
+                </button>
+            </div>
+            <div *ngIf="sameInterventions.circle_type.length == 0" class="col-12 d-flex mt-2 mb-2 justify-content-center text-danger fw-bold">É necessário indicar os participantes círculo</div>
+            <div *ngIf="sameInterventions.circle_type.length > 0" class="col-12 d-flex justify-content-center bg-light mt-2 mb-2">Participantes Círculo que receberão as intervenções</div>
+            <div class="col-3 d-flex justify-content-center" *ngFor="let circle of sameInterventions.circle_type; index as i">
+                <p class="text-uppercase">{{circle.description}}</p>
+                <fa-icon [icon]="faMinus" class="text-danger ml-1" (click)="removeCircle(i,same)"></fa-icon>
             </div>
         </div>
     </div>
-    <div class="row" *ngIf="sameInterventions.selected">
-        <div *ngIf="sameInterventions.circle_type.length == 0" class="col-12 d-flex mt-2 mb-2 justify-content-center text-danger font-weight-bold">É necessário indicar os participantes círculo</div>
-        <div *ngIf="sameInterventions.circle_type.length > 0" class="col-12 d-flex justify-content-center bg-light mt-2 mb-2">Participantes Círculo que receberão as intervenções</div>
-        <div class="col-3 d-flex justify-content-center" *ngFor="let circle of sameInterventions.circle_type; index as i">
-            <p class="text-uppercase">{{circle.description}}</p>
-            <i class="fas fa-minus-circle text-danger ml-1" (click)="removeCircle(i,same)"></i>
+
+
+
+    <!--Os participantes círculo receberão intervenções personalizadas -->
+    <div class="container-fluid border border-dark mt-2 ms-2 me-2 mb-2">
+        <div class="row">
+            <div class="col-12" [ngClass]="gClass(booleanCustomInterventions)">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="booleanCustomInterventions" (change)="changeSelected(custom)" id="flexCheckDefault">
+                    <label class="form-check-label fw-bold" for="flexCheckDefault">
+                    Enviar intervenções personalizadas para os participantes círculo:                
+                    </label>
+                </div>
+            </div>
         </div>
-        <div class="col-12 d-flex justify-content-center">
-            <button type="button" class="btn btn-light" (click)="chooseCircle(same)" data-toggle="modal" data-target="#exampleModal">
-                Adicionar Participantes Círculo
-            </button>
+        <div class="row" *ngIf="booleanCustomInterventions">
+            <div *ngFor="let circleCustom of arrayCustomInterventions; index as j" class="container-fluid border border-success mt-2 ml-2 mr-2 mb-2" >
+                <div class="row">
+                    <div class="col-12 d-flex bg-success text-white justify-content-between align-items-center">
+                        <button class="btn text-white fw-bold text-uppercase" data-bs-toggle="collapse" (click)="changeCustomCollapse(j)">
+                            {{arrayCustomInterventions[j].title}}
+                        </button>
+                        <fa-icon class="text-white" [icon]="faTras" (click)="removeCustom(j)"></fa-icon>
+                    </div>
+                </div>  
+                <div class="row" [ngbCollapse]="customCollapse[j]">
+                    <div class="col-12">
+                        <label>Título</label>
+                        <input type="text" class="w-100" [(ngModel)]="arrayCustomInterventions[j].title" (change)="saveCustom({title : arrayCustomInterventions[j].title},j)">
+                    </div>
+                    <div class="col-12 mt-3">
+                        <label>Descrição</label>
+                        <textarea rows="2" class="w-100" [(ngModel)]="arrayCustomInterventions[j].description" (change)="saveCustom({description : arrayCustomInterventions[j].description},j)"></textarea>
+                    </div>
+
+                    <!-- Intervenções-->
+                    <div class="col-12 d-flex justify-content-center mt-2 mb-2"><button type="button" class="btn btn-secondary text-white fw-bold" (click)="goToInterventions(j)">Editar Intervenções Círculo</button></div>
+                    <div *ngIf="arrayCustomInterventions[j].interventions.length > 0"> 
+                        <div class="col-12 d-flex justify-content-center bg-light mt-2 mb-2">Intervenções Cadastradas</div>
+                        <ul class="col-12 container list-unstyled mt-2 px-5">
+                            <li class="row my-3" *ngFor="let intervention of arrayCustomInterventions[j].interventions">
+                                <span class="col-12 d-flex justify-content-start fw-bold">{{ intervention.orderPosition }}. {{ intervention.type }}</span>
+                                <span class="col-12">{{ intervention.statement }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div *ngIf="arrayCustomInterventions[j].interventions.length == 0" class="col-12 d-flex mt-2 mb-2 justify-content-center text-danger fw-bold">É necessário definir o conjunto de intervenções</div>
+
+                    <!-- Participantes Círculo-->
+                    <div class="col-12 mt-3 d-flex justify-content-center">
+                        <button type="button" class="btn btn-light btn-outline-secondary fw-bold" (click)="chooseCircle(custom,j)" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Adicionar Participantes Círculo
+                        </button>
+                    </div>
+                    <div *ngIf="arrayCustomInterventions[j].circle_type.length == 0" class="col-12 d-flex mt-2 mb-2 justify-content-center text-danger fw-bold">É necessário indicar os participantes círculo</div>
+                    <div *ngIf="arrayCustomInterventions[j].circle_type.length > 0" class="col-12 d-flex justify-content-center bg-light mt-2 mb-2">Participantes Círculo que receberão as intervenções</div>
+                    <div class="col-3 d-flex justify-content-center" *ngFor="let circle of arrayCustomInterventions[j].circle_type; index as i">
+                        <p class="text-uppercase">{{circle.description}}</p>
+                        <fa-icon [icon]="faMinus" class="text-danger ml-1" (click)="removeCircle(i,custom,j)"></fa-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-3 mb-2 d-flex justify-content-center">
+                <button type="button" class="btn btn-success" (click)="addCustom()">Criar um novo conjunto de intervenções</button>
+            </div>
+            <div *ngIf="arrayCustomInterventions.length == 0" class="col-12 d-flex mt-2 mb-2 justify-content-center text-danger fw-bold">É necessário criar os conjuntos de intervenções personalizadas</div>
+        </div>
+    </div>
+
+
+    <!-- Os participantes círculo receberão as respostas dos participantes alvo-->
+    <div class="container-fluid border border-dark mt-2 ms-2 me-2 mb-2">
+        <div class="row">
+            <div class="col-12" [ngClass]="gClass(respostToCircle.selected)">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="respostToCircle.selected" (change)="changeSelected(respost)" id="flexCheckDefault">
+                    <label class="form-check-label fw-bold" for="flexCheckDefault">
+                    Enviar as respostas do participante alvo para os participantes círculo:                
+                    </label>
+                </div>
+            </div>
+            <div *ngIf="respostToCircle.selected" class="col-12 ms-4">
+                <div class="form-check">
+                    <input class="form-check-input" [(ngModel)]="respostToCircle.need_autorization" (change)="saveRespost({need_autorization : respostToCircle.need_autorization})" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                    O Especialista precisa avaliar as respostas antes de enviar para o participante círculo
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div  class="row" *ngIf="respostToCircle.selected">
+            <div class="col-12 mt-3 d-flex justify-content-center">
+                <button type="button" class="btn btn-light btn-outline-secondary fw-bold" (click)="chooseCircle(respost)" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Adicionar Participantes Círculo
+                </button>
+            </div>
+            <div *ngIf="respostToCircle.circle_type.length == 0" class="col-12 d-flex mt-2 mb-2 justify-content-center text-danger fw-bold">É necessário indicar os participantes círculo</div>
+            <div *ngIf="respostToCircle.circle_type.length > 0" class="col-12 d-flex justify-content-center mt-2 mb-2 bg-light">Participantes Círculo que receberão as respostas</div>
+            <div class="col-3 d-flex justify-content-center" *ngFor="let circle of respostToCircle.circle_type; index as i">
+                <p class="text-uppercase">{{circle.description}}</p>
+                <fa-icon [icon]="faMinus" class="text-danger ml-1" (click)="removeCircle(i,respost)"></fa-icon>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Os participantes alvo irão colaborar para encontrar uma resposta (chat)-->
+    <div class="container-fluid border border-dark mt-2 ms-2 mr-2 me-2">
+        <div class="row">
+            <div class="col-12" [ngClass]="gClass(targetCircle.selected)">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="targetCircle.selected" (change)="saveTarget()" id="flexCheckDefault">
+                    <label class="form-check-label fw-bold" for="flexCheckDefault">
+                    Permitir que os participantes colaborem para responder às intervenções
+                    </label>
+                </div>
+            </div>
+            <div *ngIf="targetCircle.selected" class="col-12 ms-4">
+                <div class="form-check">
+                    <input class="form-check-input" [(ngModel)]="targetCircle.need_autorization" type="checkbox" (change)="saveTarget()">
+                    <label class="form-check-label" for="flexCheckDefault">
+                    O Especialista precisa avaliar as respostas enviadas por um participante antes que ela seja, ou não, apresentada aos demais participantes
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div  class="row" *ngIf="targetCircle.selected">
+            <div class="col-12 mt-3 d-flex justify-content-center">
+                <button type="button" class="btn btn-light btn-outline-secondary fw-bold" (click)="chooseCircle(target)" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Adicionar Participantes Círculo
+                </button>
+            </div>
+            <div *ngIf="targetCircle.circle_type.length == 0" class="col-12 d-flex mt-2 mb-2 justify-content-center text-danger fw-bold">É necessário indicar os participantes círculo</div>
+            <div *ngIf="targetCircle.circle_type.length > 0" class="col-12 d-flex justify-content-center mt-2 mb-2 bg-light">Participantes Círculo que irão colaborar</div>
+            <div class="col-3 d-flex justify-content-center" *ngFor="let circle of targetCircle.circle_type; index as i">
+                <p class="text-uppercase">{{circle.description}}</p>
+                <fa-icon [icon]="faMinus" class="text-danger ml-1" (click)="removeCircle(i,target)"></fa-icon>
+            </div>
         </div>
     </div>
 </div>
 
-<!--Os participantes círculo receberão intervenções personalizadas -->
-<div class="container-fluid border border-dark mt-2 ml-2 mr-2 mb-2">
-    <div class="row border">
-        <div class="col-12 font-weight-bold">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" [(ngModel)]="booleanCustomInterventions" (change)="changeSelected(custom)" id="flexCheckDefault">
-                <label class="form-check-label font-weight-bold" for="flexCheckDefault">
-                Enviar intervenções personalizadas para os participantes círculo:                
-                </label>
-            </div>
-        </div>
-    </div>
-    <div class="row" *ngIf="booleanCustomInterventions">
-        <div *ngIf="arrayCustomInterventions.length == 0" class="col-12 d-flex mt-2 mb-2 justify-content-center text-danger font-weight-bold">É necessário criar os conjuntos de intervenções personalizadas</div>
-        <div *ngFor="let circleCustom of arrayCustomInterventions; index as j" class="container-fluid border border-success mt-2 ml-2 mr-2 mb-2" >
-            <div class="row">
-                <div class="col-12 d-flex bg-success text-white justify-content-between align-items-center">
-                    <button class="btn btn-link text-white font-weight-bold" data-toggle="collapse" (click)="changeCustomCollapse(j)">
-                        {{arrayCustomInterventions[j].title}}
-                    </button>
-                    <i class="fas fa-trash-alt text-white" (click)="removeCustom(j)"></i>
-                </div>
-            </div>
-            <div class="row" [ngbCollapse]="customCollapse[j]">
-                <div class="col-12">
-                    <label [for]="event_title">Título</label>
-                    <input type="text" class="w-100" [(ngModel)]="arrayCustomInterventions[j].title" (change)="saveCustom({title : arrayCustomInterventions[j].title},j)">
-                </div>
-                <div class="col-12">
-                    <label [for]="event_title">Descrição</label>
-                    <textarea cols="3" class="w-100" [(ngModel)]="arrayCustomInterventions[j].description" (change)="saveCustom({description : arrayCustomInterventions[j].description},j)"></textarea>
-                </div>
-                <div *ngIf="arrayCustomInterventions[j].interventions.length == 0" class="col-12 d-flex mt-2 mb-2 justify-content-center text-danger font-weight-bold">É necessário definir o conjunto de intervenções</div>
-                <div class="col-12 d-flex justify-content-center mt-2 mb-2"><button type="button" class="btn btn-primary text-white" data-toggle="modal" data-target="#editorModal">Editar Intervenções Círculo</button></div>
-                <div *ngIf="arrayCustomInterventions[j].circle_type.length == 0" class="col-12 d-flex mt-2 mb-2 justify-content-center text-danger font-weight-bold">É necessário indicar os participantes círculo</div>
-                <div *ngIf="arrayCustomInterventions[j].circle_type.length > 0" class="col-12 d-flex justify-content-center bg-light mt-2 mb-2">Participantes Círculo que receberão as intervenções</div>
-                <div class="col-3 d-flex justify-content-center" *ngFor="let circle of arrayCustomInterventions[j].circle_type; index as i">
-                    <p class="text-uppercase">{{circle.description}}</p>
-                    <i class="fas fa-minus-circle text-danger ml-1" (click)="removeCircle(i,custom,j)"></i>
-                </div>
-                <div class="col-12 mt-3 d-flex justify-content-center">
-                    <button type="button" class="btn btn-light" (click)="chooseCircle(custom,j)" data-toggle="modal" data-target="#exampleModal">
-                        Adicionar Participantes Círculo
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 mt-3 mb-2 d-flex justify-content-center">
-            <button type="button" class="btn btn-primary" (click)="addCustom()">Criar um novo conjunto de intervenções</button>
-        </div>
-    </div>
-</div>
-
-<div class="container-fluid border border-dark mt-2 ml-2 mr-2 mb-2">
-    <div class="row border">
-        <div class="col-12 font-weight-bold">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" [(ngModel)]="respostToCircle.selected" (change)="changeSelected(respost)" id="flexCheckDefault">
-                <label class="form-check-label font-weight-bold" for="flexCheckDefault">
-                Enviar as respostas do participante alvo para os participantes círculo:                
-                </label>
-            </div>
-        </div>
-        <div *ngIf="respostToCircle.selected" class="col-12 ml-4">
-            <div class="form-check">
-                <input class="form-check-input" [(ngModel)]="respostToCircle.need_autorization" (change)="saveRespost({need_autorization : respostToCircle.need_autorization})" type="checkbox" value="" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">
-                O Especialista precisa avaliar as respostas antes de enviar para o participante círculo
-                </label>
-            </div>
-        </div>
-    </div>
-    <div  class="row" *ngIf="respostToCircle.selected">
-        <div *ngIf="respostToCircle.circle_type.length == 0" class="col-12 d-flex mt-2 mb-2 justify-content-center text-danger font-weight-bold">É necessário indicar os participantes círculo</div>
-        <div *ngIf="respostToCircle.circle_type.length > 0" class="col-12 d-flex justify-content-center mt-2 mb-2 bg-light">Participantes Círculo que receberão as respostas</div>
-        <div class="col-3 d-flex justify-content-center" *ngFor="let circle of respostToCircle.circle_type; index as i">
-            <p class="text-uppercase">{{circle.description}}</p>
-            <i class="fas fa-minus-circle text-danger ml-1" (click)="removeCircle(i,respost)"></i>
-        </div>
-        <div class="col-12 mt-3 d-flex justify-content-center">
-            <button type="button" class="btn btn-light" (click)="chooseCircle(respost)" data-toggle="modal" data-target="#exampleModal">
-                Adicionar Participantes Círculo
-            </button>
-        </div>
-    </div>
-</div>
-
-<div class="container-fluid border border-dark mt-2 ml-2 mr-2 mb-2">
-    <div class="row">
-        <div class="col-12">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" [(ngModel)]="targetCircle.selected" (change)="saveTarget()" id="flexCheckDefault">
-                <label class="form-check-label font-weight-bold" for="flexCheckDefault">
-                Os participantes Alvo receberão as respostas uns dos outros:                
-                </label>
-            </div>
-        </div>
-        <div *ngIf="targetCircle.selected" class="col-12 ml-4">
-            <div class="form-check">
-                <input class="form-check-input" [(ngModel)]="targetCircle.need_autorization" type="checkbox" (change)="saveTarget()">
-                <label class="form-check-label" for="flexCheckDefault">
-                O Especialista precisa avaliar as respostas antes de enviar para os demais participantes alvo
-                </label>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="exampleModal" tabindex="3" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h3 class="modal-title" id="exampleModalLabel">Selecione os Participantes Círculo</h3>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -158,27 +193,18 @@
             </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-success" data-dismiss="modal">Fechar</button>
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal">Fechar</button>
         </div>
       </div>
     </div>
 </div>
 
+
 <!--Modal do Editor -->
 <div id="editorModal" class="modal">
     <div class="modal-dialog modal-fullscreen">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>The modal body is where all the text, images, and links go.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
+        <div id="editorCanva2" class="modal-content overflow-scroll" >
+            <ng-template #divInterventions2></ng-template>
         </div>
     </div>
 </div>

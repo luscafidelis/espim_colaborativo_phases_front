@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import { ProgramsAddService } from '../programsadd.service';
+import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'esm-step-panel',
@@ -10,8 +11,10 @@ export class StepPanelComponent implements OnInit {
 
   // TODO - Right now the steps are only links, but, when leaving step 1 you need to make sure it has a title
 
-  @Input() id: number;
-  currentStep: number;
+  @Input() id: number =0;
+  currentStep: number =0;
+
+  exclamation = faExclamationCircle;
 
   get hasProgramObservers() { return this.programsAddService.getObserversInstance() && this.programsAddService.getObserversInstance().length > 0; }
   get hasProgramParticipants() { return this.programsAddService.getParticipantsInstance() && this.programsAddService.getParticipantsInstance().length > 0; }
@@ -25,7 +28,7 @@ export class StepPanelComponent implements OnInit {
     else this.currentStep = 4;
 
     // Subscribes to url changes. At first there will be a 'reset' queryParam that indicates that the currentStep shall be reseted. Then, it will listen to url changes and update the currentStep accordingly
-    this.router.events.subscribe((value: NavigationEnd) => {
+    this.router.events.subscribe((value: any) => {
       if (this.activatedRoute.snapshot.queryParamMap.get('reset')) {
         this.currentStep = 1;
         return;
@@ -40,14 +43,14 @@ export class StepPanelComponent implements OnInit {
     const urlArray = url.split('/');
     const urlStep = urlArray.pop();
 
-    let step: number;
-    if (urlStep.startsWith('first'))
+    let step: number=0;
+    if (urlStep?.startsWith('first'))
       step = 1;
-    else if (urlStep.startsWith('second'))
+    else if (urlStep?.startsWith('second'))
       step = 2;
-    else if (urlStep.startsWith('third'))
+    else if (urlStep?.startsWith('third'))
       step = 3;
-    else if (urlStep.startsWith('fourth'))
+    else if (urlStep?.startsWith('fourth'))
       step = 4;
 
     if (step > this.currentStep)

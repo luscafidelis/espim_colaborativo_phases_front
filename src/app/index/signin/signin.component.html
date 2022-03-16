@@ -6,21 +6,21 @@
       <div class="row">
         <!-- Placeholder -->
         <div class="col-12 col-md-6 d-flex align-items-center text-center mb-4 mb-md-0">
-          <span class="h2 font-weight-bold">Bem vindo ao ESPIM, você ainda não tem registro? por favor, cadastre-se!</span>
+          <span class="h2 fw-bold">Bem vindo ao ESPIM, você ainda não tem registro? por favor, cadastre-se!</span>
         </div>
         <!------------->
         <!-- Nome e Sobre você -->
         <div class="col-12 col-md-6 w-50">
           <!-- Nome -->
           <div class="mb-3">
-            <label class="font-weight-bold h3 w-100" for="name">Nome</label>
+            <label class="fw-bold h3 w-100" for="name">Nome</label>
             <input class="form-control" name="name" id="name" type="text"
               placeholder="Qual o seu nome?" formControlName="name">
           </div>
           <!---------->
           <!-- Sobre você -->
           <div>
-            <label class="font-weight-bold h3 w-100" for="about">Sobre você</label>
+            <label class="fw-bold h3 w-100" for="about">Sobre você</label>
             <textarea class="w-100" id="about" name="about" formControlName="about"
               placeholder="Conte-nos um pouco sobre você!"></textarea>
           </div>
@@ -36,14 +36,14 @@
         <div class="col-12 col-md-6 d-flex flex-column">
           <!-- E-mail -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="email">E-mail</label>
+            <label class="fw-bold w-100 mb-0" for="email">E-mail</label>
             <input class="form-control" name="email" id="email" formControlName="email" type="text"
               placeholder="Qual o seu e-mail?">
           </div>
           <!------------>
           <!-- Dia de nascimento -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" [for]="birthDate">Data de Nascimento</label>
+            <label class="fw-bold w-100 mb-0" [for]="birthDate">Data de Nascimento</label>
             <div class="input-group align-items-center">
               <input class="form-control" name="birthDate" (click)="birthDate.toggle()" ngbDatepicker #birthDate="ngbDatepicker" type="text" placeholder="Data de nascimento" formControlName="birthDate" readonly>
               <i class="far fa-calendar-alt fa-2x px-3"></i>
@@ -52,7 +52,7 @@
           <!----------------------->
           <!-- Escolaridade -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="schooling">Nível de Escolaridade</label>
+            <label class="fw-bold w-100 mb-0" for="schooling">Nível de Escolaridade</label>
             <select class="form-control p-0" name="schooling" formControlName="schooling" id="schooling">
               <option value="noschool">Sem Escolaridade</option>
               <option value="elementaryincompleted">Fundamental Incompleto</option>
@@ -68,19 +68,19 @@
           <!------------------>
           <!-- Profissão -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="role">Cargo</label>
+            <label class="fw-bold w-100 mb-0" for="role">Cargo</label>
             <input class="form-control" name="role" id="role" formControlName="role" type="text">
           </div>
           <!--------------->
           <!-- Empresa ou instituição -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="institution">Instituição</label>
+            <label class="fw-bold w-100 mb-0" for="institution">Instituição</label>
             <input class="form-control" name="institution" id="institution" formControlName="institution" type="text">
           </div>
           <!---------------------------->
           <!-- Número de telefone -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="phoneNumber">Número de telefone</label>
+            <label class="fw-bold w-100 mb-0" for="phoneNumber">Número de telefone</label>
             <input class="form-control" name="phoneNumber" id="phoneNumber" formControlName="phoneNumber" type="text">
           </div>
           <!------------------------>
@@ -98,42 +98,42 @@
         <div class="col-12 col-md-6 d-flex flex-column" formGroupName="address">
           <!-- Endereço -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="address">Endereço</label>
+            <label class="fw-bold w-100 mb-0" for="address">Endereço</label>
             <input class="form-control" name="address" formControlName="address" id="address" type="text">
           </div>
           <!-------------->
           <!-- Número -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="addressNumber">Número</label>
+            <label class="fw-bold w-100 mb-0" for="addressNumber">Número</label>
             <input class="form-control" name="addressNumber" id="addressNumber" formControlName="addressNumber" type="text">
           </div>
           <!------------>
           <!-- Complemento -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="addressComplement">Complemento</label>
+            <label class="fw-bold w-100 mb-0" for="addressComplement">Complemento</label>
             <input class="form-control" name="addressComplement" id="addressComplement" formControlName="addressComplement" type="text">
           </div>
           <!----------------->
           <!-- Cep -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="cep">CEP</label>
+            <label class="fw-bold w-100 mb-0" for="cep">CEP</label>
             <input class="form-control" name="cep"  id="cep" formControlName="cep" type="text">
           </div>
           <!--------->
           <!-- Cidade -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="city">Estado</label>
+            <label class="fw-bold w-100 mb-0" for="city">Estado</label>
             <input class="form-control" name="city" id="city" formControlName="city" type="text">
           </div>
           <!------------>
           <!-- Estado -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="state">Cidade</label>
+            <label class="fw-bold w-100 mb-0" for="state">Cidade</label>
             <input type="text" class="form-control p-0" id="state" name="state" formControlName="state">
           </div>
           <!-- País -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="country">País</label>
+            <label class="fw-bold w-100 mb-0" for="country">País</label>
             <input type="text" class="form-control p-0" id="country" name="country" formControlName="country">
           </div>
           <!------------>

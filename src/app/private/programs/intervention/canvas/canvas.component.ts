@@ -1,6 +1,8 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import { ActiveEvent } from 'src/app/private/models/event.model';
 import {HTMLInterventionElement, InterventionService} from '../intervention.service';
 import {NAVBAR_HEIGHT} from '../navbar/navbar.component';
+
 
 @Component({
   selector: 'esm-canvas',
@@ -11,11 +13,10 @@ export class CanvasComponent implements OnInit, AfterViewInit {
    * O Canvas só desenha o grafo e acerta a última intervenção...
    */
 
-  canvas: HTMLCanvasElement;
+  canvas!: HTMLCanvasElement;
 
-  subs;
 
-  @ViewChild('canvas') canvasRef: ElementRef;
+  @ViewChild('canvas') canvasRef!: ElementRef;
 
   constructor(private interventionService: InterventionService) { }
 
@@ -23,7 +24,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   
   ngOnInit(): void {
     // this.interventionService.newInterventions$.subscribe((interventionElement: HTMLInterventionElement) => this.drawArrow(this.interventionService.lastIntervention, interventionElement));
-    this.subs = this.interventionService.redrawGraph$.subscribe(_ => this.drawAllArrows());
+    this.interventionService.redrawGraph$.subscribe(_ => this.drawAllArrows());
   }
 
   ngAfterViewInit(): void {
@@ -32,15 +33,22 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   resizeCanvas() {
-    this.canvasRef.nativeElement.width = document.documentElement.scrollWidth;
-    this.canvasRef.nativeElement.height = document.documentElement.scrollHeight - NAVBAR_HEIGHT - 20;
+    // O programa abre dois editores diferentes um no active event e outro no circle component..
+    var myModalEl : any = {scrollWidth : 800, scrollHeight : 600};
+    if (this.interventionService.event instanceof ActiveEvent) {
+      myModalEl = document.querySelector('#editorCanva');
+    } else {
+      myModalEl = document.querySelector('#editorCanva2');
+    }
+    this.canvasRef.nativeElement.width = myModalEl!.scrollWidth;
+    this.canvasRef.nativeElement.height = myModalEl!.scrollHeight;
     // Canvas get cleared automatically when resized
     // this.clearCanvas();
   }
 
   clearCanvas() {
-    const ctx = this.canvas.getContext('2d');
-    ctx.beginPath(); ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); ctx.stroke();
+      let ctx = this.canvas.getContext('2d');
+      ctx?.beginPath(); ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height); ctx?.stroke();
   }
   /**
    * Esta método desenha todas a setas do grafo e acerta o last interacted intervention
@@ -108,25 +116,25 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
     const sizeHead = 10;
     const angle = Math.atan2(y_difference, x_difference);
-    ctx.beginPath();
+    ctx?.beginPath();
+    console.log(ctx);
     if (main) {
-      ctx.strokeStyle = '#0a467f';
-      ctx.lineWidth = 2;
+      if (ctx?.strokeStyle) ctx.strokeStyle = '#0a467f';
+      if (ctx?.lineWidth) ctx.lineWidth = 2;
     } else {
-      ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 1;
+      if (ctx?.strokeStyle) ctx.strokeStyle = '#000000';
+      if (ctx?.strokeStyle) ctx.lineWidth = 1;
     }
-    ctx.moveTo(arrow_origin.x, arrow_origin.y);
-    ctx.lineTo(arrow_destination.x, arrow_destination.y);
-    ctx.lineTo(arrow_destination.x - sizeHead * Math.cos(angle - Math.PI / 6), arrow_destination.y - sizeHead * Math.sin(angle - Math.PI / 6));
-    ctx.moveTo(arrow_destination.x, arrow_destination.y);
-    ctx.lineTo(arrow_destination.x - sizeHead * Math.cos(angle + Math.PI / 6), arrow_destination.y - sizeHead * Math.sin(angle + Math.PI / 6));
+    ctx?.moveTo(arrow_origin.x, arrow_origin.y);
+    ctx?.lineTo(arrow_destination.x, arrow_destination.y);
+    ctx?.lineTo(arrow_destination.x - sizeHead * Math.cos(angle - Math.PI / 6), arrow_destination.y - sizeHead * Math.sin(angle - Math.PI / 6));
+    ctx?.moveTo(arrow_destination.x, arrow_destination.y);
+    ctx?.lineTo(arrow_destination.x - sizeHead * Math.cos(angle + Math.PI / 6), arrow_destination.y - sizeHead * Math.sin(angle + Math.PI / 6));
 
-    ctx.stroke();
+    ctx?.stroke();
   }
 
   ngOnDestroy(): void {
     //https://ichi.pro/pt/como-criar-um-vazamento-de-memoria-no-angular-83941828037515
-    this.subs.unsubscribe();
   }
 }

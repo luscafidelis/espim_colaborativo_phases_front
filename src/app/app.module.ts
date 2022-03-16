@@ -15,6 +15,9 @@ import { AuthInterceptor } from './security/auth.interceptor';
 import { ApplicationErrorHandler } from './app.error-handler';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faStar as farStar } from '@fortawesome/free-regular-svg-icons';
+import { faStar as fasStar } from '@fortawesome/free-solid-svg-icons';
 
 // tslint:disable-next-line:class-name
 export class missingTranslationHandler implements MissingTranslationHandler {
@@ -38,11 +41,12 @@ export class missingTranslationHandler implements MissingTranslationHandler {
     NgbModule,
     HttpClientModule,
     TranslateModule.forRoot({
-      loader: { provide: TranslateLoader, useFactory: HttpLoaderFactory, deps: [HttpClient] },
+      loader: { provide: TranslateLoader, useFactory: httpTranslateLoader, deps: [HttpClient] },
       missingTranslationHandler: { provide: MissingTranslationHandler, useClass: missingTranslationHandler }
     }),
     [SweetAlert2Module.forRoot()],
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    FontAwesomeModule
   ],
   exports: [TranslateModule],
   providers: [
@@ -53,12 +57,17 @@ export class missingTranslationHandler implements MissingTranslationHandler {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule { 
+  constructor(public library: FaIconLibrary) {
+    library.addIcons(fasStar, farStar);
+  }
+
+}
 
 
 // required for AOT (ahead of time) compilation
 
 
-export function HttpLoaderFactory(http: HttpClient) {
+export function httpTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }

@@ -1,6 +1,7 @@
 <header>
-  <nav class="navbar navbar-expand-xl p-0 h-xl-px-72">
-    <div class="navbar align-items-center">
+  <nav class="navbar navbar-expand-xl h-xl-px-72 bg-primary">
+
+    <div class="navbar align-items-center justify-content-xl-start">
       <svg xmlns="http://www.w3.Descrição do programa:org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
         width="45" height="45" viewBox="0 0 45 46">
         <defs>
@@ -40,6 +41,7 @@
       <span class="px-3"><a class="navbar-brand text-white" routerLink="/private">ESPIM</a></span>
     </div>
 
+
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="sr-only">Toggle menu</span>
@@ -48,56 +50,67 @@
       <span class="bg-white d-block my-1 text-white" style="width:25px; height: 3px;"></span>
     </button>
 
+    
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav align-items-center mr-xl-auto">
+      <ul class="collapse navbar-collapse navbar-nav justify-content-xl-start align-items-center">
         <li class="nav-item dropdown py-3 w-100 w-xl-px-200">
-          <a href="#" class="nav-link dropdown-toggle text-white text-center" role="button" data-toggle="dropdown"
+          <a class="nav-link dropdown-toggle text-white text-center" id="menuParticipants" role="button" data-bs-toggle="dropdown" aria-expanded="false"
             translate>private.header.participants.participants</a>
-          <ul class="dropdown-menu w-xl-px-200 text-center py-0 py-xl-2">
-            <li><a class="dropdown-item" routerLink="participants/add" translate>private.header.participants.add</a>
-            </li>
-            <li><a class="dropdown-item" routerLink="participants/list" translate>private.header.participants.list</a>
-            </li>
+          <ul class="dropdown-menu  w-xl-px-200 text-center py-0 py-xl-2" aria-labelledby="menuParticipants">
+            <li><a class="dropdown-item" routerLink="participants/add" translate>private.header.participants.add</a></li>
+            <li><a class="dropdown-item" routerLink="participants/list" translate>private.header.participants.list</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown py-3 w-100 w-xl-px-200">
-          <a href="#" class="nav-link dropdown-toggle text-white text-center" role="button" data-toggle="dropdown"
+          <a class="nav-link dropdown-toggle text-white text-center"  id="menuPrograms" role="button" data-bs-toggle="dropdown" aria-expanded="false"
             translate>private.header.programs.programs</a>
-          <ul class="dropdown-menu w-xl-px-200 text-center py-0 py-xl-2">
+          <ul class="dropdown-menu w-xl-px-200 text-center py-0 py-xl-2" aria-labelledby="menuPrograms">
             <li><a class="dropdown-item" [routerLink]="['programs/add', -1, 'first']" [queryParams]="{reset: true}" translate>private.header.programs.add</a></li>
             <li><a class="dropdown-item" routerLink="programs/list" translate>private.header.programs.list</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown py-3 w-100 w-xl-px-200">
-          <a href="#" class="nav-link dropdown-toggle text-white text-center" role="button" data-toggle="dropdown"
+          <a class="nav-link dropdown-toggle text-white text-center" id="menuResults" role="button" data-bs-toggle="dropdown" aria-expanded="false"
             translate>private.header.results.results</a>
-          <ul class="dropdown-menu w-xl-px-200 text-center py-0 py-xl-2">
+          <ul class="dropdown-menu w-xl-px-200 text-center py-0 py-xl-2" aria-labelledby="menuResults">
             <li><a [routerLink]="['results/list']" class="dropdown-item" translate>private.header.results.list</a></li>
           </ul>
         </li>
       </ul>
+    </div>
 
-      <ul class="navbar-nav align-items-center ml-xl-auto h-xl-px-72">
+    <div class="collapse navbar-collapse" id="navbarUser">
+      <ul class="collapse navbar-collapse navbar-nav justify-content-xl-end align-items-center">
         <li class="nav-item dropdown py-2 w-100 w-xl-px-200">
-          <a href="#" class="nav-link dropdown-toggle text-white text-center" role="button" data-toggle="dropdown">
+          <a class="nav-link dropdown-toggle text-white text-center" id="userProfile" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <img class="rounded-circle" src="{{user.profileImg}}" width="40" height="40">
           </a>
-          <ul class="dropdown-menu w-xl-px-200 text-center">
+          <ul class="dropdown-menu w-xl-px-200 text-center" aria-labelledby="userProfile">
             <li><a class="dropdown-item" routerLink="observers/add"><img class="rounded-circle mx-4" src="{{user.profileImg}}" width="102"
                   height="102"></a></li>
-            <li><a class="dropdown-item text-center" routerLink="observers/add"><small class="font-weight-bold">{{user.name}}</small></a>
+            <li><a class="dropdown-item text-center" routerLink="observers/add"><small class="fw-bold">{{user.name}}</small></a>
             </li>
             <li><a class="dropdown-item text-center" routerLink="observers/add"><small>{{user.email}}</small></a></li>
             <li class="dropdown-divider d-none d-xl-block"></li>
-            <li><a class="dropdown-item text-center" routerLink="observers/add"><i class="fas fa-cog"></i>
+            <li><a class="dropdown-item text-center" routerLink="observers/add"><fa-icon [icon]="facog"></fa-icon>
                 <small translate>private.header.profile.settings</small></a></li>
             <li class="dropdown-divider d-none d-xl-block"></li>
             <li><a class="dropdown-item text-center"><i class="fas fa-play"></i>
                 <small translate>private.header.profile.externalApplication</small></a></li>
             <li class="dropdown-divider d-none d-xl-block"></li>
-            <li><a class="dropdown-item text-center" (click)="logout()"><i class="fas fa-sign-out-alt"></i>
+            <li><a class="dropdown-item text-center" (click)="logout()"><fa-icon [icon]="fasingout"></fa-icon>
                 <small translate>private.header.profile.exit</small></a></li>
           </ul>
+        </li>
+        <li>
+          <div class="row">
+            <div class="col-12 d-flex justify-content-center pb-2">
+              <img width="73" height="30" (click)="chooseLanguage('pt')"
+                src="assets/images/landing-page/outros/Flag_of_Brazil.svg">
+              <img width="73" height="30" (click)="chooseLanguage('en')"
+                src="assets/images/landing-page/outros/Flag_of_the_United_Kingdom_(3-5).svg">
+            </div>
+          </div>
         </li>
       </ul>
     </div>

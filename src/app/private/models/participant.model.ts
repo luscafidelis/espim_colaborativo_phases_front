@@ -19,7 +19,7 @@ export class Participant {
           this.alias = participant.alias ? participant.alias : '';
           this.circle = participant.circle ? participant.circle : [];
         } else {
-          this.id = null;
+          this.id = -1;
           this.name = '';
           this.email = '';
           this.phoneNumber = '';

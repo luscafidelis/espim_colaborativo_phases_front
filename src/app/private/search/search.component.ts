@@ -1,9 +1,4 @@
 import { Component, OnInit, Output, Input } from '@angular/core';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/catch';
 import { EventEmitter } from '@angular/core';
 import { SearchService } from './search.service';
 
@@ -13,10 +8,10 @@ import { SearchService } from './search.service';
 })
 export class SearchComponent implements OnInit {
 
-  searchTerm: string;
+  searchTerm!: string;
 
   @Output() searchResults: EventEmitter<any> = new EventEmitter();
-  @Input() urlObject: string;
+  @Input() urlObject!: string;
 
   constructor(private _searchService: SearchService) { }
 

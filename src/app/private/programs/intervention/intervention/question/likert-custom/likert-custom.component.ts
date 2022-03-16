@@ -1,16 +1,18 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {HTMLInterventionElement, InterventionService} from '../../../intervention.service';
 import {QuestionIntervention} from '../../../../../models/intervention.model';
+import {faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'esm-likert-custom',
   templateUrl: './likert-custom.component.html'
 })
 export class LikertCustomComponent implements OnInit, OnChanges {
-  @Input() graphIndex: number;
-  @Input() nextInterventions: HTMLInterventionElement[];
+  @Input() graphIndex: number=0;
+  @Input() nextInterventions: HTMLInterventionElement[]=[];
 
-  intervention: QuestionIntervention;
+  faminus = faMinusCircle;
+  intervention: QuestionIntervention = new QuestionIntervention();
 
   locScales : string [] = [];
 
@@ -29,8 +31,8 @@ export class LikertCustomComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.graphIndex) this.graphIndex = changes.graphIndex.currentValue;
-    if (changes.nextInterventions) this.nextInterventions = changes.nextInterventions.currentValue;
+    if (changes['graphIndex']) this.graphIndex = changes['graphIndex'].currentValue;
+    if (changes['nextInterventions']) this.nextInterventions = changes['nextInterventions'].currentValue;
   }
 
   addChoice() {

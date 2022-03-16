@@ -3,12 +3,12 @@ import { SocialUser } from 'ngx-social-login';
 import { LoginService } from 'src/app/security/login/login.service';
 import { ObserversService } from './observers.service';
 import { ESPIM_REST_Observers } from 'src/app/app.api';
-import * as moment from 'moment';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Observer } from '../models/observer.model';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { DAOService } from '../dao/dao.service';
 import { DateConverterService } from 'src/app/util/util.date.converter.service';
+import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -18,14 +18,16 @@ import { DateConverterService } from 'src/app/util/util.date.converter.service';
 })
 export class ObserversComponent implements OnInit {
 
+  calendar = faCalendar;
+  
   urlObservers: string = ESPIM_REST_Observers;
 
-  user: SocialUser;
-  observer: Observer;
+  user!: SocialUser;
+  observer!: Observer;
 
-  observerForm: FormGroup;
+  observerForm!: FormGroup;
 
-  @ViewChild('swalSaveSuccess') private swalSaveSuccess: SwalComponent;
+  @ViewChild('swalSaveSuccess') private swalSaveSuccess!: SwalComponent;
 
   constructor(private loginService: LoginService, private observerService: ObserversService, private _formBuilder: FormBuilder, private _daoService: DAOService, private _dateConverterService: DateConverterService) { }
 
@@ -56,7 +58,7 @@ export class ObserversComponent implements OnInit {
       })
     });
 
-    this.observerService.getObserverByEmail(this.urlObservers, this.user.email).subscribe(response => {
+    this.observerService.getObserverByEmail(this.urlObservers, this.user.email).subscribe((response:any) => {
       console.log('response =>', response["results"][0]);
       this.observer = new Observer(response["results"][0]);
       console.log('observer:', this.observer);
@@ -89,12 +91,12 @@ export class ObserversComponent implements OnInit {
     });
   }
 
-  save(event) {
+  save(event:any) {
     // converter data aqui senão vai dar problema
     this.observerForm.value.birthDate = this._dateConverterService.toString(this.observerForm.value.birthDate);
     console.log('date:', this.observerForm.value.birthDate);
     this._daoService.putObject(this.urlObservers, this.observerForm.value).subscribe(response => {
-      this.swalSaveSuccess.show();
+      this.swalSaveSuccess.fire();
     });
   }
 

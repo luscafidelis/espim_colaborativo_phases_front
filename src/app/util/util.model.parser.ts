@@ -1,6 +1,6 @@
 export class Parser {
-    getUrlParams(url) {
-        var params = {};
+    getUrlParams(url : any) {
+        var params: any = {};
         try {
             var query = url.split('?')[1];
             var vars = query.split('&');

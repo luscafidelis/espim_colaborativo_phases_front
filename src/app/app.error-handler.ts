@@ -7,7 +7,7 @@ import { TranslateService, TranslateStore, } from '@ngx-translate/core';
 @Injectable()
 export class ApplicationErrorHandler extends ErrorHandler {
 
-    private swal_error: SwalComponent;
+    private swal_error!: SwalComponent;
 
     constructor(private injector: Injector, private translate: TranslateService, private zone: NgZone) {
         super()
@@ -17,27 +17,19 @@ export class ApplicationErrorHandler extends ErrorHandler {
         this.injector.get(Router).navigate(['/index/signin']);  
     }
 
-    handleError(errorResponse: HttpErrorResponse | any): any {
+    override handleError(errorResponse: HttpErrorResponse | any): any {
         if (errorResponse instanceof HttpErrorResponse) {
             this.zone.run(() => {
                 // Get the error code based on the response or throws default error (Unknown Error)
                 try {
                     this.translate.get(`errors.${errorResponse.statusText}`).subscribe(translation => {
-                        this.swal_error = new SwalComponent ({
-                            title: translation.title,
-                            text: translation.text,
-                            type: 'error'
-                        });
-                        this.swal_error.show()
+                        this.swal_error = new SwalComponent (translation.title,translation.text,true);
+                        this.swal_error.fire()
                     }).unsubscribe()
                 } catch (error) {
                     this.translate.get(`errors.Unknown Error`).subscribe(translation => {
-                        this.swal_error = new SwalComponent ({
-                            title: translation.title,
-                            text: translation.text,
-                            type: 'error'
-                        });
-                        this.swal_error.show()
+                        this.swal_error = new SwalComponent (translation.title,translation.text,true);
+                        this.swal_error.fire()
                     }).unsubscribe()
                 }
             })

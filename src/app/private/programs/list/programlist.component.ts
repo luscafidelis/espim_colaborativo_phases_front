@@ -5,6 +5,8 @@ import { ESPIM_REST_Programs } from 'src/app/app.api';
 import { DAOService } from '../../dao/dao.service';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import {Router} from '@angular/router';
+import Swal from 'sweetalert2';
+import {faLock, faUsers, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'esm-particpants-list',
@@ -13,19 +15,24 @@ import {Router} from '@angular/router';
 @Injectable()
 export class ProgramsListComponent implements OnInit {
 
+  lock = faLock;
+  users = faUsers;
+  edit = faEdit;
+  trash = faTrashAlt;
+
   urlPrograms: string = ESPIM_REST_Programs;
-  programs: Program[];
-  totalPrograms: string;
-  pagination: Pagination;
+  programs!: Program[];
+  totalPrograms!: string;
+  pagination!: Pagination;
 
   loading = false;
 
   // sweet alert elements
-  @ViewChild('swalDeleteProgram') private swalDeleteProgram: SwalComponent;
-  @ViewChild('swalAfterDelete') private swalAfterDelete: SwalComponent;
+  @ViewChild('swalDeleteProgram') private swalDeleteProgram!: SwalComponent;
+  @ViewChild('swalAfterDelete') private swalAfterDelete!: SwalComponent;
 
   // temp program stored for deleting program
-  tempProgram: Program;
+  tempProgram!: Program;
 
   constructor(private dao: DAOService, private router: Router) { }
 
@@ -42,17 +49,17 @@ export class ProgramsListComponent implements OnInit {
       });
   }
 
-  onNext(event) {
+  onNext(event:any) {
     this.getPrograms(event.url);
   }
 
-  onNextSearch(event) {
+  onNextSearch(event:any) {
     this.setPrograms(event.response);
   }
 
-  setPrograms(response) {
+  setPrograms(response:any) {
     this.totalPrograms = response.count;
-    this.programs = response.results.map(responseIn => {
+    this.programs = response.results.map((responseIn:any) => {
       const program = responseIn;
       if (program.beingDuplicated) this.checkDuplication(program);
       return program;
@@ -64,12 +71,12 @@ export class ProgramsListComponent implements OnInit {
   deleteProgram(program: Program) {
     if (program.beingDuplicated) return;
     this.tempProgram = program;
-    this.swalDeleteProgram.show();
+    this.swalDeleteProgram.fire();
   }
 
-  onConfirmDeleteProgram(event) {
+  onConfirmDeleteProgram(event : any) {
     this.dao.deleteObject(this.urlPrograms, this.tempProgram.id.toString()).subscribe(response => {
-      this.swalAfterDelete.show();
+      this.swalAfterDelete.fire();
       this.getPrograms();
     });
   }
@@ -92,21 +99,20 @@ export class ProgramsListComponent implements OnInit {
   duplicateProgram(program: Program) {
     if (program.beingDuplicated) return;
 
-    new SwalComponent({
-      title: 'Duplicar um programa',
-      type: 'question',
+    Swal.fire({ title: 'Duplicar um programa',
       text: `Essa ação pode demorar muito tempo, deseja continuar? Você ainda poderá mexer em outros programas, entretanto a cópia somente será editável após o fim do processo.`,
-      showCancelButton: true
-    }).show().then(response => {
-      if (response.value === true) {
-        this.dao.getObjects(ESPIM_REST_Programs + `${program.id.toString()}/duplicate/`).subscribe((data: any) => this.dao.getObject(ESPIM_REST_Programs, data.id.toString()).subscribe(dataIn => {
-          this.getPrograms(`http://localhost:8000/programs/?page=${this.pagination.actualPage}`);
-
-          new SwalComponent({
-            title: 'Duplicação iniciada!',
-            type: 'success',
+      icon : 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sim, Copiar o programa'      
+    }).then((response:any) => {
+      if (response.isConfimed) {
+        this.dao.getObjects(ESPIM_REST_Programs + `${program.id.toString()}/duplicate/`).subscribe((data: any) => this.dao.getObject(ESPIM_REST_Programs, data.id.toString()).subscribe((dataIn : any) => {
+          Swal.fire({ title: 'Duplicação realizada!',
+            icon: 'success',
             text: 'Em caso de qualquer problema, reinicie a página'
-          }).show().then();
+          });
         }));
       }
     });

@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import {Subject} from 'rxjs';
 import {Intervention, MediaIntervention, QuestionIntervention, TaskIntervention} from '../../models/intervention.model';
-import {SwalComponent} from '@sweetalert2/ngx-sweetalert2';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ActiveEvent} from '../../models/event.model';
-import { ESPIM_REST_Events, ESPIM_REST_Interventions } from 'src/app/app.api';
+import { ESPIM_REST_CustomCircleEvents, ESPIM_REST_Events, ESPIM_REST_Interventions } from 'src/app/app.api';
 import { DAOService } from '../../dao/dao.service';
 import { ChannelService } from '../../channel_socket/socket.service';
+import Swal from 'sweetalert2';
+import { CustomCircleEvent } from '../../models/circle.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,25 +15,28 @@ import { ChannelService } from '../../channel_socket/socket.service';
 export class InterventionService {
 
   //Id do programa
-  program_id: number;
+  program_id: number = 0;
 
-  //Evento ao qual as intervenções pertencem
-  event: ActiveEvent;
+  //Evento ou CustoCircle ao qual as intervenções pertencem
+  event!: ActiveEvent | CustomCircleEvent;
 
+  //Variável que indicará o tipo de objeto que veio como parâmetro...
+  typeObject! : string;
+  
   //Ùltima intervenção que foi adicionada
-  lastInteractedIntervention: number;
+  lastInteractedIntervention: number = -1; //Indica que está vazio...
 
   //Primeira intervenção
-  firstIntervention: number;
+  firstIntervention: number = 0;
 
   //Caso exista múltiplos caminhos nas intervenções...
   hasMultiplePaths: boolean = false;
 
   //Vetor de intervenções.. O HtmlElement une o model com o componente HTML Intervention..
-  graphElements: HTMLInterventionElement[];
+  graphElements: HTMLInterventionElement[] = [];
   
   //Próximas intervenções da intervenção.. vai ser mudado isso..
-  interventionElementsGraph: number[][];
+  interventionElementsGraph: number[][] = [];
 
   //Observable que serve para informar quando uma intervenção é adicionada ao vetor
   newInterventions$: Subject<{graphIndex: number, intervention: HTMLInterventionElement}> = new Subject<{graphIndex: number, intervention: HTMLInterventionElement}>();
@@ -42,6 +46,9 @@ export class InterventionService {
   
   //Para avisar quando houver alteração no vetor de intervenções
   redrawGraph$: Subject<void> = new Subject<void>();
+
+  //Para avisar que os vetores foram inicializados...
+  initGraph$: Subject<void> = new Subject<void>();
   
   //Para avisar quando a primeira intervenção for alterada
   firstInterventionChange$: Subject<number> = new Subject<number>();
@@ -49,23 +56,32 @@ export class InterventionService {
   //Para avisar quando houver alguma alteração no programa feito por outro usuário
   outUpdateChange$: Subject<void> = new Subject<void>();
 
-  //Subscrições, vetor para marcar todas as subscrições do service
-  inscritos : any[] = [];
-
   //Esta variável serve para definir a instância que chamou o canal e fazer as atualizações no banco quando necessário..
   chamouCanal : boolean = false;
 
   constructor(private router: Router, private route: ActivatedRoute, private canal : ChannelService, public dao : DAOService ) { }
   
   //Inicializa os dados do service
-  init(program_id: number, event: ActiveEvent, interventions: Intervention[]) {
-
+  init(program_id: number, event: ActiveEvent | CustomCircleEvent, interventions: Intervention[]) {
     this.program_id = program_id;
     this.event = event;
-    console.log(interventions);
-    this.updateInterventions(interventions);
-
+    if (interventions.length > 0) {
+      this.updateInterventions(interventions);
+    } else {
+      this.lastInteractedIntervention = -1; //Indica que está vazio...
+      this.firstIntervention = 0;
+      this.graphElements = [];
+      this.graphElements.push(new HTMLInterventionElement(new Intervention()));
+      this.interventionElementsGraph = [];
+      this.interventionElementsGraph.push([0]);
+    }
+    if (event instanceof ActiveEvent){
+      this.typeObject = 'event';
+    } else {
+      this.typeObject = 'customCircle';
+    }
     this.canal.getData$.subscribe( data => this.updateGraph(data));
+    //this.initGraph$.next();
   }
 
 
@@ -73,9 +89,8 @@ export class InterventionService {
    * Este método atualiza os dados conforme eles sejam recebidos pelo websocket
    */
   updateGraph(data:any){
-    console.log(data.payload.message);
     let locdata = data.payload.message;
-    if (locdata.model == 'event' && locdata.id == this.event.id ){
+    if (locdata.model == this.typeObject && locdata.id == this.event.id ){
       for (let prop in locdata){
         if (prop != 'model' && prop != 'id'){
           //Adicionar Intervention
@@ -88,12 +103,8 @@ export class InterventionService {
               }
             }
             if (criar){
-              let intervention: Intervention;
-              let type = locdata['addIntervention'].intervention.type;
-              if (type === 'empty') intervention = new Intervention(locdata['addIntervention'].intervention);
-              else if (type === 'media') intervention = new MediaIntervention(locdata['addIntervention'].intervention);
-              else if (type === 'question') intervention = new QuestionIntervention(locdata['addIntervention'].intervention);
-              else if (type === 'task') intervention = new TaskIntervention(locdata['addIntervention'].intervention);
+              //O factory cria um vetor de intervenções.. pega só a primeira posição..
+              let intervention: Intervention = Intervention.factory([locdata['addIntervention'].intervention])[0];
               this.sincGraph(new HTMLInterventionElement(intervention));
             }
           } else {
@@ -122,9 +133,6 @@ export class InterventionService {
                     }
                     i++;
                   }
-                  console.log(this.graphElements);
-                  console.log(this.interventionElementsGraph);
-                  
                   this.graphElements[pos].intervention.next= {next : this.interventionElementsGraph[pos]};
                   //Esta gravação vai ser repetida por todas as máquinas.. Tem que criar uma situação para só um fazer isso..
                   let grava:any ={};
@@ -157,7 +165,7 @@ export class InterventionService {
   /**
   * Este método vai criar todos os vetores de intervenções..
   */
-  updateInterventions(interventions : Intervention[]){
+  updateInterventions(interventions : any[]){
     interventions.sort((a, b) => {
       if (a.orderPosition < b.orderPosition) return -1;
       else if (a.orderPosition > b.orderPosition) return 1;
@@ -165,17 +173,16 @@ export class InterventionService {
     });
 
     // Old espim did not save order position correctly, so here we have to correct
-    const orderPositions = {};
+    const orderPositions : number[]=[];
     for (let i = 0; i < interventions.length; i++)
       orderPositions[interventions[i].orderPosition] = i + 1;
     orderPositions[0] = 0;
 
 
     // makes the first element invalid since index "0" is finish
-    this.graphElements = [new HTMLInterventionElement()].concat(interventions.map(value => {
+    this.graphElements = [new HTMLInterventionElement(new Intervention())].concat(interventions.map(value => {
       const intervention = new HTMLInterventionElement(value);
-      let subs = intervention.onChange$.subscribe(_ => this.redrawGraph$.next());
-      this.inscritos.push(subs);
+      intervention.onChange$.subscribe(_ => this.redrawGraph$.next());
       return intervention;
     }));
 
@@ -185,12 +192,20 @@ export class InterventionService {
     this.interventionElementsGraph = [];
     this.interventionElementsGraph.push([0]);
     //agora o next é um campo Json e dentro o vetor next indica as próximas intervenções
-    for (let i=0; i < interventions.length; i++){
-      if (interventions[i].next.next != null){ 
-        this.interventionElementsGraph.push(interventions[i].next.next);
+    for (let i=1; i < this.graphElements.length; i++){
+      if (this.graphElements[i].intervention.next.next != null){ 
+        this.interventionElementsGraph[i] = this.graphElements[i].intervention.next.next;
       } else {
-        this.interventionElementsGraph.push([0]);
+        this.interventionElementsGraph[i] = ([0]);
       }
+      //Para desenhar o grapho...
+    }
+  }
+
+  createGraph(){
+    for (let i=1; i < this.graphElements.length; i++){
+      //Para desenhar o grapho...
+      this.newInterventions$.next({graphIndex: i, intervention: this.graphElements[i]});
     }
   }
 
@@ -209,7 +224,7 @@ export class InterventionService {
     }
     
     //Verifica se o tipo da intervenção é de questão única que permite múltiplos caminhos..
-    if (this.lastInteractedIntervention !== undefined) {
+    if (this.lastInteractedIntervention !== -1) {
       //if (this.graphElements[this.lastInteractedIntervention].intervention instanceof QuestionIntervention && (this.graphElements[this.lastInteractedIntervention].intervention as QuestionIntervention).questionType === 1)
       //  this.interventionElementsGraph[this.lastInteractedIntervention].push(this.interventionElementsGraph.length);
       //else
@@ -221,10 +236,8 @@ export class InterventionService {
     this.graphElements.push(intervention);
     this.newInterventions$.next({graphIndex: this.graphElements.length - 1, intervention});
     this.redrawGraph$.next();
-    let subs = intervention.onChange$.subscribe(_ => this.redrawGraph$.next());
+    intervention.onChange$.subscribe(_ => this.redrawGraph$.next());
     //Vetor para cancelar as subscrições no observer quando finalizar..
-    this.inscritos.push(subs);
-
   }
   
   /**
@@ -234,8 +247,7 @@ export class InterventionService {
    */
   
   addIntervention(intervention: HTMLInterventionElement) {
-    console.log(this.lastInteractedIntervention);
-    if (this.lastInteractedIntervention === undefined) {
+    if (this.lastInteractedIntervention === -1) {
       intervention.first = true;
     }
 
@@ -249,7 +261,7 @@ export class InterventionService {
 
     //Estas linhas salvam no banco de dados a alteração da última intervenção
     //Estas linhas serão repetidas no sincgraph para atualizar os vetores...
-    if (this.lastInteractedIntervention !== undefined) {
+    if (this.lastInteractedIntervention !== -1) {
       this.graphElements[this.lastInteractedIntervention].intervention.next = {next : [this.interventionElementsGraph.length]};
       let locInt = this.graphElements[this.lastInteractedIntervention].intervention;
       let volta = {id : locInt.id, next : locInt.next};
@@ -258,45 +270,55 @@ export class InterventionService {
     }
 
     //Cria a nova intervenção e avisa o canal...
-    this.dao.postObject(ESPIM_REST_Interventions,{intervention : intervention.intervention, event : this.event.id}).subscribe((data:any) => 
-    { 
-      intervention.intervention.id=data.id;
-      let volta : any = {};
-      volta.model = 'event';
-      volta.id = this.event.id;
-      volta.addIntervention = intervention;
-      this.canal.sendMessage(volta);
-    });
+    if (this.typeObject == "event") {
+      this.dao.postObject(ESPIM_REST_Interventions,{intervention : intervention.intervention, event : this.event.id}).subscribe((data:any) => 
+      { 
+        intervention.intervention.id=data.id;
+        this.broadcastAddIntervention(intervention);
+      });
+    } else {
+      this.dao.postObject(ESPIM_REST_Interventions,{intervention : intervention.intervention, customCircle : this.event.id}).subscribe((data:any) => 
+      { 
+        intervention.intervention.id=data.id;
+        this.broadcastAddIntervention(intervention);
+      });
+
+    }
+  }
+
+  broadcastAddIntervention(intervention : HTMLInterventionElement ){
+    let volta : any = {};
+    volta.model = this.typeObject;
+    volta.id = this.event.id;
+    volta.addIntervention = intervention;
+    this.canal.sendMessage(volta);
   }
 
   removeIntervention(graphIndex: number) {
     let volta : any = {};
-    volta.model = 'event';
+    volta.model = this.typeObject;
     volta.id = this.event.id;
     volta.delIntervention = this.graphElements[graphIndex].intervention.id;
-    this.dao.patchObject(ESPIM_REST_Events, {id : this.event.id, delIntervention : volta.delIntervention}).subscribe( _ => { this.canal.sendMessage(volta); });
+    if (this.typeObject == 'event') {
+      this.dao.patchObject(ESPIM_REST_Events, {id : this.event.id, delIntervention : volta.delIntervention}).subscribe( _ => { this.canal.sendMessage(volta); });
+    } else {
+      this.dao.patchObject(ESPIM_REST_CustomCircleEvents, {id : this.event.id, delIntervention : volta.delIntervention}).subscribe( _ => { this.canal.sendMessage(volta); });      
+    }
   }
 
   finish() {
-    if (this.hasMultiplePaths) {
-      new SwalComponent({
-        title: 'Há intervenções desconectadas',
-        text: 'Encontramos intervenções que não estão ligadas à primeira. Por favor, é necessário deleta-las ou liga-las ao caminho principal'
-      }).show().then();
-      return;
-    }
-
-    //Desinscreve os observers do padrão observer...
-    for (let i = 0; i < this.inscritos.length; i++){
-      this.inscritos[i].unsubscribe();
-    }
+    //if (this.hasMultiplePaths) {
+    //  Swal.fire('Há intervenções desconectadas','Encontramos intervenções que não estão ligadas à primeira. Por favor, é necessário deleta-las ou liga-las ao caminho principal', 'warning');
+    //  return;
+    //}
 
     this.graphElements = [];
     this.graphElements.length =0;
     this.interventionElementsGraph=[[]]
     this.interventionElementsGraph.length=0;
+    this.typeObject = '';
 
-    this.router.navigateByUrl(`private/programs/add/${this.program_id}/fourth`).then();
+    //this.router.navigateByUrl(`private/programs/add/${this.program_id}/fourth`).then();
   }
 
 
@@ -341,10 +363,10 @@ export class InterventionService {
 
 export class HTMLInterventionElement {
   onChange$: Subject<HTMLInterventionElement> = new Subject<HTMLInterventionElement>();
-
+  
   constructor(
-      public intervention?: Intervention,
-  ) {}
+      public intervention: Intervention,
+  ) {  }
 
   get x() { return this.intervention._x; }
   set x(x: number) {
@@ -384,14 +406,14 @@ export class HTMLInterventionElement {
       return (this.intervention as QuestionIntervention).questionType;
     return undefined;
   }
-  get statement() { return this.intervention?.statement; }
+  get statement() { return this.intervention.statement; }
   set statement(statement: string) { this.intervention.statement = statement; }
-  get orderPosition() { return this.intervention?.orderPosition; }
+  get orderPosition() { return this.intervention.orderPosition; }
   set orderPosition(orderPosition: number) { this.intervention.orderPosition = orderPosition; }
   get typeDescription() { return this.intervention?.getTypeDescription(); }
-  get first() { return this.intervention?.first; }
+  get first() { return this.intervention.first; }
   set first(first: boolean) { this.intervention.first = first; }
-  get obligatory() { return this.intervention?.obligatory; }
+  get obligatory() { return this.intervention.obligatory; }
   set obligatory(obligatory) { this.intervention.obligatory = obligatory; }
 
   get top() { return { x: this.x + this.width / 2 , y: this.y }; }

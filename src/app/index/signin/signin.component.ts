@@ -7,6 +7,7 @@ import { ObserversService } from 'src/app/private/observers/observers.service';
 import { LoginService } from 'src/app/security/login/login.service';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'esm-signin',
@@ -15,7 +16,7 @@ import { Router } from '@angular/router';
 export class SigninComponent implements OnInit {
 
   urlObservers: string = ESPIM_REST_Observers;
-  observerForm: FormGroup;
+  observerForm!: FormGroup;
 
   constructor(private loginService: LoginService, private observerService: ObserversService, private formBuilder: FormBuilder, private daoService: DAOService, private dateConverterService: DateConverterService, private router: Router) { }
 
@@ -42,16 +43,12 @@ export class SigninComponent implements OnInit {
     });
   }
 
-  save(event) {
+  save(event : any) {
     // converter data aqui senão vai dar problema de formato aceito pelo backend
     this.observerForm.value.birthDate = this.dateConverterService.toString(this.observerForm.value.birthDate);
     this.daoService.postObject(this.urlObservers, this.observerForm.value).subscribe(response => {
-      new SwalComponent({
-        title: 'Observador registrado!',
-        text: 'Observador registrado com sucesso!',
-        type: 'success',
-        focusCancel: true
-      }).show().then(_ => this.router.navigate(['/private']));
+      Swal.fire('Observador registrado!','Observador registrado com sucesso!','success');
+      this.router.navigate(['/private']);
     });
   }
 

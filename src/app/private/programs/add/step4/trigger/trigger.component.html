@@ -1,13 +1,13 @@
 <div class="mt-2">
-  <li *ngIf="!isAddTriggerComponent" class="d-flex justify-content-between align-items-center text-center bg-primary-10 rounded-pill mx-2 px-3 py-1 font-weight-bold">
-    <button (click)="isOpen = !isOpen" class="btn btn-block text-color-inherit font-weight-bold text-left" type="button">{{ trigger.getDescription() }}</button>
+  <li *ngIf="!isAddTriggerComponent" class="d-flex justify-content-between align-items-center text-center bg-primary-10 rounded-pill mx-2 px-3 py-1 fw-bold">
+    <button (click)="isOpen = !isOpen" class="btn btn-block text-color-inherit fw-bold text-left" type="button">{{ trigger.getDescription() }}</button>
     <!-- <i class="fas fa-times pointer"></i> !-->
     <i class="fas fa-trash-alt text-black" (click)="delTrigger()"></i>
   </li>
   <li class="row collapse mx-5" [ngbCollapse]="!isOpen && !isAddTriggerComponent">
     <div class="col-12 d-flex justify-content-around">
       <div class="d-flex flex-column p-3">
-        <span class="font-weight-bold my-2">Dias da semana</span>
+        <span class="fw-bold my-2">Dias da semana</span>
         <div>
           <input type="checkbox" id="select-all" [checked]="trigger.isDayActive()" (click)="trigger.actOrDeactivateDay()" [disabled]="trigger.getTriggerType() === 'manual'">
           <label for="select-all">Selecionar todos</label>
@@ -43,11 +43,11 @@
       </div>
       <div class="d-flex flex-column justify-content-around w-25">
         <div class="d-flex flex-column text-center">
-          <label class="font-weight-bold">Horário</label>
+          <label class="fw-bold">Horário</label>
           <ngb-timepicker [formControl]="time" (change)="updateTriggerTime()" [minuteStep]="30" [readonlyInputs]="trigger.getTriggerType() === 'manual'"></ngb-timepicker>
         </div>
         <div class="d-flex justify-content-center flex-wrap text-center">
-          <span class="font-weight-bold w-100">Tipo de notificação</span>
+          <span class="fw-bold w-100">Tipo de notificação</span>
           <div class="input-group-prepend w-100">
             <i class="input-group-text fas fa-bell"></i>
             <select class="w-100" #priority (change)="trigger.setPriority(priority.value)" [disabled]="trigger.getTriggerType() === 'manual'">
@@ -59,7 +59,7 @@
           </div>
         </div>
         <div class="d-flex flex-column text-center">
-          <label class="font-weight-bold" for="duration">Duração do disparo</label>
+          <label class="fw-bold" for="duration">Duração do disparo</label>
           <input type="number" placeholder="Duração do disparo" id="duration" #duration [value]="trigger.getTimeOutInMinutes()" (change)="trigger.setTimeOutInMinutes(duration.value)" [disabled]="trigger.getTriggerType() === 'manual'">
         </div>
       </div>

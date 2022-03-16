@@ -13,13 +13,13 @@
         <div class="col-12 col-md-6 w-50">
           <!-- Nome -->
           <div class="mb-3">
-            <label class="font-weight-bold h3 w-100" for="name" translate>private.observers.name</label>
+            <label class="fw-bold h3 w-100" for="name" translate>private.observers.name</label>
             <input class="form-control" name="name" formControlName="name" id="name" type="text">
           </div>
           <!---------->
           <!-- Sobre você -->
           <div>
-            <label class="font-weight-bold h3 w-100" for="about" translate>private.observers.about</label>
+            <label class="fw-bold h3 w-100" for="about" translate>private.observers.about</label>
             <textarea class="w-100" id="about" formControlName="about"
               placeholder="{{'private.observers.aboutPlaceholder' | translate}}" rows="5" maxlength="300"></textarea>
           </div>
@@ -35,22 +35,22 @@
         <div class="col-12 col-md-6 d-flex flex-column">
           <!-- E-mail -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="email" translate>private.observers.email</label>
+            <label class="fw-bold w-100 mb-0" for="email" translate>private.observers.email</label>
             <input class="form-control" name="email" formControlName="email" id="email" type="text">
           </div>
           <!------------>
           <!-- Dia de nascimento -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="birthDate" translate>private.observers.birthDate</label>
+            <label class="fw-bold w-100 mb-0" for="birthDate" translate>private.observers.birthDate</label>
             <div class="input-group align-items-center">
               <input class="form-control" name="birthDate" id="birthDate" formControlName="birthDate" ngbDatepicker #d="ngbDatepicker" type="text" readonly="true">
-              <i class="far fa-calendar-alt fa-2x px-3" (click)="d.toggle()"></i>
+              <fa-icon [icon]="calendar" class="fa-2x px-3" (click)="d.toggle()"></fa-icon>
             </div>
           </div>
           <!----------------------->
           <!-- Escolaridade -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="schooling"
+            <label class="fw-bold w-100 mb-0" for="schooling"
               translate>private.observers.schooling.schooling</label>
             <select class="form-control p-0" name="schooling" id="schooling" formControlName="schooling">
               <option value="noschool" translate>private.observers.schooling.noschool</option>
@@ -67,20 +67,20 @@
           <!------------------>
           <!-- Profissão -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="role" translate>private.observers.role</label>
+            <label class="fw-bold w-100 mb-0" for="role" translate>private.observers.role</label>
             <input class="form-control" name="role" id="role" type="text" formControlName="role" required>
           </div>
           <!--------------->
           <!-- Empresa ou instituição -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="institution" translate>private.observers.institution</label>
+            <label class="fw-bold w-100 mb-0" for="institution" translate>private.observers.institution</label>
             <input class="form-control" name="institution" id="institution" formControlName="institution" type="text"
               placeholder="Universidade de São Paulo" required>
           </div>
           <!---------------------------->
           <!-- Número de telefone -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="phoneNumber" translate>private.observers.phoneNumber</label>
+            <label class="fw-bold w-100 mb-0" for="phoneNumber" translate>private.observers.phoneNumber</label>
             <input class="form-control" name="phoneNumber" formControlName="phoneNumber" id="phoneNumber" type="text"
               placeholder="Número de telefone" required>
           </div>
@@ -92,13 +92,13 @@
           <input type="hidden" id="id" name="id" formControlName="id">
           <!-- Endereço -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="address" translate>private.observers.address.address</label>
+            <label class="fw-bold w-100 mb-0" for="address" translate>private.observers.address.address</label>
             <input class="form-control" name="address" formControlName="address" id="address" type="text" required>
           </div>
           <!-------------->
           <!-- Número -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="addressNumber"
+            <label class="fw-bold w-100 mb-0" for="addressNumber"
               translate>private.observers.address.addressNumber</label>
             <input class="form-control" name="addressNumber" formControlName="addressNumber" id="addressNumber"
               type="text" placeholder="0" required>
@@ -106,7 +106,7 @@
           <!------------>
           <!-- Complemento -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="addressComplement"
+            <label class="fw-bold w-100 mb-0" for="addressComplement"
               translate>private.observers.address.addressComplement</label>
             <input class="form-control" name="addressComplement" formControlName="addressComplement"
               id="addressComplement" type="text" required>
@@ -114,24 +114,24 @@
           <!----------------->
           <!-- Cep -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="cep" translate>private.observers.address.cep</label>
+            <label class="fw-bold w-100 mb-0" for="cep" translate>private.observers.address.cep</label>
             <input class="form-control" name="cep" id="cep" formControlName="cep" type="text"  required>
           </div>
           <!--------->
           <!-- Cidade -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="city" translate>private.observers.address.city</label>
+            <label class="fw-bold w-100 mb-0" for="city" translate>private.observers.address.city</label>
             <input class="form-control" name="city" formControlName="city" id="city" type="text" required>
           </div>
           <!------------>
           <!-- Estado -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="state" translate>private.observers.address.state</label>
+            <label class="fw-bold w-100 mb-0" for="state" translate>private.observers.address.state</label>
             <input type="text" class="form-control p-0" formControlName="state" id="state" name="state">
           </div>
           <!-- País -->
           <div class="w-100 mb-4">
-            <label class="font-weight-bold w-100 mb-0" for="country" translate>private.observers.address.country</label>
+            <label class="fw-bold w-100 mb-0" for="country" translate>private.observers.address.country</label>
             <input type="text" class="form-control p-0" formControlName="country" id="country" name="country">
           </div>
           <!------------>

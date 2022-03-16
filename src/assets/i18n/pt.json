@@ -90,118 +90,115 @@
                 "saveTitle": "Observador registrado!",
                 "saveMessage": "Observador registrado com sucesso!"
             }
-        },
-        "security": {
-            "login": {
-                "button": "Entrar"
-            }
-        },
-        "private": {
-            "header": {
-                "participants": {
-                    "participants": "Participantes",
-                    "add": "Adicionar",
-                    "list": "Listar"
-                },
-                "programs": {
-                    "programs": "Programas",
-                    "add": "Adicionar",
-                    "list": "Listar"
-                },
-                "results": {
-                    "results": "Resultados",
-                    "list": "Listar"
-                },
-                "profile": {
-                    "settings": "Configurações",
-                    "externalApplication": "Aplicações externas",
-                    "exit": "Sair"
-                }
-            },
-            "dashboard": {
-                "welcomeText": "O Método de Amostragem de Experiências e Intervenção Programada (ESPIM) combina procedimentos selecionados do campo da Psicologia, como Programação de Ensino Individualizada e Método de Amostragem de Experiências (ESM), e as vantagens proporcionadas pela Computação Ubíqua com o objetivo de ampliar o alcance da coleta de dados e intervenções a distância em ambientes naturais. O método é suportado por um sistema computacional desenvolvidos para as plataformas Web e mobile. Ele permite que se programem intervenções baseadas em dados coletados de maneira explícita ou pervasiva. O sistema suporta a troca de dados entre as diferentes partes interessadas envolvidas no planejamento da coleta de dados e/ou intervenção. Espera-se que o ESPIM permita a pesquisadores e profissionais de diversas áreas de conhecimento, como educação e saúde, criar e executar experimentos ou intervenções conduzidos a distância."
-            },
-            "participants": {
-                "add": {
-                    "title": "Informações do participante",
-                    "name": "Nome",
-                    "email": "E-mail",
-                    "alias": "Apelido",
-                    "addNew": "Adicionar outro participante",
-                    "saveButton": "SALVAR",
-                    "saveAndAddAnother": "SALVAR E ADICIONAR OUTRO",
-                    "messageTitle": "Adicionando participante",
-                    "addMessage": "Se um participante que possui o e-mail informado já estiver cadastrado no ESPIM, o cadastro será realizado com seu nome original",
-                    "saveTitle": "Salvo com sucesso!",
-                    "saveMessage": "Participante salvo!"
-                },
-                "list": {
-                    "pageTitle": "Lista de participantes",
-                    "listTitle": "Lista de participantes",
-                    "totalNumber": "Total de participantes",
-                    "noObjects": "Não há participantes cadastrados",
-                    "deleteMessageTitle": "Excluindo participante",
-                    "deleteMessage": "Tem certeza que deseja excluir esse participante?",
-                    "afterDeleteTitle": "Participante excluído!",
-                    "afterDelete": "Participante excluído com sucesso!"
-                }
-            },
-            "search": {
-                "searchPlaceholder": "O que deseja pesquisar?",
-                "searchButton": "BUSCAR"
-            },
-            "programs": {
-                "add": {},
-                "list": {
-                    "pageTitle": "Lista de programas",
-                    "listTitle": "Lista de programas",
-                    "totalNumber": "Total de programas",
-                    "onlyActives": "Apenas programas ativos",
-                    "noObjects": "Não há programas cadastrados.",
-                    "deleteMessageTitle": "Excluindo programa",
-                    "deleteMessage": "Tem certeza que deseja excluir esse programa?",
-                    "afterDeleteTitle": "Programa excluído!",
-                    "afterDelete": "Programa excluído com sucesso!"
-                }
-            },
-            "observers": {
-                "name": "Nome",
-                "namePlaceholder": "Qual é o seu nome?",
-                "email": "E-mail",
-                "emailPlaceholder": "Qual é o seu e-mail?",
-                "role": "Cargo",
-                "about": "Sobre mim",
-                "aboutPlaceholder": "Conte-nos um pouco sobre você!",
-                "birthDate": "Data de Nascimento",
-                "schooling": {
-                    "schooling": "Nível de Escolaridade",
-                    "noschool": "Sem Escolaridade",
-                    "elementaryincompleted": "Fundamental Incompleto",
-                    "elementarycompleted": "Fundamental Completo",
-                    "highschoolincompleted": "Ensino Médio Incompleto",
-                    "highschoolcompleted": "Ensino Médio Completo",
-                    "collegeincompleted": "Superior Incompleto",
-                    "collegecompleted": "Superior Completo",
-                    "masterscompleted": "Mestrado Completo",
-                    "phdcompleted": "Doutorado Completo"
-                },
-                "institution": "Instituição",
-                "phoneNumber": "Número de telefone",
-                "address": {
-                    "address": "Endereço",
-                    "addressNumber": "Número",
-                    "addressComplement": "Complemento",
-                    "cep": "CEP",
-                    "state": "Estado",
-                    "city": "Cidade"
-                },
-                "messageTitle": "Saving observer",
-                "addMessage": "As informações do observador serão atualizadas. Tem certeza que deseja continuar?",
-                "saveTitle": "Observador salvo!",
-                "saveMessage": "Informações do observador atualizadas com sucesso!"
-            }
         }
     },
+    "seguro": "Entrar",
+    "private": {
+        "header": {
+            "participants": {
+                "participants": "Participantes",
+                "add": "Adicionar",
+                "list": "Listar"
+            },
+            "programs": {
+                "programs": "Programas",
+                "add": "Adicionar",
+                "list": "Listar"
+            },
+            "results": {
+                "results": "Resultados",
+                "list": "Listar"
+            },
+            "profile": {
+                "settings": "Configurações",
+                "externalApplication": "Aplicações externas",
+                "exit": "Sair"
+            }
+        },
+        "dashboard": {
+            "welcomeText": "O Método de Amostragem de Experiências e Intervenção Programada (ESPIM) combina procedimentos selecionados do campo da Psicologia, como Programação de Ensino Individualizada e Método de Amostragem de Experiências (ESM), e as vantagens proporcionadas pela Computação Ubíqua com o objetivo de ampliar o alcance da coleta de dados e intervenções a distância em ambientes naturais. O método é suportado por um sistema computacional desenvolvidos para as plataformas Web e mobile. Ele permite que se programem intervenções baseadas em dados coletados de maneira explícita ou pervasiva. O sistema suporta a troca de dados entre as diferentes partes interessadas envolvidas no planejamento da coleta de dados e/ou intervenção. Espera-se que o ESPIM permita a pesquisadores e profissionais de diversas áreas de conhecimento, como educação e saúde, criar e executar experimentos ou intervenções conduzidos a distância."
+        },
+        "participants": {
+            "add": {
+                "title": "Informações do participante",
+                "name": "Nome",
+                "email": "E-mail",
+                "alias": "Apelido",
+                "addNew": "Adicionar outro participante",
+                "saveButton": "SALVAR",
+                "saveAndAddAnother": "SALVAR E ADICIONAR OUTRO",
+                "messageTitle": "Adicionando participante",
+                "addMessage": "Se um participante que possui o e-mail informado já estiver cadastrado no ESPIM, o cadastro será realizado com seu nome original",
+                "saveTitle": "Salvo com sucesso!",
+                "saveMessage": "Participante salvo!"
+            },
+            "list": {
+                "pageTitle": "Lista de participantes",
+                "listTitle": "Lista de participantes",
+                "totalNumber": "Total de participantes",
+                "noObjects": "Não há participantes cadastrados",
+                "deleteMessageTitle": "Excluindo participante",
+                "deleteMessage": "Tem certeza que deseja excluir esse participante?",
+                "afterDeleteTitle": "Participante excluído!",
+                "afterDelete": "Participante excluído com sucesso!"
+            }
+        },
+        "search": {
+            "searchPlaceholder": "O que deseja pesquisar?",
+            "searchButton": "BUSCAR"
+        },
+        "programs": {
+            "add": {},
+            "list": {
+                "pageTitle": "Lista de programas",
+                "listTitle": "Lista de programas",
+                "totalNumber": "Total de programas",
+                "onlyActives": "Apenas programas ativos",
+                "noObjects": "Não há programas cadastrados.",
+                "deleteMessageTitle": "Excluindo programa",
+                "deleteMessage": "Tem certeza que deseja excluir esse programa?",
+                "afterDeleteTitle": "Programa excluído!",
+                "afterDelete": "Programa excluído com sucesso!"
+            }
+        },
+        "observers": {
+            "name": "Nome",
+            "namePlaceholder": "Qual é o seu nome?",
+            "email": "E-mail",
+            "emailPlaceholder": "Qual é o seu e-mail?",
+            "role": "Cargo",
+            "about": "Sobre mim",
+            "aboutPlaceholder": "Conte-nos um pouco sobre você!",
+            "birthDate": "Data de Nascimento",
+            "schooling": {
+                "schooling": "Nível de Escolaridade",
+                "noschool": "Sem Escolaridade",
+                "elementaryincompleted": "Fundamental Incompleto",
+                "elementarycompleted": "Fundamental Completo",
+                "highschoolincompleted": "Ensino Médio Incompleto",
+                "highschoolcompleted": "Ensino Médio Completo",
+                "collegeincompleted": "Superior Incompleto",
+                "collegecompleted": "Superior Completo",
+                "masterscompleted": "Mestrado Completo",
+                "phdcompleted": "Doutorado Completo"
+            },
+            "institution": "Instituição",
+            "phoneNumber": "Número de telefone",
+            "address": {
+                "address": "Endereço",
+                "addressNumber": "Número",
+                "addressComplement": "Complemento",
+                "cep": "CEP",
+                "state": "Estado",
+                "city": "Cidade"
+            },
+            "messageTitle": "Saving observer",
+            "addMessage": "As informações do observador serão atualizadas. Tem certeza que deseja continuar?",
+            "saveTitle": "Observador salvo!",
+            "saveMessage": "Informações do observador atualizadas com sucesso!"
+        }
+    },
+    
     "errors": {
         "Unknown Error": {
             "title": "Erro Desconhecido",

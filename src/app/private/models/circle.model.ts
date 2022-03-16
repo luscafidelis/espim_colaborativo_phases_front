@@ -32,7 +32,7 @@ export interface TargetCircleEvent{
     event : Event;
     selected : boolean;
     need_autorization : boolean;
-
+    circle_type : CircleType[];
 }
 
 export interface CustomCircleEvent{

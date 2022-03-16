@@ -16,7 +16,7 @@ import { SubSink } from 'subsink';
 export class ProgramsAddComponent implements OnInit, OnDestroy {
 
   subSink = new SubSink();
-  id: number;
+  id!: number;
   editor : number=0;
 
   constructor(private programsService: ProgramsAddService, private dao: DAOService, private activatedRoute: ActivatedRoute, private loginService: LoginService, private canal : ChannelService) { }
@@ -25,8 +25,7 @@ export class ProgramsAddComponent implements OnInit, OnDestroy {
     // Subscribes to route changes
     this.subSink.sink = this.activatedRoute.paramMap.subscribe(paramMap => {
       // Gets the id in the url
-      console.log("Passou no inicio");
-      this.id = Number.parseInt(paramMap.get('id'));
+      this.id = Number.parseInt(paramMap.get('id') || '-1');
       //if (this.id !== -1 && this.id === this.programsService.program.id){
       //  return;
       //}
@@ -44,9 +43,8 @@ export class ProgramsAddComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(){
     this.desligaEditor();
-    this.programsService.program = null;
+    this.programsService.program = new Program();
     this.subSink.unsubscribe();
-
   }
 
   //Método para informar que está editando o programa
@@ -56,10 +54,8 @@ export class ProgramsAddComponent implements OnInit, OnDestroy {
     volta = {model : 'editor', program : this.id, addEditor : locEmail};
     console.log("programa", this.id);
     this.subSink.sink = this.dao.postObject(ESPIM_REST_Editores,{program : this.id, email : locEmail}).subscribe((data:any) => {this.editor = data.id;
-                                                                                                            console.log('Ligou');
-                                                                                                            this.canal.sendMessage(volta);
-    });
-   
+                                                                                                                                this.canal.sendMessage(volta);
+                                                                                                                                });
   }
 
   //Método para informar que parou de editar o programa
@@ -67,9 +63,10 @@ export class ProgramsAddComponent implements OnInit, OnDestroy {
     let locEmail = this.loginService.getUser().email;
     let volta : any;
     volta = {model : 'editor', program : this.id, delEditor : locEmail};
+    console.log(this.editor);
     if (this.editor !== 0){
-      this.subSink.sink = this.dao.deleteObject(ESPIM_REST_Editores,this.editor.toString()).subscribe((data : any) => { this.canal.sendMessage(volta);
-                                                                                                  console.log('Desligou')})
+      this.dao.deleteObject(ESPIM_REST_Editores,this.editor.toString()).subscribe((data : any) => { this.canal.sendMessage(volta);
+                                                                                                  console.log('Desligou');})
     }
   }
 

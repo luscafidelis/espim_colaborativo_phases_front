@@ -1,10 +1,9 @@
 import {
   AfterViewInit,
   Component,
-  ComponentFactory,
-  ComponentFactoryResolver,
   ComponentRef, 
-  OnInit, Renderer2,
+  EventEmitter, 
+  OnInit, Output, Renderer2,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
@@ -13,13 +12,15 @@ import {HTMLInterventionElement, InterventionService} from './intervention.servi
 import {NAVBAR_HEIGHT} from './navbar/navbar.component';
 
 
+
 @Component({
   selector: 'esm-interventions',
   templateUrl: './interventions.component.html',
   styleUrls: ['./interventions.component.css']
 })
 export class InterventionsComponent implements OnInit, AfterViewInit {
-
+  @Output() closeInterventions = new EventEmitter();
+  
   //Vetor com todas a janelas que são criadas no canvas..
   interventionComponents: ComponentRef<InterventionComponent>[] = [];
   
@@ -29,53 +30,61 @@ export class InterventionsComponent implements OnInit, AfterViewInit {
   //Posição onde fica a janela..
   offset: {x: number, y: number} = {x: 0, y: 0};
 
-  //Esta linha cria uma variável chamada interventionsContainer que faz referência ao container do código HTML
-  //Na criação de um componente no container será utilizado um ComponentFactory https://netbasal.com/dynamically-creating-components-with-angular-a7346f4a982d
-  //Quando o componente for criado será retornando um componentRef https://angular.io/api/core/ComponentRef
-  //Este modelo vai permitir que o componente seja criado e destruído de forma dinâmica no canvas
-  @ViewChild('container', { read: ViewContainerRef }) interventionsContainer: { createComponent: (arg0: ComponentFactory<InterventionComponent>) => ComponentRef<InterventionComponent>; };
+  //Este modelo vai permitir que o componente seja criado e destruído de forma dinâmica no canvas -- atualizado para o angular 13...
+  @ViewChild('container', { read: ViewContainerRef }) interventionsContainer!: ViewContainerRef; //{ createComponent: (arg0: ComponentFactory<InterventionComponent>) => ComponentRef<InterventionComponent>; };
   
   //Referência ao div onde fica o canvas..
-  @ViewChild('main_div') mainDiv: { nativeElement: any; };
+  @ViewChild('main_div') mainDiv!: { nativeElement: any; };
 
-  constructor(private interventionService: InterventionService, private renderer: Renderer2, private componentFactoryResolver: ComponentFactoryResolver) { }
+  constructor(private interventionService: InterventionService, private renderer: Renderer2) { }
 
   get navbar_height() { return NAVBAR_HEIGHT; }
 
+  closeEditor(event : any){
+    this.closeInterventions.emit(event);
+  }
+
   ngOnInit(): void {
     window.scrollTo(0, 0);
+
+
+    //Se inscreve para ser informado quando as intervenções estão prontas...
+ 
   }
 
   // representam as subscrições no canal..
-  private subscriptionnew;
-  private subscriptiondel;
-  private subscriptioncom;
 
-  ngAfterViewInit(): void {
+  ngAfterViewInit(): void { 
     // I don't know why but there has to be a timeout here
-    setTimeout(_ => {
-      for (let i = 1; i < this.interventionService.graphElements.length; i++)
-        this.createIntervention(this.interventionService.graphElements[i], i);
-      this.interventionService.redrawGraph$.next();
-    }, 0);
+    for (let i=1; i < this.interventionService.graphElements.length; i++){
+      setTimeout((_ : any) => {
+        this.createIntervention(this.interventionService.graphElements[i],i);
+      }, 250);
+    }
+    this.interventionService.redrawGraph$.next();
+    //this.interventionService.initGraph$.subscribe(_ => this.createInterventionsComponents());
     //Se inscreve para ser informada de novas intervenções 
-    this.subscriptionnew = this.interventionService.newInterventions$.subscribe((add : any) => this.createIntervention(add.intervention, add.graphIndex));
+    this.interventionService.newInterventions$.subscribe((add : any) => this.createIntervention(add.intervention, add.graphIndex));
     //Se inscreve para ser informada quando intervenções foram apagadas
-    this.subscriptiondel = this.interventionService.removeIntervention$.subscribe(index => {
+    this.interventionService.removeIntervention$.subscribe(index => {
       this.interventionComponents[index - 1].destroy();
       this.interventionComponents.splice(index - 1, 1);
-    });
+    });   
+
   }
+
+
 
   //Método que determina o tamanho da janela do canvas..
   resizeScreen() {
-    this.renderer.setStyle(this.mainDiv.nativeElement, 'width', `${document.documentElement.scrollWidth}px`);
-    this.renderer.setStyle(this.mainDiv.nativeElement, 'height', `${document.documentElement.scrollHeight - NAVBAR_HEIGHT - 20}px`);
+    var myModalEl = document.querySelector('#editorCanva');
+    this.renderer.setStyle(this.mainDiv.nativeElement, 'width', `${myModalEl!.scrollWidth}px`);
+    this.renderer.setStyle(this.mainDiv.nativeElement, 'height', `${myModalEl!.scrollHeight - NAVBAR_HEIGHT - 20}px`);
   }
 
   createIntervention(intervention: HTMLInterventionElement, graphIndex: number) {
     //Declara o objeto de intervention
-    const interventionComponent: ComponentRef<InterventionComponent> = this.interventionsContainer.createComponent(this.componentFactoryResolver.resolveComponentFactory(InterventionComponent));
+    const interventionComponent: ComponentRef<InterventionComponent> = this.interventionsContainer.createComponent(InterventionComponent);  
     // 340.5 is the size of an intervention + a gap between. 50 is a arbitrary padding
     //interventionComponent.instance.offset = { x: 340.5 * this.interventionComponents.length + 50, y: 50 };
     // a posição do componente é definida no interventionservice..
@@ -88,14 +97,14 @@ export class InterventionsComponent implements OnInit, AfterViewInit {
     interventionComponent.instance.graphIndex = graphIndex;
    
     //Subscreve para ser avisado quando a janela for movida..
-    this.subscriptioncom = interventionComponent.instance.interventionMoved.subscribe(_ => this.resizeScreen());
+    interventionComponent.instance.interventionMoved.subscribe(_ => this.resizeScreen());
     
 
     //Adiciona a janela com a intervenção no vetor janela de intervenções.. 
     this.interventionComponents.push(interventionComponent);
 
     //Tem que ter um Timeout para atualizar a janela.. não sei pq..
-    setTimeout(_ => {
+    setTimeout((_ : any) => {
       this.resizeScreen();
       this.interventionService.redrawGraph$.next();
       window.scrollTo({top: 50, left: 340.5 * this.interventionComponents.length + 50, behavior: 'smooth'});
@@ -126,9 +135,5 @@ export class InterventionsComponent implements OnInit, AfterViewInit {
 
   ngOnDestroy(): void {
     //https://ichi.pro/pt/como-criar-um-vazamento-de-memoria-no-angular-83941828037515
-    this.subscriptiondel.unsubscribe();
-    this.subscriptionnew.unsubscribe();
-    //this.subscriptioncom.unsubscribe();
-
   }
 }

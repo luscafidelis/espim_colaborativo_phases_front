@@ -8,7 +8,7 @@ import { Pagination } from './pagination.model';
 })
 export class PaginationComponent implements OnInit, OnChanges {
 
-  @Input() pagination: Pagination;
+  @Input() pagination!: Pagination;
   @Output() next = new EventEmitter();
 
   constructor() { }
@@ -17,7 +17,7 @@ export class PaginationComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.pagination = changes.pagination.currentValue;
+    this.pagination = changes['pagination'].currentValue;
   }
 
   getByPaginationURL(url?: any) {

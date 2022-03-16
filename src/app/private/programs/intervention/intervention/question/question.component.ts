@@ -8,10 +8,10 @@ import {HTMLInterventionElement, InterventionService} from "../../intervention.s
 })
 export class QuestionComponent implements OnInit, OnChanges {
 
-  @Input() graphIndex: number;
-  @Input() nextInterventions: HTMLInterventionElement[];
+  @Input() graphIndex!: number;
+  @Input() nextInterventions!: HTMLInterventionElement[];
 
-  intervention: QuestionIntervention;
+  intervention!: QuestionIntervention;
 
   constructor(private interventionService: InterventionService) { }
 
@@ -20,7 +20,7 @@ export class QuestionComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.graphIndex) this.graphIndex = changes.graphIndex.currentValue;
-    if (changes.nextInterventions) this.nextInterventions = changes.nextInterventions.currentValue;
+    if (changes['graphIndex']) this.graphIndex = changes['graphIndex'].currentValue;
+    if (changes['nextInterventions']) this.nextInterventions = changes['nextInterventions'].currentValue;
   }
 }

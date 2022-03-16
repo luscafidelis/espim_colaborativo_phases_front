@@ -1,24 +1,36 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, ComponentRef, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {ActiveEvent} from '../../../../models/event.model';
 import {ProgramsAddService} from '../../programsadd.service';
-import {SwalComponent} from '@sweetalert2/ngx-sweetalert2';
 import {DAOService} from '../../../../dao/dao.service';
 import {ESPIM_REST_Events, ESPIM_REST_Interventions, ESPIM_REST_Programs, ESPIM_REST_Triggers} from '../../../../../app.api';
 import {Trigger} from '../../../../models/trigger.model';
 import {ActivatedRoute, Router} from "@angular/router";
 import {InterventionService} from "../../../intervention/intervention.service";
 import { ChannelService } from 'src/app/private/channel_socket/socket.service';
-import { Intervention, MediaIntervention, QuestionIntervention, TaskIntervention } from 'src/app/private/models/intervention.model';
-import { CONFIG } from 'ngx-social-login/lib/models/config-injection-token';
+import { Intervention} from 'src/app/private/models/intervention.model';
 import { SubSink } from 'subsink';
+import Swal from 'sweetalert2';
+import { InterventionsComponent } from '../../../intervention/interventions.component';
+declare var window: any;
+import {faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'esm-active-event',
   templateUrl: './active-event.component.html'
 })
 export class ActiveEventComponent implements OnInit, OnDestroy {
+  @ViewChild('divInterventions', { read: ViewContainerRef }) interventionsContainer!: ViewContainerRef;
+  
+  edit = faEdit;
+  trash = faTrashAlt;
 
-  @Input() event: ActiveEvent;
+  locIntervention! : ComponentRef<InterventionsComponent>;
+
+  formModal : any;
+
+  editorClosed : boolean = true;
+
+  @Input() event!: ActiveEvent;
 
   subSynk = new SubSink();
 
@@ -45,6 +57,9 @@ export class ActiveEventComponent implements OnInit, OnDestroy {
     }
   //Nesta linha o service irá escutar o websocket..
   this.subSynk.sink = this.canal.getData$.subscribe( data => this.sincronizeEvent(data));
+  this.formModal = new window.bootstrap.Modal(
+    document.getElementById('editorModal2')
+  );
   }
 
   resetEvent() {
@@ -68,15 +83,15 @@ export class ActiveEventComponent implements OnInit, OnDestroy {
   }
 
   delete_event() {
-    new SwalComponent({
+    Swal.fire({
       title: 'Deletar evento?',
       text: `Você tem certeza que deseja deletar ${this.event.getTitle()}?`,
-      type: 'question',
+      icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Sim',
       cancelButtonText: 'Não'
-    }).show().then(result => {
-      if (result.value === true) this.programsAddService.saveStep({delEvent : this.event.getId()});
+    }).then((result : any) => {
+      if (result.isConfirmed === true) this.programsAddService.saveStep({delEvent : this.event.getId()});
     });
   }
 
@@ -122,9 +137,7 @@ export class ActiveEventComponent implements OnInit, OnDestroy {
                   } else {
                     //atualiza todas as intervenções
                     if (prop == 'updateEvent'){
-                      console.log(locdata[prop]);
                       this.event = new ActiveEvent(locdata[prop]);
-                      console.log(this.event);
                     } else {
                       //Excluir Intervenção
                       if (prop == 'delIntervention'){
@@ -133,7 +146,10 @@ export class ActiveEventComponent implements OnInit, OnDestroy {
                         this.event.interventions.splice(this.event.interventions.findIndex((value: Intervention) => value.id === interventionId), 1);
                       } else {
                         //Outros Campos
-                        this.event[prop] = locdata[prop];
+                        //this.event[prop] = locdata[prop]; <- Não funcionou no angular 13 :-(
+                        if (prop == 'title') this.event.title = locdata[prop];
+                        if (prop == 'description') this.event.description = locdata[prop];
+                        if (prop == 'color') this.event.color = locdata[prop];
                       }
                     }
                   }
@@ -182,12 +198,20 @@ export class ActiveEventComponent implements OnInit, OnDestroy {
 
   goToInterventions() {
     //Antes de abrir o editor de intervenções atualiza o evento com os dados do banco..
-    console.log(this.event.getInterventionsInstances());
+    //console.log(this.event.getInterventionsInstances());
     this.subSynk.sink=this.dao.getNewObject(ESPIM_REST_Interventions,{ActiveEvent : this.event.id}).subscribe((data : any) => {
-      console.log(data);
       this.event.criaInterventions(data);
       this.interventionService.init(this.programsAddService.program.id, this.event, this.event.getInterventionsInstances());
-      this.router.navigate([this.event.getId(), 'interventions'], {relativeTo: this.route});
+      this.formModal.show();
+      this.locIntervention = this.interventionsContainer.createComponent(InterventionsComponent);
+      this.locIntervention.instance.closeInterventions.subscribe((val:any) => this.closeInterventions(val));
+      //this.router.navigate([this.event.getId(), 'interventions'], {relativeTo: this.route});
     })
   }
+
+  closeInterventions(volta : any){
+    this.formModal.hide();
+    this.locIntervention.destroy();
+  }
+
 }

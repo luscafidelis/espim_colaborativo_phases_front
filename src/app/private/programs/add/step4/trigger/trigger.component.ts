@@ -13,14 +13,14 @@ import { ChannelService } from 'src/app/private/channel_socket/socket.service';
 })
 export class TriggerComponent implements OnInit {
 
-  @Input() trigger: Trigger;
+  @Input() trigger: Trigger = new Trigger();
   @Output() triggerOutput = new EventEmitter<any>();
   @Output() delTriggerEmit = new EventEmitter<any>();
 
   isOpen = false;
-  isAddTriggerComponent: boolean; // This is only true if this instance is gonna be the one to add
+  isAddTriggerComponent: boolean = false; // This is only true if this instance is gonna be the one to add
 
-  time: FormControl;
+  time: FormControl = new FormControl({});
 
   constructor(private daoService: DAOService, private canal : ChannelService) { }
 

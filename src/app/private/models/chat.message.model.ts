@@ -15,8 +15,8 @@ export class ChatMessage {
           this.user_message = chat.user_message;
           this.message = chat.message;
         } else {
-          this.id = null;
-          this.program = null;
+          this.id = -1;
+          this.program = -1;
           this.day_message = '';
           //this.time_message = '';
           this.user_message = '';

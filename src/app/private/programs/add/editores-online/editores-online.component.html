@@ -1,8 +1,10 @@
-<div class="row">
-    <div class="ml-3 mr-1">
-        Editores on-line:
-    </div>
-    <div class="bg-primary text-white mr-1" *ngFor="let editor of editores ">
-        {{editor}}
+<div class="container-fluid">
+    <div class="row row-cols-auto border p-2">
+        <div class="col">
+            Editores on-line:
+        </div>
+        <div class=" col bg-primary text-white me-1" *ngFor="let editor of editores ">
+            {{editor}}
+        </div>
     </div>
 </div>

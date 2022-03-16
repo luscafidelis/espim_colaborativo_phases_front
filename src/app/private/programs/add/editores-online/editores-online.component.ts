@@ -16,8 +16,7 @@ export class EditoresOnlineComponent implements OnInit, OnDestroy {
   editores : string[] = [];
   private subSink = new SubSink()
 
-
-  program : number;
+  program! : number;
   
   constructor(private canal : ChannelService, private loginService : LoginService, private programService : ProgramsAddService, private dao : DAOService ) { }
   
@@ -32,7 +31,7 @@ export class EditoresOnlineComponent implements OnInit, OnDestroy {
       this.controlaEditores(data);
     });
 
-    //Adiciona o edito no vetor de editores
+    //Adiciona o editor local no vetor de editores
     this.editores.push(this.loginService.getUser().email);
     this.subSink.sink = this.programService.getProgramObservable().subscribe( (dataProgram : any) => {
         //Pega os editores que já estão no programa

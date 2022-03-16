@@ -5,6 +5,7 @@ import { SecurityRoutingModule } from './security-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { DAOService } from '../private/dao/dao.service';
 import { ObserversService } from '../private/observers/observers.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [LoginComponent],
@@ -14,6 +15,7 @@ import { ObserversService } from '../private/observers/observers.service';
     CommonModule,
     SecurityRoutingModule,
     TranslateModule,
+    FontAwesomeModule
   ]
 })
 export class SecurityModule { }

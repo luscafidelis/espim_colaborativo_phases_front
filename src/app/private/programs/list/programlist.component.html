@@ -1,14 +1,14 @@
 <main class="card mx-auto mt-4 w-main px-5 mb-5">
   <!--Título & busca-->
-  <h1 class="h4 font-weight-bold mt-5" translate>private.programs.list.pageTitle</h1>
+  <h1 class="h4 fw-bold mt-5" translate>private.programs.list.pageTitle</h1>
   <esm-search (searchResults)="onNextSearch($event)" [urlObject]="urlPrograms"></esm-search>
   <!---->
   <section class="container-fluid mx-auto">
     <!-- Cabeçalho -->
     <div class="row">
       <div class="col-12 bg-primary d-flex justify-content-between align-items-center p-3 text-white">
-        <h2 class="h6 m-0 d-inline ml-1 font-weight-bold" translate>private.programs.list.listTitle</h2>
-        <small class="font-weight-bold"><span translate>private.programs.list.totalNumber</span>:
+        <h2 class="h6 m-0 d-inline ml-1 fw-bold" translate>private.programs.list.listTitle</h2>
+        <small class="fw-bold"><span translate>private.programs.list.totalNumber</span>:
           {{totalPrograms?totalPrograms:0}}</small>
       </div>
     </div>
@@ -17,43 +17,43 @@
       <!-- Item 1 -->
       <li class="col-12 d-flex justify-content-between align-content-center p-4 border">
         <!-- Titulo do programa -->
-        <span class="font-weight-bold w-100" [class.pointer]="!program.beingDuplicated" (click)="goToProgram(program)">{{i + 1}}. {{program.title}}</span>
+        <span class="fw-bold w-100" [class.pointer]="!program.beingDuplicated" (click)="goToProgram(program)">{{i + 1}}. {{program.title}}</span>
         <!------------------>
         <!-- Ícones -->
         <div class="d-flex align-items-center mx-3">
-          <i class="fas fa-lock m-2 fa-lg"
+          <fa-icon [icon]="lock" class="m-2 fa-lg"
              [ngClass]="{
               'text-warning': !program.beingDuplicated,
               'pointer': !program.beingDuplicated
              }"
-             *ngIf="program.beingEdited"></i>
-          <i class="fas fa-users m-2 fa-lg"
+             *ngIf="program.beingEdited"></fa-icon>
+          <fa-icon [icon]="users" class="m-2 fa-lg"     
              [ngClass]="{
               'text-primary': !program.beingDuplicated,
               'pointer': !program.beingDuplicated
              }"
-             *ngIf="!program.isPublic"></i>
-          <i class="fas m-2 fa-lg"
+             *ngIf="!program.isPublic"></fa-icon>
+          <fa-icon [icon]="users" class="m-2 fa-lg"
              [ngClass]="{
-              'fa-clone': !program.beingduplicated,
-              'text-primary': !program.beingduplicated,
+              'fa-clone': !program.beingDuplicated,
+              'text-primary': !program.beingDuplicated,
               'pointer': !program.beingDuplicated,
               'fa-spinner': program.beingDuplicated,
               'fa-spin': program.beingDuplicated
              }"
-             (click)="duplicateProgram(program)"></i>
-          <i class="fas fa-edit m-2 fa-lg"
+             (click)="duplicateProgram(program)"></fa-icon>
+          <fa-icon [icon]="edit" class="m-2 fa-lg"
              [ngClass]="{
               'text-primary': !program.beingDuplicated,
               'pointer': !program.beingDuplicated
              }"
-             (click)="this.goToProgram(program)"></i>
-          <i class="fas fa-trash-alt m-2 fa-lg"
+             (click)="this.goToProgram(program)"></fa-icon>
+          <fa-icon [icon]="trash" class="m-2 fa-lg"
              [ngClass]="{
               'text-danger': !program.beingDuplicated,
               'pointer': !program.beingDuplicated
              }"
-             (click)="deleteProgram(program)"></i>
+             (click)="deleteProgram(program)"></fa-icon>
         </div>
         <!------------>
       </li>

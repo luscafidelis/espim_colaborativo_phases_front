@@ -1,18 +1,36 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Query, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProgramsAddService } from '../programsadd.service';
-import { DateConverterService } from '../../../../util/util.date.converter.service';
+import { CustomDateParserFormatter, DateConverterService } from '../../../../util/util.date.converter.service';
 import { Program } from '../../../models/program.model';
 import { Router } from '@angular/router';
 import { SubSink } from 'subsink';
-import {isNumber} from '@ng-bootstrap/ng-bootstrap/util/util';
+import { NgbCalendar, NgbDateAdapter, NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
+import { faCalendar } from '@fortawesome/free-solid-svg-icons';
+
 
 @Component({
   selector: 'esm-step1',
   templateUrl: './step1.component.html'
 })
 export class Step1Component implements OnInit, OnDestroy {
+  @ViewChild('e', {static: false}) endDateComponent!: Query;
 
+  isOpenButtons : boolean = false;
+
+  setBeginDate(e: NgbDateStruct) {
+    this.programInformationForm.value.beginDate = this.dateConverterService.toString(e);
+    this.updateField('starts');
+  }
+
+  setEndDate(e: NgbDateStruct) {
+    this.programInformationForm.value.endDate = this.dateConverterService.toString(e);
+    this.updateField('ends');
+  }
+  
+  //datepicker
+  calendar = faCalendar;
+    
   subSink = new SubSink();
   
   programInformationForm: FormGroup = this.formBuilder.group({
@@ -21,20 +39,20 @@ export class Step1Component implements OnInit, OnDestroy {
     isPublic: [false],
     beginDate: ['', [Validators.required]],
     beginTime: [{ hour: 0, minute: 0, second: 0 }],
-    endDate: [null],
+    endDate: [''],
     endTime: [{ hour: 0, minute: 0, second: 0 }]
   });
 
   get invalidTitle() {
     const form = this.programInformationForm.get('title');
-    return !form.valid && form.touched;
+    return !form?.valid && form?.touched;
   }
   get invalidBeginDate() {
     const form = this.programInformationForm.get('beginDate');
-    return !form.valid && form.touched;
+    return !form?.valid && form?.touched;
   }
 
-  constructor(private programAddService: ProgramsAddService, private formBuilder: FormBuilder, private router: Router, private dateConverterService: DateConverterService) {}
+  constructor(private programAddService: ProgramsAddService, private formBuilder: FormBuilder, private router: Router, private dateConverterService: DateConverterService,private ngbCalendar: NgbCalendar, private dateAdapter: NgbDateAdapter<string>) {}
   
   ngOnDestroy(): void {
     this.subSink.unsubscribe();
@@ -52,21 +70,23 @@ export class Step1Component implements OnInit, OnDestroy {
     const utcStarts = Number.parseInt(program.starts);
     const utcEnds = Number.parseInt(program.ends);
 
-    let starts: Date;
-    let ends: Date;
+    let starts: Date = new Date();
+    let ends: Date = new Date();
 
     if (!isNaN(utcStarts)) starts = this.dateConverterService.fromUnixTimeStamp(Number.parseInt(program.starts));
     if (!isNaN(utcEnds)) ends = this.dateConverterService.fromUnixTimeStamp(Number.parseInt(program.ends));
+
 
     this.programInformationForm = this.formBuilder.group({
       title: [program.title, [Validators.required]],
       description: [program.description],
       isPublic: [program.isPublic],
-      beginDate: [starts !== undefined ? this.dateConverterService.toNgbDate(starts) : null, [Validators.required]],
-      beginTime: [starts !== undefined ? this.dateConverterService.toNgbTime(starts) : null],
-      endDate: [ends !== undefined ? this.dateConverterService.toNgbDate(ends) : null],
-      endTime: [ends !== undefined ? this.dateConverterService.toNgbTime(ends) : null]
+      beginDate: [!isNaN(utcStarts) ? this.dateConverterService.toStrDate(starts) : null, [Validators.required]],
+      beginTime: [!isNaN(utcStarts) ? this.dateConverterService.toNgbTime(starts) : null],
+      endDate: [!isNaN(utcEnds) ? this.dateConverterService.toStrDate(ends) : null],
+      endTime: [!isNaN(utcEnds) ? this.dateConverterService.toNgbTime(ends) : null]
     });
+    console.log(this.programInformationForm);
   }
 
   ngOnInit() {
@@ -84,14 +104,24 @@ export class Step1Component implements OnInit, OnDestroy {
 
   //Atualiza os campos no banco quando são alterados
   updateField(field : string){
-    let obj = {};
+    let obj : any = {};
     if (field == 'starts') {
-      obj['starts'] = this.dateConverterService.toUnixTimeStamp(this.programInformationForm.get('beginDate').value, this.programInformationForm.get('beginTime').value);
+      if (this.programInformationForm.get('beginDate')!.value != null && this.programInformationForm.get('beginTime')?.value != null) {
+        let date = this.dateConverterService.parse(this.programInformationForm.get('beginDate')!.value);
+        obj['starts'] = this.dateConverterService.toUnixTimeStamp(date, this.programInformationForm.get('beginTime')?.value);
+      } else {
+        return;
+      }
     } else {
       if (field == 'ends') {
-        obj['ends'] = this.dateConverterService.toUnixTimeStamp(this.programInformationForm.get('endDate').value, this.programInformationForm.get('endTime').value);        
+        if (this.programInformationForm.get('endDate')!.value != null && this.programInformationForm.get('endTime')?.value != null) {
+          let date = this.dateConverterService.parse(this.programInformationForm.get('endDate')!.value);
+          obj['ends'] = this.dateConverterService.toUnixTimeStamp(date, this.programInformationForm.get('endTime')?.value);
+        } else {
+          return;
+        }       
       } else {
-        obj[field] = this.programInformationForm.get(field).value;
+        obj[field] = this.programInformationForm.get(field)?.value;
       }
     }
     this.programAddService.saveStep(obj);
@@ -103,6 +133,10 @@ export class Step1Component implements OnInit, OnDestroy {
     } else {
       this.programInformationForm.markAllAsTouched();
     }
+  }
+
+  openButtons(){
+    this.isOpenButtons = !this.isOpenButtons;
   }
 }
 
@@ -117,45 +151,3 @@ export interface corpo_program{
   beingEdited: boolean;
   beingDuplicated: boolean;
 }
-
-
-/**
- *       let hasDirtyProp = false;
-
-      for (const prop in this.programInformationForm.controls){
-        if (this.programInformationForm.get(prop).dirty) {
-          hasDirtyProp = true;
-        }
-      }
-      
-      // Checks if programs is not empty
-      if (hasDirtyProp)
-        //Caso seja a primeira vez que está salvando o programa..
-        if(this.programAddService.program.id == -1){
-          this.programAddService.program.title=this.programInformationForm.get('title').value;
-          this.programAddService.program.description=this.programInformationForm.get('description').value;
-          this.programAddService.program.starts=this.dateConverterService.toUnixTimeStamp(this.programInformationForm.get('beginDate').value, this.programInformationForm.get('beginTime').value);
-          this.programAddService.program.ends=this.dateConverterService.toUnixTimeStamp(this.programInformationForm.get('endDate').value, this.programInformationForm.get('endTime').value);
-          this.programAddService.program.hasPhases=false;
-          this.programAddService.program.isPublic=this.programInformationForm.get('isPublic').value;
-          //Salva os dados no banco
-          this.programAddService.saveStep();
-
-        } else {
-          //Foi definido como corpo por causa da possibilidade de patch
-          let corpo : corpo_program = {
-            id : undefined,
-            title:this.programInformationForm.get('title').value,
-            description:this.programInformationForm.get('description').value,
-            starts:this.dateConverterService.toUnixTimeStamp(this.programInformationForm.get('beginDate').value, this.programInformationForm.get('beginTime').value),
-            ends:this.dateConverterService.toUnixTimeStamp(this.programInformationForm.get('endDate').value, this.programInformationForm.get('endTime').value),
-            hasPhases:false,
-            isPublic:this.programInformationForm.get('isPublic').value,
-            beingEdited: false,
-            beingDuplicated: false
-          }
-          this.programAddService.saveStep(corpo);
-        }  
-
- * 
- */

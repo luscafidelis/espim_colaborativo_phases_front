@@ -3,6 +3,7 @@ import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { ESPIM_REST_Phases } from 'src/app/app.api';
 import { ChannelService } from 'src/app/private/channel_socket/socket.service';
 import { DAOService } from 'src/app/private/dao/dao.service';
+import Swal from 'sweetalert2';
 import { ProgramsAddService } from '../../programsadd.service';
 
 @Component({
@@ -56,15 +57,17 @@ export class PhasesComponent implements OnInit {
   }
 
   delete_phase() {
-    new SwalComponent({
+    Swal.fire({
       title: 'Deletar evento?',
       text: `Você tem certeza que deseja deletar ${this.phase.getTitle()}?`,
-      type: 'question',
+      icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Sim',
       cancelButtonText: 'Não'
-    }).show().then(result => {
-      if (result.value === true) this.programsAddService.saveStep({delEvent : this.phase.getId()});
+    }).then((result:any) => {
+      if (result.isConfirmed) {
+        this.programsAddService.saveStep({delEvent : this.phase.getId()});
+      }
     });
   }
 

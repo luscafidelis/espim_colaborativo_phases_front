@@ -8,6 +8,8 @@ import {SwalComponent} from '@sweetalert2/ngx-sweetalert2';
 import {Trigger} from '../../../../models/trigger.model';
 import { ChannelService } from 'src/app/private/channel_socket/socket.service';
 import { VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
+import Swal from 'sweetalert2';
+import {faEdit, faTrashAlt, faMobileAlt, faClock } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'esm-event',
@@ -15,7 +17,12 @@ import { VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
 })
 export class EventComponent implements OnInit {
 
-  @Input() event: Event;
+  @Input() event!: Event;
+
+  edit = faEdit;
+  trash = faTrashAlt;
+  mobile = faMobileAlt;
+  clock = faClock;
 
   isOpen = false;
   isAddEvent = false; // This is only true if this instance is gonna be the one to add
@@ -86,8 +93,11 @@ export class EventComponent implements OnInit {
                         if (prop == 'delIntervention'){
 
                         } else {
-                          //Outros Campos
-                          this.event[prop] = locdata[prop];
+                        //Outros Campos
+                        //this.event[prop] = locdata[prop]; <- Não funcionou no angular 13 :-(
+                          if (prop == 'title') this.event.title = locdata[prop];
+                          if (prop == 'description') this.event.description = locdata[prop];
+                          if (prop == 'color') this.event.color = locdata[prop];
                         }
                       }
                     }
@@ -109,30 +119,33 @@ export class EventComponent implements OnInit {
   }
 
   delete_event() {
-    new SwalComponent({
+    Swal.fire({
       title: 'Deletar evento?',
       text: `Você tem certeza que deseja deletar ${this.event.getTitle()}?`,
-      type: 'question',
+      icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Sim',
       cancelButtonText: 'Não'
-    }).show().then(result => {
-      if (result.value === true) this.programsAddService.saveStep({delEvent : this.event.getId()});
+    }).then((result : any) => {
+      if (result.isConfirmed) this.programsAddService.saveStep({delEvent : this.event.getId()});
     });
   }
 
   getActivitySensorCollector(): string {
     const activitySensor = this.event.getSensorOfType('activity');
     if (activitySensor) return activitySensor.getCollector();
+    return '';
   }
   getLocationSensorCollector(): string {
     const locationSensor = this.event.getSensorOfType('location');
     if (locationSensor) return locationSensor.getCollector();
+    return '';
   }
   getMeasureUseSensorCollector(): string {
     // tslint:disable-next-line:variable-name
     const measure_useSensor = this.event.getSensorOfType('measure_use');
     if (measure_useSensor) return measure_useSensor.getCollector();
+    return '';
   }
 
   getEventDetails() {

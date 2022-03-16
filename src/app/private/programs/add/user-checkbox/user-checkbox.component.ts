@@ -10,19 +10,23 @@ import {Participant} from '../../../models/participant.model';
 })
 export class UserCheckBoxComponent implements OnInit {
 
-  @Input() user: Observer | Participant;
-  @Input() checked: boolean;
-  @Input() disabled: boolean;
+  @Input() user!: Observer | Participant;
+  @Input() checked: boolean=false;
+  @Input() disabled: boolean=false;
 
   @Output() removeUser = new EventEmitter<number>();
   @Output() addUser = new EventEmitter<number>();
 
-  constructor() { }
+  opcao : boolean = true;
+
+  constructor() { 
+    
+  }
 
   ngOnInit() { }
 
-  checkboxHandler(checked: boolean) {
-    if (checked) this.addUser.emit(this.user.id);
+  checkboxHandler() {
+    if (!this.checked) this.addUser.emit(this.user.id);
     else this.removeUser.emit(this.user.id);
   }
 

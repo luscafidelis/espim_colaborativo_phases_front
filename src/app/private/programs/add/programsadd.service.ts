@@ -16,6 +16,7 @@ import { Sensor } from '../../models/sensor.model';
 import { forkJoin } from 'rxjs';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { ChannelService } from '../../channel_socket/socket.service';
+import Swal from 'sweetalert2';
 
 
 @Injectable({
@@ -39,7 +40,7 @@ export class ProgramsAddService {
   //Observadores e participantes do programa..
   private observers: Observer[] = new Array<Observer>();
   private participants: Participant[] = new Array<Participant>();
-  private editor : Observer = undefined;
+  private editor! : Observer;
 
   //Observer usado para informar alterações no programa
   private programObservable$: Subject<Program> = new Subject<Program>();
@@ -194,7 +195,16 @@ export class ProgramsAddService {
                         console.log (this.program);
                       } else {
                         //Outros Campos
-                        this.program[prop] = locdata[prop];
+                        //this.program[prop] = locdata[prop]; <- Não funcionou no Angular 13 :-(
+                        if (prop == 'title') this.program.title = locdata[prop];
+                        if (prop == 'description') this.program.description = locdata[prop];
+                        if (prop == 'starts') this.program.starts = locdata[prop];
+                        if (prop == 'ends') this.program.ends = locdata[prop];
+                        if (prop == 'updateDate') this.program.updateDate = locdata[prop];
+                        if (prop == 'hasPhases') this.program.hasPhases = locdata[prop];
+                        if (prop == 'isPublic') this.program.isPublic = locdata[prop];
+                        if (prop == 'beingEdited') this.program.beingEdited = locdata[prop];
+                        if (prop == 'beingDuplicated') this.program.beingDuplicated = locdata[prop];
                       }
                     }
                   }
@@ -223,10 +233,10 @@ export class ProgramsAddService {
     this.daoService.deleteObject(ESPIM_REST_Events, eventId.toString()).subscribe(_ => {
       const eventInstancesIndex = this.program.events.findIndex(value => value.id === eventId);
       this.program.events.splice(eventInstancesIndex, 1);      
-      new SwalComponent({
+      Swal.fire({
         title: 'Deletado com sucesso!',
-        type: 'success'
-      }).show().then();
+        icon: 'success'
+      });
     });
   }
 

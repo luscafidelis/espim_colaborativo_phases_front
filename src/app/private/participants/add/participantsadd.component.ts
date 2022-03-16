@@ -6,27 +6,31 @@ import { DAOService } from '../../dao/dao.service';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { CircleRelationship, CircleType } from '../../models/circle.model';
+import Swal from 'sweetalert2';
+import {faPlus, faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'esm-participants-add',
   templateUrl: './participantsadd.component.html'
 })
 export class ParticipanstAddComponent implements OnInit {
-
+  plus = faPlus;
+  trash = faTrash;
+  edit = faEdit;
   list_type : CircleType[] = [];
   list_participant : Participant[] =[];
 
 
   urlParticipants: string = ESPIM_REST_Participants;
-  participantForm: FormGroup;
-  circuloForm:FormGroup;
-  addParticipantForm : FormGroup;
-  addCircleTypeForm : FormGroup;
+  participantForm!: FormGroup;
+  circuloForm!:FormGroup;
+  addParticipantForm! : FormGroup;
+  addCircleTypeForm! : FormGroup;
   editing: boolean = false;
 
   //sweet alert elements
-  @ViewChild('swalSaveSuccess') private swalSaveSuccess: SwalComponent;
-  @ViewChild('swalSaveAndAddAnotherSuccess') private swalSaveAndAddAnotherSuccess: SwalComponent;
+  @ViewChild('swalSaveSuccess') private swalSaveSuccess!: SwalComponent;
+  @ViewChild('swalSaveAndAddAnotherSuccess') private swalSaveAndAddAnotherSuccess!: SwalComponent;
 
   constructor(private _daoService: DAOService, private _activatedRoute: ActivatedRoute, private _formBuilder: FormBuilder, private route: Router) { }
 
@@ -96,30 +100,30 @@ export class ParticipanstAddComponent implements OnInit {
   }
 
 
-  save(event) {
+  save(event : any) {
     if (this.participantForm.value.id) {
       this._daoService.putObject(this.urlParticipants, this.participantForm.value).subscribe(response => {
-        this.swalSaveSuccess.show();
+        this.swalSaveSuccess.fire();
 
       });
     } else {
       this._daoService.postObject(this.urlParticipants, this.participantForm.value).subscribe(response => {
-        this.swalSaveSuccess.show();
+        this.swalSaveSuccess.fire();
       });
     } 
   }
 
-  onSaveSuccess(event) {
+  onSaveSuccess(event : any) {
     this.route.navigate(['private/participants/list'])
   }
 
-  saveAndAddAnother(event) {
+  saveAndAddAnother(event : any) {
     this._daoService.postObject(this.urlParticipants, this.participantForm.value).subscribe(response => {
-      this.swalSaveAndAddAnotherSuccess.show();
+      this.swalSaveAndAddAnotherSuccess.fire();
     });
   }
 
-  onSaveAndAddAnotherSuccess(event) {
+  onSaveAndAddAnotherSuccess(event:any) {
     this.participantForm.patchValue({ id: '' }),
       this.participantForm.patchValue({ name: '' }),
       this.participantForm.patchValue({ email: '' }),
@@ -131,34 +135,21 @@ export class ParticipanstAddComponent implements OnInit {
    */
 
   addParticipant(){
-    this._daoService.postObject(ESPIM_REST_Participants, new Participant(this.addParticipantForm.getRawValue())).subscribe(data => {
+    this._daoService.postObject(ESPIM_REST_Participants, new Participant(this.addParticipantForm.getRawValue())).subscribe((data:any) => {
       const participant = new Participant(data);
       this.list_participant.push(participant);
       this.list_participant.sort((a: Participant, b: Participant) => a.name.localeCompare(b.name));
-      new SwalComponent ({
-        title: 'Participante adicionado aos contatos!',
-        type: 'success'
-      }).show();
+      Swal.fire ('Sucesso','Participante adicionado aos contatos!','success');
       this.addParticipantForm.reset();
-    }, error => new SwalComponent({
-      title: 'Falha ao adicionar o contato',
-      type: 'error'
-    }).show());
+    });
   }
 
   addCircleType(){
     this._daoService.postObject(ESPIM_REST_CircleTypes, this.addCircleTypeForm.getRawValue()).subscribe((data : any) => {
       this.list_type.push(data);
       this.list_type.sort((a: CircleType, b: CircleType) => a.description.localeCompare(b.description));
-      new SwalComponent ({
-        title: 'Tipo de Círculo adicionado !',
-        type: 'success'
-      }).show();
-      this.addParticipantForm.reset();
-    }, error => new SwalComponent({
-      title: 'Falha ao adicionar o contato',
-      type: 'error'
-    }).show());
+      Swal.fire ('Sucesso','Tipo de Círculo adicionado !','success');
+    });
   }
 
 }

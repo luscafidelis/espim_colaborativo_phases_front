@@ -10,8 +10,8 @@ import {ESPIM_REST_Programs} from '../../app.api';
 })
 export class ResultsComponent implements OnInit {
 
-  programs: Program[];
-  pagination: Pagination;
+  programs!: Program[];
+  pagination!: Pagination;
 
   constructor(private dao: DAOService) { }
 
@@ -25,12 +25,12 @@ export class ResultsComponent implements OnInit {
     });
   }
 
-  setPrograms(response) {
-    this.programs = response.results.map(reponse => reponse);
+  setPrograms(response : any) {
+    this.programs = response.results.map((reponse : any) => reponse);
     this.pagination = new Pagination(response);
   }
 
-  onNext(event) {
+  onNext(event : any) {
     this.getPrograms(event.url);
   }
 

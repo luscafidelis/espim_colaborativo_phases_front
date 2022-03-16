@@ -2,14 +2,14 @@ export class Intervention {
   public id: number;
   public type: string;
   public statement: string;
-  public orderPosition: number;
+  public orderPosition: number=0;
   public first: boolean;
   public next: any = {next : []};
   public obligatory: boolean;
-  public _x?: number=0;
-  public _y?: number=0;
-  public _width?: number=0;
-  public _height?: number=0;
+  public _x: number=0;
+  public _y: number=0;
+  public _width: number=0;
+  public _height: number=0;
 
   protected medias;
   protected complexConditions;
@@ -34,6 +34,22 @@ export class Intervention {
   }
 
   getTypeDescription() { return this.type; }
+
+  static factory (entrada : any[]) : any[] {
+    let interventions : any[] = [];
+    for (let i = 0; i < entrada.length; i++) {
+        if (entrada[i].type === 'empty')
+            interventions.push(new Intervention(entrada[i]));
+        else if (entrada[i].type === 'media')
+            interventions.push(new MediaIntervention(entrada[i]));
+        else if (entrada[i].type === 'question')
+            interventions.push(new QuestionIntervention(entrada[i]));
+        else
+            interventions.push(new TaskIntervention(entrada[i]));
+    }
+    interventions.sort((a: Intervention, b: Intervention) => a.orderPosition - b.orderPosition);
+    return interventions;
+  }
 }
 
 export class MediaIntervention extends Intervention {
@@ -63,7 +79,7 @@ export class QuestionIntervention extends Intervention {
     this.type = 'question';
   }
 
-  getTypeDescription() {
+  override getTypeDescription() {
     if (this.questionType === 0)
       return 'Questão aberta';
     if (this.questionType === 1)

@@ -11,11 +11,11 @@ export class Event {
     public description: string;
     public color: string;
     public type: string;
-    public program : number;
+    public program! : number;
 
-    public sensors: Array<Sensor>;
+    public sensors!: Array<Sensor>;
     public complexConditions: Array<any>;
-    public triggers: Array<Trigger>;
+    public triggers!: Array<Trigger>;
 
     constructor(event: any = {}) {
         this.id = event.id || -1;
@@ -76,15 +76,27 @@ export class Event {
         return 'none';
     }
 
-    public getSensorOfType(type: string): Sensor { if (this.sensors && this.sensors.length > 0) return this.sensors.find(value => value.getSensor() === type); }
+    public getSensorOfType(type: string): Sensor {
+        let volta = new Sensor();
+        if (this.sensors && this.sensors.length > 0){
+            for (let i=0; i < this.sensors.length; i++){
+                if (this.sensors[i].getSensor() == type){
+                    volta = this.sensors[i];
+                    break;
+                }
+            }
+        }
+        return volta;  
+    }
+
     public removeCollectorOfType(type: string): void {
         const indexInstanceToRemove = this.sensors.findIndex(value => value.getSensor() === type);
         this.sensors.splice(indexInstanceToRemove, 1);
     }
+    
     public addSensor(instance: Sensor): void {
         this.sensors.push(instance);
         this.sensors.sort((a: Sensor, b: Sensor) => a.getId() - b.getId());
-
         return;
     }
 
@@ -97,7 +109,7 @@ export class Event {
 }
 
 export class ActiveEvent extends Event{
-    public interventions:  Array<Intervention>;
+    public interventions!:  Array<Intervention>;
 
     constructor(event: any = {}) {
         super(event);
@@ -110,18 +122,7 @@ export class ActiveEvent extends Event{
     }
 
     public criaInterventions (interventions : any[]){
-        this.interventions = [];
-        for (let i = 0; i < interventions.length; i++) {
-            if (interventions[i].type === 'empty')
-                this.interventions.push(new Intervention(interventions[i]));
-            else if (interventions[i].type === 'media')
-                this.interventions.push(new MediaIntervention(interventions[i]));
-            else if (interventions[i].type === 'question')
-                this.interventions.push(new QuestionIntervention(interventions[i]));
-            else
-                this.interventions.push(new TaskIntervention(interventions[i]));
-        }
-        this.interventions.sort((a: Intervention, b: Intervention) => a.orderPosition - b.orderPosition);
+        this.interventions = Intervention.factory(interventions);
     }
 
     //public getInterventionsId(): Array<number> { return this.interventions; }
@@ -129,3 +130,4 @@ export class ActiveEvent extends Event{
     public getInterventionsInstances(): Array<Intervention> { return this.interventions; }
     public setInterventionsInstances(interventions: Array<Intervention>): void { this.interventions = interventions; }
 }
+

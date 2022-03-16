@@ -4,10 +4,10 @@
     <!--Cabecalho-->
     <div class="row py-2 px-2 mx-1 mx-xl-4" [ngbCollapse]="isAddEvent && !isOpen" [ngStyle]="{'background-color': event.getColor()}">
       <div class="col-12 d-flex justify-content-between align-items-center text-white">
-        <button class="btn btn-link text-white font-weight-bold" data-toggle="collapse" (click)="getEventDetails(); isOpen = !isOpen">{{ event.getTitle() }}</button>
+        <button class="btn btn-link text-white fw-bold" data-toggle="collapse" (click)="getEventDetails(); isOpen = !isOpen">{{ event.getTitle() }}</button>
         <div>
-          <i class="fas fa-edit text-white" (click)="getEventDetails(); isOpen = !isOpen"></i>
-          <i class="fas fa-trash-alt text-white" (click)="delete_event()"></i>
+          <fa-icon [icon]="edit" class="text-white" (click)="getEventDetails(); isOpen = !isOpen"></fa-icon>
+          <fa-icon [icon]="trash" class="text-white" (click)="delete_event()"></fa-icon>
         </div>
       </div>
     </div>
@@ -36,30 +36,30 @@
           </div>
           <!-------->
           <!--Cores-->
-          <div class="col-md-4 d-flex align-items-center">
+          <div class="dropdown col-md-4 d-flex align-items-center">
             <!--Botão cores-->
-            <button class="btn btn-outline-primary btn-block dropdown-toggle d-flex align-items-center justify-content-between" data-toggle="dropdown" [value]="event.getColor()">
+            <button class="btn btn-outline-primary btn-block dropdown-toggle d-flex align-items-center justify-content-between" type="button" id="dropColor" data-bs-toggle="dropdown" [value]="event.getColor()">
               <span class="text-black">Cor do evento: </span>
               <span class="d-inline-block rounded-tab filter-blur mx-2" [ngStyle]="{'background-color': event.getColor()}"></span>
             </button>
             <!------------------>
             <!--Dropdown-->
-            <div class="dropdown-menu w-100 w-xl-auto bg-white text-center px-0">
-              <button class="dropdown-item btn bg-primary rounded-tab d-inline-block p-0 m-0 my-1" (click)="event.setColor('#0a467f'); updateEvent({ color: '#0a467f'})"></button>
-              <button class="dropdown-item btn bg-danger rounded-tab d-inline-block p-0 m-0 my-1" (click)="event.setColor('#dc3545'); updateEvent({ color: '#dc3545'})"></button>
-              <button class="dropdown-item btn bg-info rounded-tab d-inline-block p-0 m-0 my-1" (click)="event.setColor('#17a2b8'); updateEvent({ color: '#17a2b8'})"></button>
-              <button class="dropdown-item btn bg-success rounded-tab d-inline-block p-0 m-0 my-1" (click)="event.setColor('#28a745'); updateEvent({ color: '#28a745'})"></button>
-              <button class="dropdown-item btn bg-warning rounded-tab d-inline-block p-0 m-0 my-1" (click)="event.setColor('#ffc107'); updateEvent({ color: '#ffc107'})"></button>
-              <button class="dropdown-item btn bg-dark rounded-tab d-inline-block p-0 m-0 my-1" (click)="event.setColor('#343a40'); updateEvent({ color: '#343a40'})"></button>
-              <button class="dropdown-item btn bg-secondary rounded-tab d-inline-block p-0 m-0 my-1" (click)="event.setColor('#6c757d'); updateEvent({ color: '#6c757d'})"></button>
-              <button class="dropdown-item btn bg-light rounded-tab d-inline-block p-0 m-0 my-1" (click)="event.setColor('#f8f9fa'); updateEvent({ color: '#f8f9fa'})"></button>
-            </div>
+            <ul class="dropdown-menu w-100 w-xl-auto bg-white text-center px-0" aria-labelledby="dropColor">
+              <li><button class="dropdown-item bg-primary rounded-tab d-inline-block p-0 m-0 my-1" type="button" (click)="event.setColor('#0a467f'); updateEvent({ color: '#0a467f'})"></button></li>
+              <li><button class="dropdown-item bg-danger rounded-tab d-inline-block p-0 m-0 my-1" type="button" (click)="event.setColor('#dc3545'); updateEvent({ color: '#dc3545'})"></button></li>
+              <li><button class="dropdown-item bg-info rounded-tab d-inline-block p-0 m-0 my-1" type="button" (click)="event.setColor('#17a2b8'); updateEvent({ color: '#17a2b8'})"></button></li>
+              <li><button class="dropdown-item bg-success rounded-tab d-inline-block p-0 m-0 my-1" type="button" (click)="event.setColor('#28a745'); updateEvent({ color: '#28a745'})"></button></li>
+              <li><button class="dropdown-item bg-warning rounded-tab d-inline-block p-0 m-0 my-1" type="button" (click)="event.setColor('#ffc107'); updateEvent({ color: '#ffc107'})"></button></li>
+              <li><button class="dropdown-item bg-dark rounded-tab d-inline-block p-0 m-0 my-1" type="button" (click)="event.setColor('#343a40'); updateEvent({ color: '#343a40'})"></button></li>
+              <li><button class="dropdown-item bg-secondary rounded-tab d-inline-block p-0 m-0 my-1" type="button" (click)="event.setColor('#6c757d'); updateEvent({ color: '#6c757d'})"></button></li>
+              <li><button class="dropdown-item bg-light rounded-tab d-inline-block p-0 m-0 my-1" type="button" (click)="event.setColor('#f8f9fa'); updateEvent({ color: '#f8f9fa'})"></button></li>
+            </ul>
             <!------------------>
           </div>
           <!--------->
           <!--Descrição-->
           <div class="col-xl-12">
-            <textarea (change)="updateEvent({ description: active_event_title.description }); event.setDescription($event.target.value)" class="w-100 mt-4 p-2" name="program-description" rows="1" placeholder="Descrição do programa 0/100">{{ event.getDescription() }}</textarea>
+            <textarea (change)="updateEvent({description : event.description })" [(ngModel)]="event.description" class="w-100 mt-4 p-2" name="program-description" rows="1" placeholder="Descrição do programa 0/100"></textarea>
           </div>
           <!------------->
         </div>
@@ -67,16 +67,16 @@
         <!--Adicionar intervenções-->
         <div class="row my-4">
           <div class="col-xl-12 d-flex justify-content-center">
-            <button class="btn btn-primary py-2 px-4" (click)="goToInterventions()"><span class="font-medium font-weight-bold text-white">ADICIONAR INTERVENÇÕES</span></button>
+            <button class="btn btn-primary py-2 px-4" (click)="goToInterventions()"><span class="font-medium fw-bold text-white">EDITAR INTERVENÇÕES</span></button>
           </div>
         </div>
         <!-------------------------->
         <!--Intervençõs cadastradas-->
-        <h4 class="font-weight-bold">Intervenções cadastradas</h4>
+        <h4 class="fw-bold">Intervenções cadastradas</h4>
         <div class="row my-4">
           <ul class="col-12 container list-unstyled px-5">
             <li class="row my-3" *ngFor="let intervention of event.getInterventionsInstances()">
-              <span class="col-12 text-center text-md-left font-weight-bold">{{ intervention.orderPosition }}. {{ intervention.getTypeDescription() }}</span>
+              <span class="col-12 d-flex justify-content-start fw-bold">{{ intervention.orderPosition }}. {{ intervention.getTypeDescription() }}</span>
               <span class="col-12">{{ intervention.statement }}</span>
             </li>
           </ul>
@@ -84,7 +84,7 @@
         <!--------------------------->
         <!--Disparos cadastrados-->
         <div class="col-12  ml-2 mr-2 border">
-          <h4 class="font-weight-bold">Disparos cadastrados</h4>
+          <h4 class="fw-bold">Disparos cadastrados</h4>
           <div class="row mt-3">
             <ul class="col-12 list-unstyled px-4 d-flex flex-column">
               <!--Disparo 1-->
@@ -96,22 +96,22 @@
             </ul>
           </div>
         </div>
-        <div class="col-3 mt-3 mb-2" >
-          <button type="button" class="btn btn-light btn-block" (click)="openAdvanced()" >Opções Avançadas</button>
+        <div class="col-12 mt-3 ms-2 me-2" >
+          <button type="button" class="btn btn-secondary btn-block w-100" (click)="openAdvanced()" >Opções Avançadas</button>
         </div>
-        <div class="col-12 border ml-2 mr-2" [ngbCollapse]="isOpenAdvanced">
+        <div class="col-12 border border-secondary ms-2 me-2" [ngbCollapse]="isOpenAdvanced">
           <esm-advanced></esm-advanced>
         </div>
-        <div class="col-3 mt-3">
-          <button type="button" class="btn btn-light btn-block" (click)="openCircle()" >Participante Círculo</button>
+        <div class="col-12 mt-3 ms-2 me-2">
+          <button type="button" class="btn btn-secondary btn-block w-100" (click)="openCircle()" >Participante Círculo</button>
         </div>
-        <div class="col-12 border" [ngbCollapse]="isOpenCircle">
+        <div class="col-12 border border-secondary ms-2 me-2" [ngbCollapse]="isOpenCircle">
           <esm-circle [event]="event"></esm-circle>
         </div>
-        <div class="col-3 mt-3">
-          <button type="button" class="btn btn-light btn-block" (click)="openGame()">Opções de Gamificação</button>
+        <div class="col-12 mt-3 ms-2 me-2">
+          <button type="button " class="btn btn-secondary btn-block w-100" (click)="openGame()">Opções de Gamificação</button>
         </div>
-        <div class="col-12" [ngbCollapse]="isOpenGame">
+        <div class="col-12 border border-secondary ms-2 me-2" [ngbCollapse]="isOpenGame">
           getTriggersInstances <br>
           Teste <br>
           Outro Teste <br>
@@ -119,92 +119,24 @@
         <!------------------------>
       </div>
     </div>
-    <!---------->
-    <!--
-      Essa parte ainda não foi implementada, por isso está comentada:
-    -->
-    <!--Corpo2-->
-    <!--      <div class="row border shadow-sm mx-1 mx-xl-4 py-2">-->
-    <!--        <div class="col-12 container-fluid">-->
-    <!--Caso participante NÃO RESPONDA-->
-    <!--          <div class="row my-3">-->
-    <!--            <div class="col-12 btn text-justify">-->
-    <!--              <button class="btn text-left" data-toggle="collapse" data-target="#noAnswer-options">Caso um participante <strong class="text-primary">NÃO RESPONDA</strong> ao disparo deste evento: (Opcional)</button>-->
-    <!--            </div>-->
-    <!--            <ul class="col-12 list-unstyled my-3 collapse" id="noAnswer-options">-->
-    <!--              <li class="text-justify">-->
-    <!--                <input type="checkbox" name="noAnswer-sendEmail" id="noAnswer-sendEmail">-->
-    <!--                <label for="noAnswer-sendEmail">-->
-    <!--                  Enviar aviso por e-mail aos [-->
-    <!--                  <select>-->
-    <!--                    <option value="0">Selecione</option>-->
-    <!--                    <option value="1">Observadores</option>-->
-    <!--                    <option value="2">Participantes</option>-->
-    <!--                  </select>-->
-    <!--                  ]-->
-    <!--                </label>-->
-    <!--              </li>-->
-    <!--              <li class="text-justify">-->
-    <!--                <input type="checkbox" name="noAnswer-tryAgain" id="noAnswer-tryAgain">-->
-    <!--                <label for="noAnswer-tryAgain">-->
-    <!--                  Programar [-->
-    <!--                  <input type="text" size="1">-->
-    <!--                  ] novo disparo em [-->
-    <!--                  <input type="text" size="1">-->
-    <!--                  ] minutos-->
-    <!--                </label>-->
-    <!--              </li>-->
-    <!--            </ul>-->
-    <!--          </div>-->
-    <!---------------------------------->
-    <!--Caso participante RESPONDA-->
-    <!--          <div class="row my-3">-->
-    <!--            <div class="col-12 btn text-justify">-->
-    <!--              <button class="btn text-left" data-toggle="collapse" data-target="#answer-options">Caso um participante <strong class="text-primary">RESPONDA</strong> ao disparo deste evento: (Opcional)</button>-->
-    <!--            </div>-->
-    <!--            <ul class="col-12 list-unstyled my-3 collapse">-->
-    <!--              <li class="text-justify">-->
-    <!--                <input type="checkbox" name="answer-sendEmail">-->
-    <!--                <label>-->
-    <!--                  Enviar aviso por e-mail aos [-->
-    <!--                  <select>-->
-    <!--                    <option value="0">Selecione</option>-->
-    <!--                    <option value="1">Observadores</option>-->
-    <!--                    <option value="2">Participantes</option>-->
-    <!--                  </select>]-->
-    <!--                </label>-->
-    <!--              </li>-->
-    <!--              <li class="text-justify">-->
-    <!--                <input type="checkbox" name="answer-setDone">-->
-    <!--                <label>Marcar o evento como realizado no aplicativo</label>-->
-    <!--              </li>-->
-    <!--              <li class="text-justify">-->
-    <!--                <input type="checkbox" name="answer-sendResults">-->
-    <!--                <label>-->
-    <!--                  Enviar o resultado das intervenções por e-mail aos [-->
-    <!--                  <select>-->
-    <!--                    <option value="0">Selecione</option>-->
-    <!--                    <option value="1">Observadores</option>-->
-    <!--                    <option value="2">Participantes</option>-->
-    <!--                  </select>-->
-    <!--                  ]-->
-    <!--                </label>-->
-    <!--              </li>-->
-    <!--            </ul>-->
-    <!--          </div>-->
-    <!------------------------------>
-    <!--        </div>-->
-    <!--      </div>-->
-    <!---------->
-    <!--    </div>-->
-    <!------------>
   </div>
-  <!----------->
 </div>
 
-<!--Botões adicionar/importar evento-->
-<div class="d-flex justify-content-around flex-wrap px-3 mx-4 my-3" *ngIf="isAddEvent">
-  <button class="btn btn-outline-primary w-100 w-xl-50 py-3" (click)="addEvent()">ADICIONAR EVENTO</button>
-  <button class="btn btn-outline-primary w-100 w-xl-50 py-3">IMPORTAR EVENTO</button>
-</div>
-<!------------------------------------>
+  <!--Botões adicionar/importar evento-->
+  <div class="d-flex justify-content-around flex-wrap px-3 mx-4 my-3" *ngIf="isAddEvent">
+    <button class="btn btn-outline-primary w-100 w-xl-50 py-3" (click)="addEvent()">ADICIONAR EVENTO</button>
+    <button class="btn btn-outline-primary w-100 w-xl-50 py-3">IMPORTAR EVENTO</button>
+  </div>
+  <!------------------------------------>
+
+
+  <!--Modal do Editor -->
+  <div id="editorModal2" tabindex="-1" class="modal fade">
+    <div class="modal-dialog  modal-fullscreen">
+        <div id="editorCanva" class="modal-content overflow-scroll" >
+          <ng-template #divInterventions></ng-template>
+            <!--<ng-template divInterventions></ng-template>-->
+            <!-- <esm-interventions></esm-interventions> -->
+        </div>
+    </div>
+  </div>

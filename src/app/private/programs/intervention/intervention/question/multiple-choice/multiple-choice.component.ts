@@ -1,17 +1,18 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {HTMLInterventionElement, InterventionService} from '../../../intervention.service';
 import {QuestionIntervention} from '../../../../../models/intervention.model';
+import {faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'esm-multiple-choice',
   templateUrl: './multiple-choice.component.html'
 })
 export class MultipleChoiceComponent implements OnInit, OnChanges {
-  @Input() graphIndex: number;
-  @Input() nextInterventions: HTMLInterventionElement[];
+  @Input() graphIndex: number = 0;
+  @Input() nextInterventions: HTMLInterventionElement[] = [];
 
-  intervention: QuestionIntervention;
-
+  intervention: QuestionIntervention = new QuestionIntervention();
+  faminus = faMinusCircle;
   get alternatives() { return this.intervention.options; }
 
   locScales : string[] = [];
@@ -28,8 +29,8 @@ export class MultipleChoiceComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.graphIndex) this.graphIndex = changes.graphIndex.currentValue;
-    if (changes.nextInterventions) this.nextInterventions = changes.nextInterventions.currentValue;
+    if (changes['graphIndex']) this.graphIndex = changes['graphIndex'].currentValue;
+    if (changes['nextInterventions']) this.nextInterventions = changes['nextInterventions'].currentValue;
   }
 
   addChoice() {

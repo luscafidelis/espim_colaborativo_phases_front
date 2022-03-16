@@ -17,10 +17,10 @@ export class  Program {
 
   // composed entities
   public editor: Observer;
-  public observers:  Observer[];
-  public participants: Participant[];
-  public events: Event[];
-  public chat_program: ChatMessage[];
+  public observers!:  Observer[];
+  public participants!: Participant[];
+  public events!: Event[];
+  public chat_program!: ChatMessage[];
   
   constructor(program: any = {}) {
     this.id = program.id || -1;

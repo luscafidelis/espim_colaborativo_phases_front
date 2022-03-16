@@ -1,6 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
 import { SocialLoginService, Provider, SocialUser } from 'ngx-social-login';
-import 'rxjs/operator/do';
 import { Router } from '@angular/router';
 import { ObserversService } from 'src/app/private/observers/observers.service';
 import { ESPIM_REST_Observers } from 'src/app/app.api';
@@ -10,28 +9,26 @@ import { ESPIM_REST_Observers } from 'src/app/app.api';
 })
 export class LoginService {
   urlObservers: string = ESPIM_REST_Observers + 'auth/';
-  user: SocialUser;
+  user!: SocialUser;
+  logado : boolean = false;
 
   constructor(private _service: SocialLoginService, private router: Router, private zone: NgZone, private _observerService: ObserversService) { }
 
   loginWithGoogle(): void {
     this._service.login(Provider.GOOGLE).subscribe(
-      user => {
+      (user : any) => {
+        this.logado = true;
         this.user = user;
+        console.log(user);
         this.zone.run(() => {
           this._observerService.authenticate(this.urlObservers).subscribe(
               (response: any) => {
                 this.user.id = response.id;
                 console.log(this.user.accessToken);
                 this.router.navigate(['/private']);
-              },
-              error => {
-                this.router.navigate(['/index/signin'])
-              }
-          );
+              });
         });
-      },
-      error => console.log(error)
+      }
     );
   }
 
@@ -44,7 +41,7 @@ export class LoginService {
       },
       error: err => console.log(err)
     });
-    this.user = undefined;
+    this.logado = false;
   }
 
   getUser(): SocialUser {
@@ -52,9 +49,6 @@ export class LoginService {
   }
 
   isLoggedIn(): boolean {
-    return this.user !== undefined;
+    return this.logado;
   }
-
-
-
 }

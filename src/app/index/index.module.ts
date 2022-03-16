@@ -1,6 +1,7 @@
-import { TranslateModule } from '@ngx-translate/core';
+import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 //local components
 import { IndexComponent } from './index.component';
@@ -32,6 +33,7 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
     ReactiveFormsModule,
     NgbModule,
     SweetAlert2Module,
+    FontAwesomeModule,
     NgxSocialLoginModule.init(
       {
         google: {

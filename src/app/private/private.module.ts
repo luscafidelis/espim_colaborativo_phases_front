@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 // local imports
 import { PrivateRoutingModule } from './private-routing.module';
@@ -23,8 +24,8 @@ import { DAOService } from './dao/dao.service';
 import { ProgramsAddComponent } from './programs/add/programsadd.component';
 import { ObserversComponent } from './observers/observers.component';
 import { ObserversService } from './observers/observers.service';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { DateConverterService } from '../util/util.date.converter.service';
+import { NgbDateAdapter, NgbDateParserFormatter, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { CustomAdapter, CustomDateParserFormatter, DateConverterService } from '../util/util.date.converter.service';
 import { Step1Component } from './programs/add/step1/step1.component';
 import { Step2Component } from './programs/add/step2/step2.component';
 import { Step3Component } from './programs/add/step3/step3.component';
@@ -55,17 +56,19 @@ import { PhasesComponent } from './programs/add/step4/phases/phases.component';
 import { GamificationComponent } from './programs/add/step4/active-event/gamification/gamification.component';
 import { CircleComponent } from './programs/add/step4/active-event/circle/circle.component';
 import { AdvancedComponent } from './programs/add/step4/active-event/advanced/advanced.component';
+import { ComunicateButtonsComponent } from './programs/add/step1/comunicate-buttons/comunicate-buttons.component';
 
 @NgModule({
     imports: [
         CommonModule,
         PrivateRoutingModule,
-        TranslateModule.forChild(),
+        TranslateModule,
         ReactiveFormsModule,
         FormsModule,
-        SweetAlert2Module,
+        SweetAlert2Module.forRoot(),
         NgbModule,
-        DragDropModule
+        DragDropModule,
+        FontAwesomeModule
     ],
     declarations: [
       PrivateComponent,
@@ -106,8 +109,15 @@ import { AdvancedComponent } from './programs/add/step4/active-event/advanced/ad
       GamificationComponent,
       CircleComponent,
       AdvancedComponent,
+      ComunicateButtonsComponent,
       //InterventionService
       ],
-  providers: [ChannelService, DAOService, SearchService, ObserversService, DateConverterService, ProgramsAddService, InterventionService]
+  providers: [ChannelService, DAOService, SearchService, ObserversService, DateConverterService, ProgramsAddService, InterventionService,
+    {provide: NgbDateAdapter, useClass: CustomAdapter},
+    {provide: NgbDateParserFormatter, useClass: CustomDateParserFormatter}]
 })
+
+
 export class PrivateModule { }
+
+
