@@ -1,8 +1,8 @@
 // configure default backend location
-//export const ESPIM_API = 'https://espim-back.herokuapp.com/';
-export const ESPIM_API = 'http://localhost:8000/';
-//export const CHANNEL_URL = 'wss://espim-back.herokuapp.com/ws/chat/';
-export const CHANNEL_URL = 'ws://localhost:8000/ws/chat/';
+export const ESPIM_API = 'https://espim-back.herokuapp.com/';
+//export const ESPIM_API = 'http://localhost:8000/';
+export const CHANNEL_URL = 'wss://espim-back.herokuapp.com/ws/chat/';
+//export const CHANNEL_URL = 'ws://localhost:8000/ws/chat/';
 
 
 // configure participants module url
