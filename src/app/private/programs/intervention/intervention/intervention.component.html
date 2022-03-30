@@ -34,7 +34,12 @@
             <button class="btn btn-outline-primary my-4 mx-auto"  (click)="fileUpload.click()">Anexar mídia <fa-icon [icon]="fapaperclip"></fa-icon></button>
         </div>
         
+        <!--Question Intervention-->
         <esm-question *ngIf="interventionCoordinate.type === 'question'" [graphIndex]="graphIndex" [nextInterventions]="nextInterventions"></esm-question>
+        
+        <!--Analyzed Intervention -->
+        <app-analyzed *ngIf="interventionCoordinate.type === 'analyzed'" [graphIndex]="graphIndex" [nextInterventions]="nextInterventions"  ></app-analyzed>
+        
         <div *ngIf="interventionCoordinate.type !== 'question' || interventionCoordinate.questionType !== 1">
             <hr style="border-top: 2px dashed #E8E8E8"/>
             <select class="w-100" [(ngModel)]="nextInterventionSelect" (change)="setNextTo()">

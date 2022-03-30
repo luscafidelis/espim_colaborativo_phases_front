@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit, Query, ViewChild } from '@angular/
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProgramsAddService } from '../programsadd.service';
 import { CustomDateParserFormatter, DateConverterService } from '../../../../util/util.date.converter.service';
-import { Program } from '../../../models/program.model';
+import { Program, ProgramAdditionalResource } from '../../../models/program.model';
 import { Router } from '@angular/router';
 import { SubSink } from 'subsink';
 import { NgbCalendar, NgbDateAdapter, NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
@@ -16,7 +16,9 @@ import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 export class Step1Component implements OnInit, OnDestroy {
   @ViewChild('e', {static: false}) endDateComponent!: Query;
 
-  isOpenButtons : boolean = false;
+  isOpenButtons : boolean = true;
+  programAdditionalResources : ProgramAdditionalResource[] = [];
+  isOpenGroups : boolean = true;
 
   setBeginDate(e: NgbDateStruct) {
     this.programInformationForm.value.beginDate = this.dateConverterService.toString(e);
@@ -66,6 +68,8 @@ export class Step1Component implements OnInit, OnDestroy {
     console.log('Setou o programa ' , program);
     if (!program)
       return;
+
+    this.programAdditionalResources = program.programAdditionalResource
 
     const utcStarts = Number.parseInt(program.starts);
     const utcEnds = Number.parseInt(program.ends);
@@ -137,6 +141,24 @@ export class Step1Component implements OnInit, OnDestroy {
 
   openButtons(){
     this.isOpenButtons = !this.isOpenButtons;
+  }
+
+  openGroups(){
+    this.isOpenGroups = !this.isOpenGroups;
+  }
+
+  saveResource(i : number){
+
+  }
+
+  getResourceName(loc_id: number){
+    let volta : string = 'Sem nome';
+    for (let pos = 0; pos < this.programAddService.additionalResource.length; pos++ ){
+      if (this.programAddService.additionalResource[pos].id == loc_id) {
+        return this.programAddService.additionalResource[pos].title;
+      }
+    }
+    return volta;
   }
 }
 

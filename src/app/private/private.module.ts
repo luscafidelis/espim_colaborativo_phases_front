@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
-import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 // local imports
 import { PrivateRoutingModule } from './private-routing.module';
@@ -57,6 +57,8 @@ import { GamificationComponent } from './programs/add/step4/active-event/gamific
 import { CircleComponent } from './programs/add/step4/active-event/circle/circle.component';
 import { AdvancedComponent } from './programs/add/step4/active-event/advanced/advanced.component';
 import { ComunicateButtonsComponent } from './programs/add/step1/comunicate-buttons/comunicate-buttons.component';
+import { DiscussionGroupsComponent } from './programs/add/step1/discussion-groups/discussion-groups.component';
+import { AnalyzedComponent } from './programs/intervention/intervention/analyzed/analyzed.component';
 
 @NgModule({
     imports: [
@@ -110,6 +112,8 @@ import { ComunicateButtonsComponent } from './programs/add/step1/comunicate-butt
       CircleComponent,
       AdvancedComponent,
       ComunicateButtonsComponent,
+      DiscussionGroupsComponent,
+      AnalyzedComponent,
       //InterventionService
       ],
   providers: [ChannelService, DAOService, SearchService, ObserversService, DateConverterService, ProgramsAddService, InterventionService,

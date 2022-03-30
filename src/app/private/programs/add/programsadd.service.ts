@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Program } from '../../models/program.model';
+import { Program, AdditionalResource } from '../../models/program.model';
 import { Observer } from '../../models/observer.model';
 import { DAOService } from '../../dao/dao.service';
 import {
+  ESPIM_REST_AdditionalResource,
   ESPIM_REST_Events,
   ESPIM_REST_Observers,
   ESPIM_REST_Participants, ESPIM_REST_Programs, ESPIM_REST_Sensors, ESPIM_REST_Triggers
@@ -26,6 +27,9 @@ export class ProgramsAddService {
   //Programa
   public program: Program = new Program();
 
+  //Additional Resource
+  public additionalResource : AdditionalResource[] = []
+
   //Verificar se foi iniciado ou não a lista de participantes e de observadores
   started : boolean = false;
 
@@ -46,7 +50,9 @@ export class ProgramsAddService {
   private programObservable$: Subject<Program> = new Subject<Program>();
   getProgramObservable(): Subject<Program> { return this.programObservable$; }
 
-  constructor(private daoService: DAOService, private loginService: LoginService, private canal : ChannelService) {  }
+  constructor(private daoService: DAOService, private loginService: LoginService, private canal : ChannelService) { 
+    this.daoService.getNewObject(ESPIM_REST_AdditionalResource, {id : 0}).subscribe((data : any ) => {this.additionalResource = data });
+   }
 
   //--- Inicialização do programa na classe do service....
   setProgram(programId: number) {

@@ -2,6 +2,7 @@ import { Observer } from './observer.model';
 import { Participant } from './participant.model';
 import { ActiveEvent, Event } from './event.model';
 import { ChatMessage } from './chat.message.model';
+import { CircleType } from './circle.model';
 
 export class  Program {
   public id: number;
@@ -14,6 +15,8 @@ export class  Program {
   public isPublic: boolean;
   public beingEdited: boolean;
   public beingDuplicated: boolean;
+  public messageAndGroups! : MessageAndGroups;
+  public programAdditionalResource : ProgramAdditionalResource[] = [];
 
   // composed entities
   public editor: Observer;
@@ -60,6 +63,25 @@ export class  Program {
     } else {
       this.chat_program = []
     }
+    if (program.messageAndGroups) {
+      this.messageAndGroups = program.messageAndGroups;
+    } else {
+      this.messageAndGroups = {
+        id : -1,    
+        discussionGroupTargets : '', 
+        messageParticipantObserver : false,
+        messageTargetCircle : false,
+        messageCircleType : [],
+        discussionGroupTargetCircle : false,
+        discussionCircleType : [],
+        groupCircleType : false
+      };
+    }
+    if (program.programAdditionalResource) {
+      this.programAdditionalResource = program.programAdditionalResource;
+    } else {
+      this.programAdditionalResource = [];
+    }
   }
 
   criaObservers(dados : any[]){
@@ -96,3 +118,36 @@ export class  Program {
   }
 }
 
+export interface AlertNotificationButton{
+    id : number;
+    type : string;
+    buttonLabel : string;
+    title : string;
+    description : string;
+    circleType : CircleType[];
+    program : number;
+}
+
+export interface MessageAndGroups{
+    id : number;
+    discussionGroupTargets : string;
+    messageParticipantObserver : boolean;
+    messageTargetCircle : boolean;
+    messageCircleType : CircleType[];
+    discussionGroupTargetCircle : boolean;
+    discussionCircleType : CircleType[];
+    groupCircleType : boolean;
+}
+
+export interface ProgramAdditionalResource{
+  id : number;
+  program : number;
+  additionalResource : number;
+  toUse : boolean;
+}
+
+export interface AdditionalResource{
+  id : number;
+  title : string;
+  description : string;
+}

@@ -50,6 +50,12 @@ export const ESPIM_REST_RespostCircleEvents: string = ESPIM_API +  'respost-circ
 //Configura Circle Event
 export const ESPIM_REST_TargetCircleEvents: string = ESPIM_API +  'target-circle-events/';
 
+//Configura Additional Resource
+export const ESPIM_REST_AdditionalResource: string = ESPIM_API +  'additional-resource/';
+
+//Configura Alert And Notification Buttons
+export const ESPIM_REST_AlertNotificationButtons: string = ESPIM_API +  'alert-notification-buttons/';
+
 // config default page size
 export const PAGE_SIZE = 4;
 

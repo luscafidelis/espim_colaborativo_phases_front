@@ -7,15 +7,16 @@
         <i class="fas fa-plus-circle pr-1"></i>
         <span>Adicionar</span>
         <ul *ngIf="addInterventionPopUp" class="position-fixed list-unstyled card" [style]="'top: ' + navbar_height + 'px;'">
-            <li class="btn btn-light text-left" (click)="addIntervention('empty')"><i class="fa fa-comment pr-1"></i><span>Mensagem</span></li>
-            <li class="btn btn-light text-left" (click)="addIntervention('question', 0)"><i class="fa fa-align-left pr-1"></i><span>Questão aberta</span></li>
-            <li class="btn btn-light text-left" (click)="addIntervention('question', 1)"><i class="fas fa-dot-circle pr-1"></i><span>Escolha Única</span></li>
-            <li class="btn btn-light text-left" (click)="addIntervention('question', 2)"><i class="fas fa-check-square pr-1"></i><span>Escolha Múltipla</span></li>
-            <li class="btn btn-light text-left" (click)="addIntervention('question', 3)"><i class="fa fa-ruler-combined pr-1"></i><span>Likert</span></li>
-            <li class="btn btn-light text-left" (click)="addIntervention('question', 31)"><i class="fa fa-pencil-ruler pr-1"></i><span>Likert Personalizada</span></li>
-            <li class="btn btn-light text-left" (click)="addIntervention('question', 4)"><i class="fas fa-balance-scale pr-1"></i><span>Diferencial Semântico</span></li>
-            <li class="btn btn-light text-left" (click)="addIntervention('media')"><i class="fas fa-video pr-1"></i><span>Solicitar Mídia</span></li>
-            <li class="btn btn-light text-left" (click)="addIntervention('task')"><i class="fas fa-mobile pr-1"></i><span>Aplicação externa</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('empty')"><fa-icon  [icon]="_faComment" class="pr-1"></fa-icon><span>Mensagem</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('question', 0)"><fa-icon  [icon]="_faAlignLeft" class="pr-1"></fa-icon><span>Questão aberta</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('question', 1)"><fa-icon  [icon]="_faDotCircle" class="pr-1"></fa-icon><span>Escolha Única</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('question', 2)"><fa-icon  [icon]="_faCheckSquare" class="pr-1"></fa-icon><span>Escolha Múltipla</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('question', 3)"><fa-icon  [icon]="_faRulerCombined" class="pr-1"></fa-icon><span>Likert</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('question', 31)"><fa-icon  [icon]="_faPencilRuler" class="pr-1"></fa-icon><span>Likert Personalizada</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('question', 4)"><fa-icon  [icon]="_faBalanceScale" class="pr-1"></fa-icon><span>Diferencial Semântico</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('analyzed')"><fa-icon  [icon]="_faFileCode" class="pr-1"></fa-icon><span>Intervenção Analisada</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('media')"><fa-icon  [icon]="_faVideo" class="pr-1"></fa-icon><span>Solicitar Mídia</span></li>
+            <li class="btn btn-light text-left" (click)="addIntervention('task')"><fa-icon  [icon]="_faComment" class="pr-1"></fa-icon><span>Aplicação externa</span></li>
         </ul>
     </div>
     <div class="d-flex align-items-center text-center btn btn-primary">

@@ -1,0 +1,4 @@
+<label class="fw-bold text-primary mb-2" [for]="graphIndex + 'Analyze'">Escola o Serviço que Irá Analizar a Resposta da Intervenção</label>
+<select class="mb-2 w-100" [(ngModel)]="analyzeType" [id]="graphIndex + 'Analyze'" (change)="saveAnalyze()">
+    <option *ngFor = 'let locType of arrayAnalyzeType' value="{{locType.type}}">{{locType.description}}</option>
+</select>

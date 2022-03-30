@@ -6,7 +6,7 @@ import { DAOService } from '../../dao/dao.service';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import {Router} from '@angular/router';
 import Swal from 'sweetalert2';
-import {faLock, faUsers, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import {faLock, faUsers, faEdit, faTrashAlt, faClone } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'esm-particpants-list',
@@ -19,6 +19,7 @@ export class ProgramsListComponent implements OnInit {
   users = faUsers;
   edit = faEdit;
   trash = faTrashAlt;
+  clone = faClone;
 
   urlPrograms: string = ESPIM_REST_Programs;
   programs!: Program[];

@@ -76,6 +76,10 @@ export class CircleComponent implements OnInit {
         if (data.length > 0){
           this.arrayCustomInterventions = data;
           this.booleanCustomInterventions = true;
+          this.customCollapse = [];
+          for (let i=0; i < this.arrayCustomInterventions.length; i++){
+            this.customCollapse.push(true);
+          }
         }
       });
       this.dao.getNewObject(ESPIM_REST_RespostCircleEvents,{event : this.event?.id}).subscribe((data : any) => {

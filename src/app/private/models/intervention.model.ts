@@ -44,6 +44,10 @@ export class Intervention {
             interventions.push(new MediaIntervention(entrada[i]));
         else if (entrada[i].type === 'question')
             interventions.push(new QuestionIntervention(entrada[i]));
+        else if (entrada[i].type === 'question')
+            interventions.push(new QuestionIntervention(entrada[i]));
+        else if (entrada[i].type === 'analyzed')
+            interventions.push(new AnalyzedIntervention(entrada[i]));
         else
             interventions.push(new TaskIntervention(entrada[i]));
     }
@@ -53,7 +57,7 @@ export class Intervention {
 }
 
 export class MediaIntervention extends Intervention {
-  private mediaType: string;
+  public mediaType: string;
 
   constructor(intervention: any = {}) {
     super(intervention);
@@ -97,9 +101,9 @@ export class QuestionIntervention extends Intervention {
 }
 
 export class TaskIntervention extends Intervention {
-  private appPackage: string;
-  private parameters: object;
-  private startFromNotification: boolean;
+  public appPackage: string;
+  public parameters: object;
+  public startFromNotification: boolean;
 
   constructor(intervention: any = {}) {
     super(intervention);
@@ -108,5 +112,16 @@ export class TaskIntervention extends Intervention {
     this.parameters = intervention.parameters;
     this.startFromNotification = intervention.startFromNotification;
     this.type = 'task';
+  }
+}
+
+
+export class AnalyzedIntervention extends Intervention {
+  public functionAnalyze : string;
+
+  constructor(intervention: any = {}) {
+    super(intervention);
+    this.functionAnalyze = intervention.functionAnalyze;
+    this.type = 'analyzed';
   }
 }

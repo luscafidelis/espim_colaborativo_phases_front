@@ -1,5 +1,6 @@
 import {Component, EventEmitter, HostListener, OnInit, Output} from '@angular/core';
 import {
+  AnalyzedIntervention,
   Intervention,
   MediaIntervention,
   QuestionIntervention,
@@ -7,9 +8,10 @@ import {
 } from '../../../models/intervention.model';
 import {HTMLInterventionElement, InterventionService} from '../intervention.service';
 import Swal from 'sweetalert2';
-
+import { faComment, faAlignLeft, faDotCircle, faCheckSquare, faRulerCombined, faPencilRuler, faBalanceScale, faVideo, faMobile, faFileCode } from '@fortawesome/free-solid-svg-icons';
 
 export const NAVBAR_HEIGHT = 60;
+
 
 @Component({
   selector: 'esm-navbar',
@@ -20,6 +22,19 @@ export class NavbarComponent implements OnInit {
   over1200px!: boolean;
   mobileToggleActivated!: boolean;
   addInterventionPopUp = false;
+
+  _faComment = faComment;
+  _faAlignLeft = faAlignLeft; 
+  _faDotCircle = faDotCircle; 
+  _faCheckSquare = faCheckSquare; 
+  _faRulerCombined = faRulerCombined; 
+  _faPencilRuler = faPencilRuler; 
+  _faBalanceScale = faBalanceScale; 
+  _faVideo = faVideo; 
+  _faMobile = faMobile; 
+  _faFileCode = faFileCode;
+  
+
 
   constructor(private interventionService: InterventionService) { }
 
@@ -36,6 +51,7 @@ export class NavbarComponent implements OnInit {
     else if (type === 'media') intervention = new MediaIntervention();
     else if (type === 'question') intervention = new QuestionIntervention({ questionType: subtype });
     else if (type === 'task') intervention = new TaskIntervention();
+    else if (type === 'analyzed') intervention = new AnalyzedIntervention();
 
     this.interventionService.addIntervention(new HTMLInterventionElement(intervention));
   }
