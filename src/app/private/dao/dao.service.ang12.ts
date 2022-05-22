@@ -62,7 +62,7 @@ export class DAOService2 {
         )
     }
 
-    httpError(error) {
+    httpError(error : any) {
         let msg = '';
         if(error.error instanceof ErrorEvent) {
           // client side error

@@ -6,6 +6,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {CdkStepperModule} from '@angular/cdk/stepper';
+import {MatStepperModule} from '@angular/material/stepper';
+import {MatNativeDateModule} from '@angular/material/core';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 // local imports
 import { PrivateRoutingModule } from './private-routing.module';
@@ -49,7 +53,6 @@ import { LikertCustomComponent } from './programs/intervention/intervention/ques
 import { ProgramHistoricComponent } from './programs/add/program-historic/program-historic.component';
 import { ProgramChatComponent } from './programs/add/program-chat/program-chat.component';
 import { EditoresOnlineComponent } from './programs/add/editores-online/editores-online.component';
-import { StepPanelComponent } from './programs/add/step-panel/step-panel.component';
 import { ChannelService } from './channel_socket/socket.service';
 import { InterventionService } from './programs/intervention/intervention.service';
 import { PhasesComponent } from './programs/add/step4/phases/phases.component';
@@ -59,6 +62,21 @@ import { AdvancedComponent } from './programs/add/step4/active-event/advanced/ad
 import { ComunicateButtonsComponent } from './programs/add/step1/comunicate-buttons/comunicate-buttons.component';
 import { DiscussionGroupsComponent } from './programs/add/step1/discussion-groups/discussion-groups.component';
 import { AnalyzedComponent } from './programs/intervention/intervention/analyzed/analyzed.component';
+import { StepConfiguracaoComponent } from './programs/add/step-configuracao/step-configuracao.component';
+import { StepInterventionComponent } from './programs/add/step-intervention/step-intervention.component';
+import { StepSensorComponent } from './programs/add/step-sensor/step-sensor.component';
+import { StepPublishComponent } from './programs/add/step-publish/step-publish.component';
+import { PublishComponent } from './programs/publish/publish.component';
+import { PublishListComponent } from './programs/publish/publish-list/publish-list.component';
+import { PublishService } from './programs/publish/publish.service';
+import { PublishAddComponent } from './programs/publish/publish-add/publish-add.component';
+import { PublishPhasesComponent } from './programs/publish/publish-phases/publish-phases.component';
+import { PublishDataComponent } from './programs/publish/publish-data/publish-data.component';
+import { PublishExpertsComponent } from './programs/publish/publish-experts/publish-experts.component';
+import { PublishParticipantsComponent } from './programs/publish/publish-participants/publish-participants.component';
+import { FollowUpComponent } from './programs/follow-up/follow-up.component';
+import { FollowUpListComponent } from './programs/follow-up/follow-up-list/follow-up-list.component';
+
 
 @NgModule({
     imports: [
@@ -70,7 +88,12 @@ import { AnalyzedComponent } from './programs/intervention/intervention/analyzed
         SweetAlert2Module.forRoot(),
         NgbModule,
         DragDropModule,
-        FontAwesomeModule
+        FontAwesomeModule,
+        MatStepperModule,
+        CdkStepperModule,
+        MatNativeDateModule,
+        NgxSpinnerModule,
+        NgbModule
     ],
     declarations: [
       PrivateComponent,
@@ -85,7 +108,6 @@ import { AnalyzedComponent } from './programs/intervention/intervention/analyzed
       ProgramsListComponent,
       ProgramsAddComponent,
       ObserversComponent,
-      StepPanelComponent,
       Step1Component,
       Step2Component,
       Step3Component,
@@ -114,9 +136,22 @@ import { AnalyzedComponent } from './programs/intervention/intervention/analyzed
       ComunicateButtonsComponent,
       DiscussionGroupsComponent,
       AnalyzedComponent,
+      StepConfiguracaoComponent,
+      StepInterventionComponent,
+      StepSensorComponent,
+      StepPublishComponent,
+      PublishComponent,
+      PublishListComponent,
+      PublishAddComponent,
+      PublishPhasesComponent,
+      PublishDataComponent,
+      PublishExpertsComponent,
+      PublishParticipantsComponent,
+      FollowUpComponent,
+      FollowUpListComponent,
       //InterventionService
       ],
-  providers: [ChannelService, DAOService, SearchService, ObserversService, DateConverterService, ProgramsAddService, InterventionService,
+  providers: [ChannelService, DAOService, SearchService, ObserversService, DateConverterService, ProgramsAddService, InterventionService, PublishService,
     {provide: NgbDateAdapter, useClass: CustomAdapter},
     {provide: NgbDateParserFormatter, useClass: CustomDateParserFormatter}]
 })

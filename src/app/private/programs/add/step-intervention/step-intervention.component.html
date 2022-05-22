@@ -1,0 +1,15 @@
+<!--Eventos ativos-->
+<div class="container-fluid">
+  <!--Instancia Evento-->
+  <div class="mt-4" *ngFor="let event of events; index as i">
+    <esm-active-event [event]="event" *ngIf="event.type === 'active'"></esm-active-event>
+  </div>
+  <!-------------------->
+</div>
+<!------------------>
+<!--Adicionar evento ativo-->
+<div class="container-fluid">
+  <div class="mt-4">
+    <esm-active-event></esm-active-event> 
+  </div>
+</div>

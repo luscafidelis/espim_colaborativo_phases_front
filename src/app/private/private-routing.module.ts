@@ -13,6 +13,9 @@ import { Step3Component } from './programs/add/step3/step3.component';
 import { Step4Component } from './programs/add/step4/step4.component';
 import {ResultsComponent} from './results/results.component';
 import {InterventionsComponent} from './programs/intervention/interventions.component';
+import { PublishListComponent } from './programs/publish/publish-list/publish-list.component';
+import { PublishAddComponent } from './programs/publish/publish-add/publish-add.component';
+import { FollowUpListComponent } from './programs/follow-up/follow-up-list/follow-up-list.component';
 
 const routes: Routes = [
     {
@@ -23,21 +26,25 @@ const routes: Routes = [
         {path: 'participants/add', component: ParticipanstAddComponent},
         {path: 'participants/add/:id', component: ParticipanstAddComponent},
         {path: 'programs/list', component: ProgramsListComponent},
-        {
-         path: 'programs/add/:id',
-         component: ProgramsAddComponent,
-         children: [
-           { path: 'first', component: Step1Component},
-           { path: 'second', component: Step2Component},
-           { path: 'third', component: Step3Component},
-           { path: 'fourth', component: Step4Component},
-         ]
-        },
+        {path: 'programs/add',component: ProgramsAddComponent},
+        {path: 'publish/list', component: PublishListComponent},
+        {path: 'publish/add',component: PublishAddComponent},
+        {path: 'follow-up/list',component: FollowUpListComponent},
+
+        //{path: 'programs/add/:id',
+        // component: ProgramsAddComponent,
+        // children: [
+        //   { path: 'first', component: Step1Component},
+        //   { path: 'second', component: Step2Component},
+        //   { path: 'third', component: Step3Component},
+        //   { path: 'fourth', component: Step4Component},
+        // ]
+        //},
         {path: 'observers/add', component: ObserversComponent},
         {path: 'results/list', component: ResultsComponent}
        ]
     },
-    {path: 'programs/add/:id/fourth/:event/interventions', component: InterventionsComponent },
+    //{path: 'programs/add/:id/fourth/:event/interventions', component: InterventionsComponent },
 ];
 
 @NgModule({

@@ -1,8 +1,8 @@
 // configure default backend location
-export const ESPIM_API = 'https://espim-back.herokuapp.com/';
-//export const ESPIM_API = 'http://localhost:8000/';
-export const CHANNEL_URL = 'wss://espim-back.herokuapp.com/ws/chat/';
-//export const CHANNEL_URL = 'ws://localhost:8000/ws/chat/';
+//export const ESPIM_API = 'https://espim-back.herokuapp.com/';
+export const ESPIM_API = 'http://localhost:8000/';
+//export const CHANNEL_URL = 'wss://espim-back.herokuapp.com/ws/chat/';
+export const CHANNEL_URL = 'ws://localhost:8000/ws/chat/';
 
 
 // configure participants module url
@@ -56,6 +56,16 @@ export const ESPIM_REST_AdditionalResource: string = ESPIM_API +  'additional-re
 //Configura Alert And Notification Buttons
 export const ESPIM_REST_AlertNotificationButtons: string = ESPIM_API +  'alert-notification-buttons/';
 
+//Configura ExpertsProgramPublicade
+export const ESPIM_REST_ExpertsProgramPublicade: string = ESPIM_API +  'experts-program-publicade/';
+
+//Configura PhasePublicade
+export const ESPIM_REST_PhasePublicade: string = ESPIM_API +  'phase-publicade/';
+
+//Configura ProgramPublicade
+export const ESPIM_REST_ProgramPublicade: string = ESPIM_API +  'program-publicade/';
+
+
 // config default page size
-export const PAGE_SIZE = 4;
+export const PAGE_SIZE = 10;
 

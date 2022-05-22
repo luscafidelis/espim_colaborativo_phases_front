@@ -1,0 +1,124 @@
+<!--Adicionar participante menu popup-->
+<form class="bg-white shadow-lg popup p-5 collapse" style="z-index: 3; top: 10%" id="addParticipant" [formGroup]="addParticipantForm">
+    <h3 class="mb-5">Adicionar participante</h3>
+    <div class="mb-3">
+      <label class="mb-0" for="email">E-mail <span class="text-danger">*</span>:</label>
+      <input class="w-100" type=email id="email" formControlName="email">
+    </div>
+    <div class="mb-3">
+      <label class="mb-0" for="name">Nome <span class="text-danger">*</span>:</label>
+      <input class="w-100" type=text id="name" formControlName="name">
+    </div>
+    <div class="mb-3">
+      <label class="mb-0" for="nickname">Papel:</label>
+      <input class="w-100" type=text id="nickname" formControlName="nickname">
+    </div>
+    <div class="d-flex justify-content-between mt-5">
+      <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#addParticipant" aria-expanded="false" aria-controls="addParticipantCollapseCancel" (click)="addParticipantForm.reset()">Cancelar</button>
+      <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#addParticipant" aria-expanded="false" aria-controls="addParticipantCollapseAdd" (click)="addParticipant()">Adicionar</button>
+    </div>
+  </form>
+  <!----------------------------------->
+  <!--Forms-->
+    <!--Participantes adicionados-->
+  <div class="container-fluid">
+        <div class="row w-100">
+          <div *ngIf="!programParticipants?.length" class="col-12 d-flex justify-content-center text-primary fw-bold">No participant selected</div>
+          <div *ngIf="programParticipants.length > 0" class="col-12 bg-primary d-flex justify-content-center text-white fw-bold mb-3">
+              Participantes Selecionados
+          </div>
+          <div *ngFor="let selectedParticipant of programParticipants" class="col-3 d-flex align-items-center p-1 border border-primary justify-content-between">
+              <!--  
+              <fa-icon [icon]="fatrash" class="m-2 fa-lg fa-solid text-danger" data-bs-toggle="tooltip" title="Remover Participante do Programa" ></fa-icon>
+              -->
+              <div>
+                <b>Nome:</b> {{ selectedParticipant.name }}
+              </div>
+              <div><b>E-mail:</b> {{selectedParticipant.email}}</div>
+              <!-- <fa-icon [icon]="faedit" class="m-2 fa-lg fa-solid text-primary"></fa-icon> -->
+              <div *ngIf="verifyCircle(selectedParticipant.id)"><fa-icon [icon]="faedit" class="m-2 fa-lg fa-solid text-success"  data-bs-toggle="tooltip" title="Editar (Círculo Ok)"></fa-icon></div>
+              <div *ngIf="!verifyCircle(selectedParticipant.id)"><fa-icon [icon]="faedit" class="m-2 fa-lg fa-thin text-warning"  data-bs-toggle="tooltip" title="Editar (Círculo Incompleto)"></fa-icon></div>
+              <!-- 
+                <fa-icon [icon]="facheck" class="m-2 fa-lg fa-this text-warning"  data-bs-toggle="tooltip" title="Círculo Incompleto"></fa-icon>
+                <fa-icon [icon]="faexclamation" class="m-2 fa-lg fa-solid text-danger"  data-bs-toggle="tooltip" title="Sem Círculo Definido"></fa-icon>
+              -->
+          </div>
+          <!--
+          <div class="col-1 d-flex align-items-center">
+              <button type="button" class="btn btn-secondary w-100"> 
+                  <fa-icon [icon]="faedit" class="m-2 fa-lg fa-solid text-white"></fa-icon>
+                  Editar
+              </button>                
+          </div>
+          <div class="col-1 d-flex align-items-center">
+              <button type="button" class="btn btn-danger w-100">
+                  
+                  Remover
+              </button>
+          </div>
+          -->
+        </div>
+  </div>
+
+  <!--Alfabeto-->
+  <div class="container-fluid mt-3" aria-label="alphabet">
+    <div class="row justify-content-center">
+      <button type="button" class="btn btn-default btn-default-active text-primary fw-bold px-3" #alphabetAll (click)="filter_by('*', $event)">*</button>
+    </div>
+    <div class="row justify-content-center" >
+      <div class="col-12 col-md-6 d-flex justify-content-between pr-md-2" #alphabet1>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('a', $event)">A</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('b', $event)">B</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('c', $event)">C</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('d', $event)">D</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('e', $event)">E</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('f', $event)">F</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('g', $event)">G</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('h', $event)">H</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('i', $event)">I</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('j', $event)">J</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('k', $event)">K</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('l', $event)">L</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('m', $event)">M</button>
+      </div>
+      <div class="col-12 col-md-6 d-flex justify-content-between pl-md-2" #alphabet2>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('n', $event)">N</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('o', $event)">O</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('p', $event)">P</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('q', $event)">Q</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('r', $event)">R</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('s', $event)">S</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('t', $event)">T</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('u', $event)">U</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('v', $event)">V</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('w', $event)">W</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('x', $event)">X</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('y', $event)">Y</button>
+        <button type="button" class="btn btn-default text-primary fw-bold p-1" (click)="filter_by('z', $event)">Z</button>
+      </div>
+    </div>
+  </div>
+  
+
+
+  <div class="container-fluid">
+    <form class="container-fluid border mt-3">
+      <div class="row w-100">
+        <div *ngIf="!participants?.length" class="text-primary text-center fw-bold w-100">Nenhum participante cadastrado</div>
+        <div class="col-3 d-flex align-items-center overflow-hidden text-nowrap" *ngFor="let participant of participants; let i=index">
+          <esm-user-checkbox [user]="participant" [checked]="isChecked(participant)" (addUser)="addProgramParticipant($event)" (removeUser)="removeProgramObserver($event)"></esm-user-checkbox>
+        </div>
+      </div>
+    </form>
+    <!--------------------------->
+    <hr>
+    <div class="container-fluid mt-3">
+      <div class="row">
+        <div class="col-12">
+          <button type="button" class="btn btn-outline-primary btn-block py-2" data-bs-toggle="collapse" data-bs-target="#addParticipant" aria-expanded="false" aria-controls="addParticipantCollapse">ADICIONAR PARTICIPANTES AO PROGRAMA</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--------->
+  

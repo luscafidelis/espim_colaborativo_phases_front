@@ -100,8 +100,23 @@
                 "add": "Add",
                 "list": "List"
             },
+            "experts": {
+                "experts": "Experts",
+                "add": "Add",
+                "list": "List"
+            },
             "programs": {
                 "programs": "Programs",
+                "add": "Add",
+                "list": "List"
+            },
+            "data-collecting": {
+                "data-collecting": "Data Collecting",
+                "add": "Add",
+                "list": "List"
+            },            
+            "follow-ups": {
+                "follow-ups": "Follow-ups",
                 "add": "Add",
                 "list": "List"
             },
@@ -159,6 +174,20 @@
                 "deleteMessage": "Are you sure about deleting this program?",
                 "afterDeleteTitle": "Program deleted!",
                 "afterDelete": "Program deleted with success!"
+            }
+        },
+        "publish": {
+            "add": {},
+            "list": {
+                "pageTitle": "Data Collect List",
+                "listTitle": "Data Collect List",
+                "totalNumber": "Total Data Collect",
+                "onlyActives": "Only active Data Collect",
+                "noObjects": "There are no registered Data Collecting.",
+                "deleteMessageTitle": "Deleting Data Collect.",
+                "deleteMessage": "Are you sure about deleting this Data Collect?",
+                "afterDeleteTitle": "Data Collect deleted!",
+                "afterDelete": "Data Collect deleted with success!"
             }
         },
         "observers": {

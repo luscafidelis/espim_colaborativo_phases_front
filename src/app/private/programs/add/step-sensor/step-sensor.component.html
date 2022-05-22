@@ -1,0 +1,15 @@
+<!--Evento passivo-->
+<div class="container-fluid">
+  <!--Instancia coleta por sensor-->
+  <div class="mt-4" *ngFor="let event of events; index as i">
+    <esm-event [event]="event" *ngIf="event.type === 'passive'"></esm-event>
+  </div>
+  <!------------------------------->
+</div>
+<!------------------>
+<!--Adicionar evento passivo-->
+<div class="container-fluid">
+  <div class="mt-4">
+    <esm-event></esm-event>
+  </div>
+</div>

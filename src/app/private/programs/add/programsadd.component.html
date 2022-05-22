@@ -1,3 +1,84 @@
+<div class="container-fluid ms-2 me-2" style="height: 90%; overflow: hidden;">
+  <mat-stepper [linear]="isLinear" labelPosition="bottom" style="height: 100%;" #stepper>
+
+    <mat-step [stepControl]="firstFormGroup">
+        <ng-template matStepLabel>Dados do Programa</ng-template>
+        <div class="col-12 pt-2 pb-2" style="height: 700px; overflow-y: auto; overflow-x: hidden;">
+          <!--DADOS DO PROGRAMA -->
+          <esm-step1></esm-step1>
+          <!--EDITORES
+          <esm-step2></esm-step2>
+          -->
+          <!--  <div class="col-12 bg-primary p-2 d-flex justify-content-center text-white fw-bold mt-4 m-b2">
+            Configurações do Programa
+          </div> -->
+           <!-- <app-step-configuracao></app-step-configuracao> -->
+          <!-- <app-discussion-groups></app-discussion-groups> -->
+        </div>
+        <div class="col-12 d-flex justify-content-end mt-3">
+          <button type="button" class="btn btn btn-success btn-block py-2" mat-button matStepperNext>
+            PROSSEGUIR
+            <fa-icon class="text-white" [icon]="arrowRight"></fa-icon>
+          </button>
+        </div>
+    </mat-step>
+
+ 
+    <mat-step [stepControl]="thirdFormGroup">
+      <ng-template matStepLabel>Intervenções Programadas</ng-template>
+      <div class="col-12 pt-2 pb-2" style="height: 700px; overflow-y: auto;">
+        <app-step-intervention></app-step-intervention>
+      </div>
+      <div class="col-12 d-flex justify-content-between mt-3">
+        <button type="button" class="btn btn btn-success btn-block py-2" mat-button matStepperPrevious>
+          <fa-icon class="text-white" [icon]="arrowLeft"></fa-icon>
+          RETORNAR
+        </button>
+        <button type="button" class="btn btn btn-success btn-block py-2" mat-button matStepperNext>
+          PROSSEGUIR
+          <fa-icon class="text-white" [icon]="arrowRight"></fa-icon>
+        </button>
+      </div>
+    </mat-step>
+
+    <mat-step [stepControl]="fourthFormGroup">
+      <ng-template matStepLabel>Coletas por Sensores</ng-template>
+      <div class="col-12 pt-2 pb-2" style="height: 700px; overflow-y: auto;">
+        <app-step-sensor></app-step-sensor>
+      </div>
+      <div class="col-12 d-flex justify-content-between mt-3">
+        <button type="button" class="btn btn btn-success btn-block py-2" mat-button matStepperPrevious>
+          <fa-icon class="text-white" [icon]="arrowLeft"></fa-icon>
+          RETORNAR
+        </button>
+        <button type="button" class="btn btn btn-success btn-block py-2" mat-button matStepperNext>
+          PROSSEGUIR
+          <fa-icon class="text-white" [icon]="arrowRight"></fa-icon>
+        </button>
+      </div>
+    </mat-step>
+
+    <mat-step [stepControl]="fifthFormGroup">
+      <ng-template matStepLabel>Publicações</ng-template>
+      <div class="col-12 pt-2 pb-2" style="height: 700px; overflow-y: auto;">
+        <app-step-publish></app-step-publish>
+      </div>
+      <div class="col-12 d-flex justify-content-between mt-3">
+        <button type="button" class="btn btn btn-success btn-block py-2" mat-button matStepperPrevious>
+          <fa-icon class="text-white" [icon]="arrowLeft"></fa-icon>
+          RETORNAR
+        </button>
+        <button type="button" class="btn btn btn-success btn-block py-2">
+          FINALIZAR
+          <fa-icon class="text-white" [icon]="fileImport"></fa-icon>
+        </button>
+      </div>
+    </mat-step>
+
+  </mat-stepper>
+</div>
+
+<!--
 <div class="container-fluid">
   <div class="row">
     <div class="col-2">
@@ -23,3 +104,4 @@
     </div>
   </div>
 </div>
+-->

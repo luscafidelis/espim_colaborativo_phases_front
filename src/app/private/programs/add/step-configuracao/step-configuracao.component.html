@@ -1,0 +1,33 @@
+<div class="container-fluid w-90">
+    <!--Recursos Adicionais que farão parte do programa-->
+    <div class="col-12 mt-3 ms-2 me-2 fw-bold">
+      Recursos que serão utilizados pelo progama: 
+    </div>
+    <div *ngFor=" let resource of programAdditionalResources; index as i" class="col-10 ms-4 me-2">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" [(ngModel)]="programAdditionalResources[i].toUse" (change)="saveResource(resource.id)" id="flexCheckDefault">
+        <label class="form-check-label" for="flexCheckDefault">
+        {{getResourceName(resource.id)}}
+        </label>
+      </div>
+    </div>
+  
+  
+    <!--Grupos de Discussão @@@
+    <div class="col-12 mt-3 ms-2 me-2">
+      <button type="button" class="btn btn-secondary btn-block w-100" (click)="openGroups()" >Grupos de Discussão</button>
+    </div>
+    <div class="col-12 border border-secondary ms-2 me-2 mt-2 mb-3"> #### [ngbCollapse]="isOpenGroups" @@@
+      <app-discussion-groups></app-discussion-groups>
+    </div>
+  
+  
+    #### Botões de Comunicação @@@
+    <div class="col-12 mt-3 ms-2 me-2">
+      <button type="button" class="btn btn-secondary btn-block w-100" (click)="openButtons()" >Botões de Alerta e de Notificações</button>
+    </div>
+    <div class="container-fluid border border-secondary ms-2 me-2 mt-2"> #### [ngbCollapse]="isOpenButtons" @@@
+       <app-comunicate-buttons></app-comunicate-buttons>
+    </div>
+    -->
+</div>

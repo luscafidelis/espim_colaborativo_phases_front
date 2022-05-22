@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { Program } from '../models/program.model';
+import { ESPIM_REST_Programs } from 'src/app/app.api';
 
 @Injectable()
 export class DAOService {
@@ -43,6 +45,12 @@ export class DAOService {
     //O objeto no getNew deve estar de acordo com o objeto no backend referente ao model que está sendo acessado..
     getNewObject(urlObject: string, object: any) {
         return this.http.post(urlObject + '1/get_new/', object);
+    }
+
+    //
+    createProgramVersion(program: Program){
+        console.log(program)
+        return this.http.post(ESPIM_REST_Programs + program.id.toString()  + '/create_version/', {program : program.id});
     }
 
 }

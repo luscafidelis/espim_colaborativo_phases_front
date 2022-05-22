@@ -13,11 +13,11 @@
       </div>
     </div>
     <!--Lista-->
-    <div class="row pl-0 mt-2 border" *ngFor="let program of programs; let i = index">
+    <div class="row pl-0 mt-2 border border-success" *ngFor="let program of programs; let i = index">
       <!-- Item 1 -->
-      <div class="col-12 bg-secondary text-white d-flex justify-content-between align-content-center p-2">
+      <div class="col-12 d-flex justify-content-between align-items-center p-1">
         <!-- Titulo do programa -->
-        <span class="fw-bold w-100" [class.pointer]="!program.beingDuplicated" (click)="goToProgram(program)">{{i + 1}}. {{program.title}}</span>
+        <span class="fw-bold w-100 d-flex align-items-center" [class.pointer]="!program.beingDuplicated" (click)="goToProgram(program)">{{program.id}}. {{program.title}}</span>
         <!------------------>
         <!-- Ícones -->
         <div class="d-flex align-items-center mx-3">
@@ -35,38 +35,43 @@
              }"
              *ngIf="!program.isPublic"></fa-icon>
           -->
+          <fa-icon [icon]="edit" class="m-2 fa-lg"
+             [ngClass]="{
+              'text-primary': !program.beingDuplicated,
+              'pointer': !program.beingDuplicated
+             }"
+             (click)="this.goToProgram(program)"
+             data-bs-toggle="tooltip"
+             title="Editar Programa"></fa-icon>
           <fa-icon [icon]="clone" class="m-2 fa-lg solid"
              [ngClass]="{
               'fa-clone': !program.beingDuplicated,
-              'text-white': !program.beingDuplicated,
+              'text-secondary': !program.beingDuplicated,
               'pointer': !program.beingDuplicated,
               'fa-spinner': program.beingDuplicated,
               'fa-spin': program.beingDuplicated
              }"
-             (click)="duplicateProgram(program)"></fa-icon>
-          <fa-icon [icon]="edit" class="m-2 fa-lg"
-             [ngClass]="{
-              'text-white': !program.beingDuplicated,
-              'pointer': !program.beingDuplicated
-             }"
-             (click)="this.goToProgram(program)"></fa-icon>
+             (click)="duplicateProgram(program)"
+             (click)="this.goToProgram(program)"
+             data-bs-toggle="tooltip"
+             title="Duplicar Programa (criar uma cópia)">
+             </fa-icon>
           <fa-icon [icon]="trash" class="m-2 fa-lg"
              [ngClass]="{
               'text-danger': !program.beingDuplicated,
               'pointer': !program.beingDuplicated
              }"
-             (click)="deleteProgram(program)"></fa-icon>
+             (click)="deleteProgram(program)"
+             data-bs-toggle="tooltip"
+             title="Deletar o Programa"></fa-icon>
         </div>
         <!------------>
       </div>
+      <div *ngIf = "program.versions.length > 0" class="col-12 d-flex justify-content-center ps-4 pe-4 fw-bold"> Versões para Coletas de Dados</div>
+      <div *ngFor = "let version of program.versions " class="col-12 ps-4 pe-4"> Versão : {{version.version}} - Criada : {{version.createDateTime}} </div>
       <!--
-      <div class="col-12 d-flex justify-content-center ps-4 pe-4 fw-bold"> Versões para Coletas de Dados</div>
-      <div class="col-12 ps-4 pe-4"> Versão 1 - Criada em 10/10/2022</div>
-      <div class="col-12 ps-4 pe-4"> Versão 2 - Criada em 10/10/2022</div>
-      <div class="col-12 ps-4 pe-4"> Versão 3 - Criada em 10/10/2022</div> 
+      <div class="col-12 p-4 d-flex justify-content-center"> <button type="button" class="btn btn-secondary" (click)="createNewVersion(program)">Criar uma nova versão para coleta de dados</button></div>
       -->
-      <div class="col-12 p-4 d-flex justify-content-center"> <button type="button" class="btn btn-light">Criar uma nova versão para coleta de dados</button></div>
-      
 
       <!------------>
     </div>
@@ -77,19 +82,12 @@
         </li>
       </ul>
     </div>
-    <span>
-      <swal #swalDeleteProgram title="{{'private.programs.list.deleteMessageTitle'|translate}}"
-        text="{{'private.programs.list.deleteMessage'|translate}}" type="question" [showCancelButton]="true"
-        [focusCancel]="true" (confirm)="onConfirmDeleteProgram($event)">
-      </swal>
-      <swal #swalAfterDelete title="{{'private.programs.list.afterDeleteTitle'|translate}}"
-        text="{{'private.programs.list.afterDelete'|translate}}" type="success"
-        [focusCancel]="true">
-      </swal>
-    </span>
     <esm-pagination [pagination]="pagination" (next)="onNext($event)"></esm-pagination>
   </section>
 </main>
 
 <!-- Loading screen -->
 <div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="position: absolute; top:0; z-index: 1; height: 100%; width: 100%; background-color: rgba(255, 255, 255, 0.5)"><i class="fa fa-spinner fa-spin fa-3x"></i></div>
+<ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "white" type = "ball-clip-rotate-pulse" [fullScreen] = "true">
+  <p style="color: white" > Inicializando componentes... </p>
+</ngx-spinner>

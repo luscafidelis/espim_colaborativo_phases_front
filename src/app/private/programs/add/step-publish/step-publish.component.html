@@ -1,0 +1,12 @@
+<div class="container-fluid">
+    <div class="col-12 d-flex justify-content-center fw-bold"> DADOS DO PROGRAMA</div>
+    <div class="col-12 mt-3">Título: {{program.title}} </div>
+    <div class="col-12 mt-3">Descrição: {{program.description}} </div>
+    <div class="col-12 mt-3">Editores: </div>
+    <div *ngFor="let observer of program.observers" class="col-12">{{observer.name}}</div>
+    <div class="col-12 mt-3">Eventos: </div>
+    <div *ngFor="let event of program.events" class="col-12">{{event.description}}</div>
+    <div class="col-12 p-4 d-flex justify-content-center"> <button type="button" class="btn btn-secondary" (click)="createNewVersion()">Criar uma nova versão para coleta de dados</button></div>
+    <div class="col-12 mt-3">Versões: </div>
+    <div *ngFor = "let version of program.versions " class="col-12"> Versão : {{version.version}} - Criada : {{version.createDateTime | date : 'dd/MM/yyyy HH:mm'}} </div>
+</div>

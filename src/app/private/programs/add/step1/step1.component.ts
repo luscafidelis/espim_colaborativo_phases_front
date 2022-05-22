@@ -6,7 +6,8 @@ import { Program, ProgramAdditionalResource } from '../../../models/program.mode
 import { Router } from '@angular/router';
 import { SubSink } from 'subsink';
 import { NgbCalendar, NgbDateAdapter, NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
-import { faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+
 
 
 @Component({
@@ -15,10 +16,6 @@ import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 })
 export class Step1Component implements OnInit, OnDestroy {
   @ViewChild('e', {static: false}) endDateComponent!: Query;
-
-  isOpenButtons : boolean = true;
-  programAdditionalResources : ProgramAdditionalResource[] = [];
-  isOpenGroups : boolean = true;
 
   setBeginDate(e: NgbDateStruct) {
     this.programInformationForm.value.beginDate = this.dateConverterService.toString(e);
@@ -32,6 +29,8 @@ export class Step1Component implements OnInit, OnDestroy {
   
   //datepicker
   calendar = faCalendar;
+  arrowRight = faArrowRight;
+  arrowLeft = faArrowLeft;
     
   subSink = new SubSink();
   
@@ -69,8 +68,6 @@ export class Step1Component implements OnInit, OnDestroy {
     if (!program)
       return;
 
-    this.programAdditionalResources = program.programAdditionalResource
-
     const utcStarts = Number.parseInt(program.starts);
     const utcEnds = Number.parseInt(program.ends);
 
@@ -103,7 +100,7 @@ export class Step1Component implements OnInit, OnDestroy {
     /**
      * Subscribes to changes in the program (whenever the program in programsadd.service.ts is changed, it reflects here too)
      */
-    this.subSink.sink = this.programAddService.getProgramObservable().subscribe((programInstance: Program) => this.setProgram(programInstance));
+    this.programAddService.getProgramObservable().subscribe((programInstance: Program) => this.setProgram(programInstance));
   }
 
   //Atualiza os campos no banco quando são alterados
@@ -139,27 +136,6 @@ export class Step1Component implements OnInit, OnDestroy {
     }
   }
 
-  openButtons(){
-    this.isOpenButtons = !this.isOpenButtons;
-  }
-
-  openGroups(){
-    this.isOpenGroups = !this.isOpenGroups;
-  }
-
-  saveResource(i : number){
-
-  }
-
-  getResourceName(loc_id: number){
-    let volta : string = 'Sem nome';
-    for (let pos = 0; pos < this.programAddService.additionalResource.length; pos++ ){
-      if (this.programAddService.additionalResource[pos].id == loc_id) {
-        return this.programAddService.additionalResource[pos].title;
-      }
-    }
-    return volta;
-  }
 }
 
 export interface corpo_program{

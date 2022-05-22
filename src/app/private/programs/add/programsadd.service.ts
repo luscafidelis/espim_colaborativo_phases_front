@@ -15,7 +15,6 @@ import { ActiveEvent, Event } from '../../models/event.model';
 import { Trigger } from '../../models/trigger.model';
 import { Sensor } from '../../models/sensor.model';
 import { forkJoin } from 'rxjs';
-import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { ChannelService } from '../../channel_socket/socket.service';
 import Swal from 'sweetalert2';
 
@@ -52,10 +51,11 @@ export class ProgramsAddService {
 
   constructor(private daoService: DAOService, private loginService: LoginService, private canal : ChannelService) { 
     this.daoService.getNewObject(ESPIM_REST_AdditionalResource, {id : 0}).subscribe((data : any ) => {this.additionalResource = data });
-   }
+  }
 
   //--- Inicialização do programa na classe do service....
   setProgram(programId: number) {
+
     //Nesta linha o service irá escutar o websocket..
     this.canal.getData$.subscribe( data => this.updateProgram(data));
     //Conecta na sala que irá escutar...
@@ -67,7 +67,7 @@ export class ProgramsAddService {
         { 
           console.log(data);
           this.program = new Program(data);
-          console.log(this.program);
+          //console.log(this.program);
           this.programObservable$.next(this.program);
         }
       );
@@ -84,8 +84,7 @@ export class ProgramsAddService {
         this.program.editor = this.editor;
         //Cria um novo programa
         this.daoService.postObject(ESPIM_REST_Programs, this.program).subscribe((program : any) => {
-          this.program = program;
-          console.log(this.program);
+          this.program = new Program(program);
           this.programObservable$.next(this.program); 
         });
       })

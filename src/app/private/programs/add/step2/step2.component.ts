@@ -9,6 +9,7 @@ import {DAOService} from '../../../dao/dao.service';
 import {Program} from '../../../models/program.model';
 import { SubSink } from 'subsink';
 import Swal from 'sweetalert2';
+import {faSearch} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'esm-step2',
@@ -17,7 +18,7 @@ import Swal from 'sweetalert2';
 export class Step2Component implements OnInit, OnDestroy {
 
   subSynk = new SubSink();
-
+  fa_search = faSearch;
   observers!: Observer[]; // These are the general observers
   programObservers!: Observer[]; // These are the observers of this program
 
@@ -116,6 +117,7 @@ export class Step2Component implements OnInit, OnDestroy {
    * @param letter
    * @param event
    */
+  
   filter_by(letter: string, event: any) {
     if (letter === '*') {
       this.observers = this.programAddService.getObservers();
@@ -138,7 +140,7 @@ export class Step2Component implements OnInit, OnDestroy {
         this.observers.sort((first: Observer, second: Observer) => first.name.localeCompare(second.name));
       }
   }
-
+  
   /**
    * Handles searching observers by the alphabet
    * @param event

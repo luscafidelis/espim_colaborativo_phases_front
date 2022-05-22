@@ -1,0 +1,93 @@
+<div class="container-fluid ms-2 me-2" style="height: 90%; overflow: hidden;">
+    <mat-stepper [linear]="isLinear" labelPosition="bottom" style="height: 100%;" #stepper>
+  
+      <mat-step [stepControl]="firstFormGroup">
+          <ng-template matStepLabel>Dados Iniciais</ng-template>
+          <div class="col-12 pt-2 pb-2" style="height: 700px; overflow-y: auto; overflow-x: hidden;">
+            <app-publish-data></app-publish-data>
+            <div class="col-12 bg-primary p-2 d-flex justify-content-center text-white fw-bold mt-4 m-b2">
+              Configurações do Programa
+            </div>
+            <!-- <app-step-configuracao></app-step-configuracao>
+            <app-discussion-groups></app-discussion-groups> -->
+          </div>
+          <div class="col-12 d-flex justify-content-end mt-3">
+            <button type="button" class="btn btn btn-success btn-block py-2" mat-button matStepperNext>
+              PROSSEGUIR
+              <fa-icon class="text-white" [icon]="arrowRight"></fa-icon>
+            </button>
+          </div>
+      </mat-step>
+  
+      <mat-step [stepControl]="secondFormGroup" label="Fill out your address">
+        <ng-template matStepLabel>Especialistas</ng-template>
+        <div class="col-12 pt-2 pb-2" style="height: 700px; overflow-y: auto;">
+          <app-publish-experts></app-publish-experts>
+        </div>
+        <div class="col-12 d-flex justify-content-between mt-3">
+          <button type="button" class="btn btn btn-success btn-block py-2" mat-button matStepperPrevious>
+            <fa-icon class="text-white" [icon]="arrowLeft"></fa-icon>
+            RETORNAR
+          </button>
+          <button type="button" class="btn btn btn-success btn-block py-2" mat-button matStepperNext>
+            PROSSEGUIR
+            <fa-icon class="text-white" [icon]="arrowRight"></fa-icon>
+          </button>
+        </div>
+      </mat-step>
+  
+      <mat-step [stepControl]="fifthFormGroup">
+        <ng-template matStepLabel>Fases</ng-template>
+        <div class="col-12 pt-2 pb-2" style="height: 700px; overflow-y: auto;">
+          <app-publish-phases></app-publish-phases>
+        </div>
+        <div class="col-12 d-flex justify-content-between mt-3">
+          <button type="button" class="btn btn btn-success btn-block py-2" mat-button matStepperPrevious>
+            <fa-icon class="text-white" [icon]="arrowLeft"></fa-icon>
+            RETORNAR
+          </button>
+          <button type="button" class="btn btn btn-success btn-block py-2" mat-button matStepperNext>
+            PROSSEGUIR
+            <fa-icon class="text-white" [icon]="arrowRight"></fa-icon>
+          </button>
+        </div>
+      </mat-step>
+
+      <mat-step [stepControl]="sixthFormGroup">
+        <ng-template matStepLabel>Participantes</ng-template>
+        <div class="col-12 pt-2 pb-2" style="height: 700px; overflow-y: auto;">
+          <app-publish-participants></app-publish-participants>
+        </div>
+        <div class="col-12 d-flex justify-content-between mt-3">
+          <button type="button" class="btn btn btn-success btn-block py-2" mat-button matStepperPrevious>
+            <fa-icon class="text-white" [icon]="arrowLeft"></fa-icon>
+            RETORNAR
+          </button>
+          <button type="button" class="btn btn btn-success btn-block py-2" mat-button matStepperNext>
+            PROSSEGUIR
+            <fa-icon class="text-white" [icon]="arrowRight"></fa-icon>
+          </button>
+        </div>
+      </mat-step>
+
+
+      <mat-step [stepControl]="sixthFormGroup">
+        <ng-template matStepLabel>Publicar</ng-template>
+        <div class="col-12 pt-2 pb-2" style="height: 700px; overflow-y: auto;">
+          <app-step-sensor></app-step-sensor>
+        </div>
+        <div class="col-12 d-flex justify-content-between mt-3">
+          <button type="button" class="btn btn btn-success btn-block py-2" mat-button matStepperPrevious>
+            <fa-icon class="text-white" [icon]="arrowLeft"></fa-icon>
+            RETORNAR
+          </button>
+          <button type="button" class="btn btn btn-success btn-block py-2" mat-button matStepperNext>
+            PROSSEGUIR
+            <fa-icon class="text-white" [icon]="arrowRight"></fa-icon>
+          </button>
+        </div>
+      </mat-step>
+  
+  
+    </mat-stepper>
+  </div>

@@ -100,8 +100,23 @@
                 "add": "Adicionar",
                 "list": "Listar"
             },
+            "experts": {
+                "experts": "Especialistas",
+                "add": "Adicionar",
+                "list": "Listar"
+            },
             "programs": {
                 "programs": "Programas",
+                "add": "Adicionar",
+                "list": "Listar"
+            },
+            "data-collecting": {
+                "data-collecting": "Coletas de Dados",
+                "add": "Add",
+                "list": "List"
+            },    
+            "follow-ups": {
+                "follow-ups": "Acompanhamentos",
                 "add": "Adicionar",
                 "list": "Listar"
             },
@@ -161,6 +176,21 @@
                 "afterDelete": "Programa excluído com sucesso!"
             }
         },
+        "publish": {
+            "add": {},
+            "list": {
+                "pageTitle": "Lista de Coletas de Dados",
+                "listTitle": "Lista de Coletas de Dados",
+                "totalNumber": "Total de Coletas de Dados",
+                "onlyActives": "Somente Coletas de Dados Ativas",
+                "noObjects": "Não existe nenhuma Coleta de Dados registrada",
+                "deleteMessageTitle": "Excluindo Coleta de Dados",
+                "deleteMessage": "Você tem certeza que deseja Excluir a Coleta de Dados",
+                "afterDeleteTitle": "Coleta de Dados Excluída!",
+                "afterDelete": "Coleta de Dados Excluída com Sucesso!"
+            }
+        },
+
         "observers": {
             "name": "Nome",
             "namePlaceholder": "Qual é o seu nome?",

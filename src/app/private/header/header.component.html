@@ -53,6 +53,7 @@
     
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="collapse navbar-collapse navbar-nav justify-content-xl-start align-items-center">
+        
         <li class="nav-item dropdown py-3 w-100 w-xl-px-200">
           <a class="nav-link dropdown-toggle text-white text-center" id="menuParticipants" role="button" data-bs-toggle="dropdown" aria-expanded="false"
             translate>private.header.participants.participants</a>
@@ -61,14 +62,46 @@
             <li><a class="dropdown-item" routerLink="participants/list" translate>private.header.participants.list</a></li>
           </ul>
         </li>
+
+        <li class="nav-item dropdown py-3 w-100 w-xl-px-200">
+          <a class="nav-link dropdown-toggle text-white text-center" id="menuParticipants" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+            translate>private.header.experts.experts</a>
+          <ul class="dropdown-menu  w-xl-px-200 text-center py-0 py-xl-2" aria-labelledby="menuParticipants">
+            <li><a class="dropdown-item" routerLink="participants/add" translate>private.header.experts.add</a></li>
+            <li><a class="dropdown-item" routerLink="participants/list" translate>private.header.experts.list</a></li>
+          </ul>
+        </li>
+
+
         <li class="nav-item dropdown py-3 w-100 w-xl-px-200">
           <a class="nav-link dropdown-toggle text-white text-center"  id="menuPrograms" role="button" data-bs-toggle="dropdown" aria-expanded="false"
             translate>private.header.programs.programs</a>
           <ul class="dropdown-menu w-xl-px-200 text-center py-0 py-xl-2" aria-labelledby="menuPrograms">
-            <li><a class="dropdown-item" [routerLink]="['programs/add', -1, 'first']" [queryParams]="{reset: true}" translate>private.header.programs.add</a></li>
+            <li><a class="dropdown-item" (click)="goProgram(-1)" translate>private.header.programs.add</a></li>
             <li><a class="dropdown-item" routerLink="programs/list" translate>private.header.programs.list</a></li>
           </ul>
         </li>
+
+        <li class="nav-item dropdown py-3 w-100 w-xl-px-200">
+          <a class="nav-link dropdown-toggle text-white text-center"  id="menuPrograms" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+            translate>private.header.data-collecting.data-collecting</a>
+          <ul class="dropdown-menu w-xl-px-200 text-center py-0 py-xl-2" aria-labelledby="menuPrograms">
+            <li><a class="dropdown-item" (click)="goPublish(-1)" translate>private.header.data-collecting.add</a></li>
+            <li><a class="dropdown-item" routerLink="publish/list" translate>private.header.data-collecting.list</a></li>
+          </ul>
+        </li>    
+
+
+        <li class="nav-item dropdown py-3 w-100 w-xl-px-200">
+          <a class="nav-link dropdown-toggle text-white text-center"  id="menuPrograms" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+            translate>private.header.follow-ups.follow-ups</a>
+          <ul class="dropdown-menu w-xl-px-200 text-center py-0 py-xl-2" aria-labelledby="menuPrograms">
+            <!--<li><a class="dropdown-item" (click)="goPublish(-1)" translate>private.header.follow-ups.add</a></li>-->
+            <li><a class="dropdown-item" routerLink="follow-up/list" translate>private.header.follow-ups.list</a></li>
+          </ul>
+        </li>    
+        
+        
         <li class="nav-item dropdown py-3 w-100 w-xl-px-200">
           <a class="nav-link dropdown-toggle text-white text-center" id="menuResults" role="button" data-bs-toggle="dropdown" aria-expanded="false"
             translate>private.header.results.results</a>
@@ -76,6 +109,7 @@
             <li><a [routerLink]="['results/list']" class="dropdown-item" translate>private.header.results.list</a></li>
           </ul>
         </li>
+
       </ul>
     </div>
 
@@ -116,3 +150,6 @@
     </div>
   </nav>
 </header>
+<ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "white" type = "ball-clip-rotate-pulse" [fullScreen] = "true">
+  <p style="color: white" > Inicializando componentes... </p>
+</ngx-spinner>

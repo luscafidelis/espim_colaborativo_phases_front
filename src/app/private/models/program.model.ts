@@ -3,6 +3,7 @@ import { Participant } from './participant.model';
 import { ActiveEvent, Event } from './event.model';
 import { ChatMessage } from './chat.message.model';
 import { CircleType } from './circle.model';
+import { PhasePublicade } from './phase.publicade.model';
 
 export class  Program {
   public id: number;
@@ -17,6 +18,8 @@ export class  Program {
   public beingDuplicated: boolean;
   public messageAndGroups! : MessageAndGroups;
   public programAdditionalResource : ProgramAdditionalResource[] = [];
+  public versions : any [] = [];
+ 
 
   // composed entities
   public editor: Observer;
@@ -24,8 +27,13 @@ export class  Program {
   public participants!: Participant[];
   public events!: Event[];
   public chat_program!: ChatMessage[];
+  //Retirar
+  public phaseCollections : PhasePublicade[]=[];
   
   constructor(program: any = {}) {
+    //retirar
+    this.phaseCollections = [];
+    
     this.id = program.id || -1;
     this.title = program.title;
     this.description = program.description;
@@ -81,6 +89,11 @@ export class  Program {
       this.programAdditionalResource = program.programAdditionalResource;
     } else {
       this.programAdditionalResource = [];
+    }
+    if (program.versions){
+      this.versions = program.versions;
+    } else {
+      this.versions = [];
     }
   }
 

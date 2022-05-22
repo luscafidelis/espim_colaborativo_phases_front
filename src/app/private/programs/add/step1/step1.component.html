@@ -1,6 +1,6 @@
 <!--Forms-->
-<form class="container-fluid px-xl-5" [formGroup]='programInformationForm'>
-  <h4>Informações do Programa</h4>
+<form class="container-fluid w-90" [formGroup]='programInformationForm'>
+  <!-- <h4>Informações do Programa</h4> -->
   <!--Nome do programa-->
   <div class="form-row form-group">
     <div class="col">
@@ -22,10 +22,45 @@
     <input type="checkbox" name="program-checkbox" id="program-checkbox" formControlName="isPublic" (change)="updateField('isPublic')">
     <label for="program-checkbox">Programa público</label>
   </div>
-  <!----------------------------->
-  <!--Data de início/Hora de início-->
+</form>
+
+<div class="col-12 d-flex justify-content-center fw-bold mt-3">Definições do Programa</div>
+
+<div class="container-fluid mt-3">
+  <ul class="nav nav-pills" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#editores" role="tab" aria-controls="home" aria-selected="true">Editores</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#recursos" role="tab" aria-controls="profile" aria-selected="false">Recursos Adicionais</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#botoes" role="tab" aria-controls="contact" aria-selected="false">Botões de Alerta</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane active border border-primary" id="editores" role="tabpanel" aria-labelledby="home-tab">
+      <esm-step2></esm-step2>
+    </div>
+    <div class="tab-pane  border border-primary" id="recursos" role="tabpanel" aria-labelledby="profile-tab">
+      <app-step-configuracao></app-step-configuracao>
+      <app-discussion-groups></app-discussion-groups>
+    </div>
+    <div class="tab-pane  border border-primary" id="botoes" role="tabpanel" aria-labelledby="contact-tab">
+      <app-comunicate-buttons></app-comunicate-buttons>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  <!-- Código para leitura das datas substituir ### por abre comentário e  @@@ por fecha comentários em html...
+###--------------------------@@@
+###-Data de início/Hora de início@@@
   <div class="form-row form-group d-flex align-items-bottom mt-3">
-    <!--Data de Início-->
+  ###-Data de Início@@@
     <div class="col-3">
       <label><h5>Data e hora de início<b class="text-danger">*</b>:</h5></label>
       <div class="input-group form-group">
@@ -33,17 +68,17 @@
         <button class="btn btn-secondary" (click)="beginDate.toggle()" type="button"><fa-icon class="text-white" [icon]="calendar"></fa-icon></button>
       </div>
     </div>
-    <!------------------>
-    <!--Hora de início-->
+  ###---------------@@@
+  ###-Hora de início@@@
     <div class="col">
       <ngb-timepicker formControlName="beginTime" [minuteStep]="30" (ngModelChange)="updateField('starts')"></ngb-timepicker>
     </div>
-    <!------------------>
+  ###---------------@@@
   </div>
-  <!--------------------------------->
-  <!--Data de fim/Hora de fim-->
+###------------------------------@@@
+###-Data de fim/Hora de fim@@@
   <div class="form-row form-group d-flex align-items-bottom  mt-3">
-    <!--Data de fim-->
+  ###-Data de fim@@@
     <div class="col-3">
       <label><h5>Data e hora de fim</h5></label>
       <div class="input-group form-group">
@@ -51,50 +86,22 @@
         <button (click)="endDate.toggle()" class="btn btn-secondary" type="button"><fa-icon class="text-white" [icon]="calendar"></fa-icon></button>
       </div>
     </div>
-    <!--------------->
-    <!--Hora de fim-->
+  ###------------@@@
+  ###-Hora de fim@@@
     <div class="col">
       <ngb-timepicker formControlName="endTime" (ngModelChange)="updateField('ends')" [minuteStep]="30"></ngb-timepicker>
     </div>
-    <!--------------->
+  ###------------@@@
   </div>
-  <!--------------------------->
+###------------------------@@@
   <small class="text-danger">* Campo obrigatório</small>
   <hr>
-</form>
-<div class="container-fluid">
-  <!--Recursos Adicionais que farão parte do programa-->
-  <div class="col-12 mt-3 ms-2 me-2 bg-primary text-white fw-bold d-flex justify-content-center">
-    Recursos Adicionais do Progama
-  </div>
-  <div *ngFor=" let resource of programAdditionalResources; index as i" class="col-12 ms-2">
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" [(ngModel)]="programAdditionalResources[i].toUse" (change)="saveResource(resource.id)" id="flexCheckDefault">
-      <label class="form-check-label fw-bold" for="flexCheckDefault">
-      {{getResourceName(resource.id)}}
-      </label>
-    </div>
-  </div>
+-->
 
 
-  <!--Grupos de Discussão-->
-  <div class="col-12 mt-3 ms-2 me-2">
-    <button type="button" class="btn btn-secondary btn-block w-100" (click)="openGroups()" >Grupos de Discussão</button>
-  </div>
-  <div class="col-12 border border-secondary ms-2 me-2 mt-2 mb-3" [ngbCollapse]="isOpenGroups">
-    <app-discussion-groups></app-discussion-groups>
-  </div>
 
+ <!--
 
-  <!--Botões de Comunicação-->
-  <div class="col-12 mt-3 ms-2 me-2">
-    <button type="button" class="btn btn-secondary btn-block w-100" (click)="openButtons()" >Botões de Alerta e de Notificações</button>
-  </div>
-  <div class="container-fluid border border-secondary ms-2 me-2 mt-2" [ngbCollapse]="isOpenButtons">
-     <app-comunicate-buttons></app-comunicate-buttons>
-  </div>
-
-  
   <hr>
   <div class="container-fluid p-0 mb-3 mt-2">
     <div class="row">
@@ -107,4 +114,6 @@
     </div>
   </div>
 </div>
-<!--------->
+
+-->
+

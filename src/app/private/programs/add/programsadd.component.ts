@@ -7,7 +7,8 @@ import { Program } from '../../models/program.model';
 import {LoginService} from '../../../security/login/login.service';
 import { ChannelService } from '../../channel_socket/socket.service';
 import { SubSink } from 'subsink';
-
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {faArrowRight, faArrowLeft,faFileImport } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'esm-programsadd',
@@ -15,24 +16,56 @@ import { SubSink } from 'subsink';
 })
 export class ProgramsAddComponent implements OnInit, OnDestroy {
 
-  subSink = new SubSink();
+  firstFormGroup! : FormGroup;
+  secondFormGroup! : FormGroup;
+  thirdFormGroup! : FormGroup;
+  fourthFormGroup! : FormGroup;
+  fifthFormGroup! : FormGroup;
+  sixthFormGroup! : FormGroup;
+
+  isLinear : boolean = false;
+
+  arrowRight = faArrowRight;
+  arrowLeft = faArrowLeft;
+  fileImport = faFileImport;
+
   id!: number;
   editor : number=0;
 
-  constructor(private programsService: ProgramsAddService, private dao: DAOService, private activatedRoute: ActivatedRoute, private loginService: LoginService, private canal : ChannelService) { }
+  constructor(private _formBuilder: FormBuilder, private programsService: ProgramsAddService, private dao: DAOService, private activatedRoute: ActivatedRoute, private loginService: LoginService, private canal : ChannelService) { }
 
   ngOnInit() {
     // Subscribes to route changes
-    this.subSink.sink = this.activatedRoute.paramMap.subscribe(paramMap => {
+    //this.subSink.sink = this.activatedRoute.paramMap.subscribe(paramMap => {
       // Gets the id in the url
-      this.id = Number.parseInt(paramMap.get('id') || '-1');
+      //this.id = Number.parseInt(paramMap.get('id') || '-1');
       //if (this.id !== -1 && this.id === this.programsService.program.id){
       //  return;
       //}
-      this.programsService.setProgram(this.id);
-      if (this.id !== -1){
-          this.ligaEditor();
-      }
+      //this.programsService.setProgram(this.id);
+      //if (this.id !== -1){
+      //this.ligaEditor();
+      //}
+    //});
+    this.id = this.programsService.program.id;
+    this.ligaEditor();
+    this.firstFormGroup = this._formBuilder.group({
+      firstCtrl: ['', Validators.required],
+    });
+    this.secondFormGroup = this._formBuilder.group({
+      secondCtrl: ['', Validators.required],
+    });
+    this.thirdFormGroup = this._formBuilder.group({
+      thirdCtrl: ['', Validators.required],
+    });
+    this.fourthFormGroup = this._formBuilder.group({
+      fourthCtrl: ['', Validators.required],
+    });
+    this.fifthFormGroup = this._formBuilder.group({
+      fifthCtrl: ['', Validators.required],
+    });
+    this.sixthFormGroup = this._formBuilder.group({
+      sixtthCtrl: ['', Validators.required],
     });
   }
 
@@ -44,7 +77,6 @@ export class ProgramsAddComponent implements OnInit, OnDestroy {
   ngOnDestroy(){
     this.desligaEditor();
     this.programsService.program = new Program();
-    this.subSink.unsubscribe();
   }
 
   //Método para informar que está editando o programa
@@ -53,9 +85,9 @@ export class ProgramsAddComponent implements OnInit, OnDestroy {
     let volta : any;
     volta = {model : 'editor', program : this.id, addEditor : locEmail};
     console.log("programa", this.id);
-    this.subSink.sink = this.dao.postObject(ESPIM_REST_Editores,{program : this.id, email : locEmail}).subscribe((data:any) => {this.editor = data.id;
-                                                                                                                                this.canal.sendMessage(volta);
-                                                                                                                                });
+    this.dao.postObject(ESPIM_REST_Editores,{program : this.id, email : locEmail}).subscribe((data:any) => { this.editor = data.id;
+                                                                                                             this.canal.sendMessage(volta);
+                                                                                                            });
   }
 
   //Método para informar que parou de editar o programa
