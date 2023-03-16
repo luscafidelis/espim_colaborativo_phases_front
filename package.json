@@ -46,6 +46,7 @@
     "moment": "^2.29.1",
     "ngx-social-login": "^6.0.1",
     "ngx-spinner": "^13.1.1",
+    "nvm": "^0.0.4",
     "path": "^0.12.7",
     "popper.js": "^1.16.1",
     "propper": "^1.0.4",

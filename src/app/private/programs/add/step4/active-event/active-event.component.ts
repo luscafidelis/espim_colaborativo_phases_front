@@ -34,6 +34,7 @@ export class ActiveEventComponent implements OnInit, OnDestroy {
 
   subSynk = new SubSink();
 
+  isOpenChatBotOptions = true;
   isOpenAdvanced = true;
   isOpenCircle = true;
   isOpenGame = true;
@@ -193,6 +194,10 @@ export class ActiveEventComponent implements OnInit, OnDestroy {
 
   openGame(){
     this.isOpenGame = !this.isOpenGame;
+  }
+
+  openChatBotOptions(){
+    this.isOpenChatBotOptions = !this.isOpenChatBotOptions;
   }
   
 

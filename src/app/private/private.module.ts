@@ -58,6 +58,7 @@ import { InterventionService } from './programs/intervention/intervention.servic
 import { PhasesComponent } from './programs/add/step4/phases/phases.component';
 import { GamificationComponent } from './programs/add/step4/active-event/gamification/gamification.component';
 import { CircleComponent } from './programs/add/step4/active-event/circle/circle.component';
+import { ChatbotComponent } from './programs/add/step4/active-event/chatbot/chatbot.component';
 import { AdvancedComponent } from './programs/add/step4/active-event/advanced/advanced.component';
 import { ComunicateButtonsComponent } from './programs/add/step1/comunicate-buttons/comunicate-buttons.component';
 import { DiscussionGroupsComponent } from './programs/add/step1/discussion-groups/discussion-groups.component';
@@ -132,6 +133,7 @@ import { FollowUpListComponent } from './programs/follow-up/follow-up-list/follo
       PhasesComponent,
       GamificationComponent,
       CircleComponent,
+      ChatbotComponent,
       AdvancedComponent,
       ComunicateButtonsComponent,
       DiscussionGroupsComponent,
